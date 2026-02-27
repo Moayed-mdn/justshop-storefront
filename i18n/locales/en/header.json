@@ -1,0 +1,15 @@
+{
+    "header": {
+      "logo_alt": "MyStore Logo",
+      "logo_img": "/images/logo-en.png",
+      "search_placeholder": "Search for products...",
+      "account": "Account",
+      "cart": "Cart",
+      "links": {
+        "home": "Home",
+        "shop": "Shop",
+        "contact": "Contact Us"
+      }
+    }
+}
+  

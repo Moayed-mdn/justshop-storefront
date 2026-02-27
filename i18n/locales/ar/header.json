@@ -1,0 +1,15 @@
+{
+    "header": {
+      "logo_alt": "شعار متجري",
+      "logo_img": "/images/logo-ar.png",
+      "search_placeholder": "البحث عن المنتجات...",
+      "account": "حسابي",
+      "cart": "السلة",
+      "links": {
+        "home": "الرئيسية",
+        "shop": "المتجر",
+        "contact": "اتصل بنا"
+      }
+    }
+}
+  

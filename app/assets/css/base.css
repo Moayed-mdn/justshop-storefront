@@ -1,0 +1,42 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  
+}
+
+
+html {
+  font-family: Inter, sans-serif;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  color: var(--color-text-primary);
+  background: var(--color-bg-page);
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+input{
+  outline: none;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 2px;
+  background-color: #aaa;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #231F1E;
+  border-radius: 10px;
+}
+
+h1,h2,h3,h4,h5,h6{
+  color:var(--heading-color);
+}
