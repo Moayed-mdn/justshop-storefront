@@ -1,0 +1,5 @@
+:root {
+  --slider-gap: var(--space-6);
+  --slider-scroll-step: 350px; /* Linked to JS below */
+  --slider-title-color: var(--text-primary);
+}

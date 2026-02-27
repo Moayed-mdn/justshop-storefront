@@ -1,0 +1,13 @@
+:root {
+  /* Semantic Mappings */
+  --card-bg-light: var(--brand-primary-light);
+  --card-img-height-mobile: 16rem;
+  --card-img-height-desktop: 18rem;
+  
+  --card-btn-border: var(--brand-primary);
+  --card-btn-hover: var(--brand-primary-hover);
+  --card-btn-text: var(--brand-primary);
+  
+  --card-transition-speed: var(--duration-300);
+  --card-btn-transition: var(--duration-500);
+}

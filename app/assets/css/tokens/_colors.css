@@ -1,0 +1,38 @@
+:root {
+  /* Brand Primary Colors */
+  --brand-primary: #333;
+  --brand-primary-hover: #003D29;
+  --brand-primary-light: #F5F5F5;
+  
+  /* Background Colors */
+  --bg-page: #FFFFFF;
+  --bg-white: #FFFFFF;
+  --bg-gray-light: #F9FAFB;
+  --bg-gray-medium: #F3F4F6;
+  --bg-overlay: rgba(0, 0, 0, 0.5);
+  
+  /* Text Colors */
+  --text-primary: #231F1E;
+  --text-secondary: #6B7280;
+  --text-tertiary: #9CA3AF;
+  --text-white: #FFFFFF;
+  --text-disabled: #D1D5DB;
+  
+  /* Border Colors */
+  --border-light: #E5E7EB;
+  --border-medium: #D1D5DB;
+  --border-focus: var(--brand-primary);
+  --border-error: #EF4444;
+  --border-success: #10B981;
+  
+  /* Status Colors */
+  --status-error: #EF4444;
+  --status-success: #10B981;
+  --status-warning: #F59E0B;
+  --status-info: #3B82F6;
+  
+  /* Overlay Colors */
+  --overlay-light: rgba(255, 255, 255, 0.1);
+  --overlay-medium: rgba(0, 0, 0, 0.05);
+  --overlay-dark: rgba(0, 0, 0, 0.1);
+}

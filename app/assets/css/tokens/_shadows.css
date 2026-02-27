@@ -1,0 +1,13 @@
+:root {
+  /* Box Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+  --shadow-inner: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
+  
+  /* Drop Shadows (for filters) */
+  --drop-shadow-sm: drop-shadow(0 1px 1px rgb(0 0 0 / 0.05));
+  --drop-shadow-md: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07));
+  --drop-shadow-lg: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04));
+}

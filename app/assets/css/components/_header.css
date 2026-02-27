@@ -1,0 +1,26 @@
+:root {
+  /* Header Component Variables */
+  --header-height: 4rem;              /* 64px */
+  --header-mobile-search-height: 3rem; /* 48px */
+  --header-total-height: calc(var(--header-height) + var(--header-mobile-search-height));
+  --header-bg: var(--bg-white);
+  --header-shadow: var(--shadow-sm);
+  --header-logo-width: 100px;
+  --header-gap-tight: var(--space-2);  
+  --header-gap-base: var(--space-4);   
+  --header-gap-wide: var(--space-6);
+  --header-opacity: 0.6;
+  --header-duration: var(--duration-200);
+  --header-burger-duration: var(--duration-500);
+  --header-search-border: var(--border-light);
+  --header-search-focus: var(--brand-primary);
+}
+
+/* Fix for the "Double X" button in Chrome/Safari */
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration {
+  display: none;
+}
+

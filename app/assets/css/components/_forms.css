@@ -1,0 +1,22 @@
+:root {
+  /* Form Input Variables */
+  --input-height: 2.5rem;              /* 40px */
+  --input-padding-x: var(--space-3);
+  --input-padding-y: var(--space-2);
+  --input-border-color: var(--border-light);
+  --input-border-focus: var(--border-focus);
+  --input-border-error: var(--border-error);
+  --input-border-radius: var(--radius-md);
+  --input-bg: var(--bg-white);
+  --input-transition: border-color var(--duration-150) var(--ease-out);
+  
+  /* Label Variables */
+  --label-color: var(--text-secondary);
+  --label-font-weight: var(--weight-medium);
+  --label-margin-bottom: var(--space-1);
+  
+  /* Error Message Variables */
+  --error-color: var(--status-error);
+  --error-font-size: var(--text-sm);
+  --error-margin-top: var(--space-1);
+}

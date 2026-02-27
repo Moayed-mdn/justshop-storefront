@@ -1,0 +1,9 @@
+:root {
+  /* Product Detail Page Variables */
+  --detail-image-gallery-gap: var(--space-4);
+  --detail-thumbnail-size: 80px;
+  --detail-info-spacing: var(--space-8);
+  --detail-price-size: var(--text-3xl);
+  --detail-price-color: var(--brand-primary);
+  --detail-options-gap: var(--space-4);
+}

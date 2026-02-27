@@ -1,0 +1,35 @@
+*,
+*::after,
+*::before{
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+  /* Use your typography tokens */
+  font-family: var(--font-main);
+  line-height: var(--leading-normal);
+}
+
+
+::-webkit-scrollbar {
+    width: 5px;
+    height: 2px;
+    background-color: var(--text-tertiary);
+  }
+  
+::-webkit-scrollbar-thumb {
+background-color: var(--text-primary);
+border-radius: var(--radius-xl);
+}
+
+/* Optional: Add hover state for better UX */
+::-webkit-scrollbar-thumb:hover {
+background-color: var(--brand-primary);
+}
