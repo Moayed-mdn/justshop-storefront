@@ -5,7 +5,7 @@ const API_BASE_URL = process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:8000'
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
-  css:['@/assets/css/main.css'],
+  css:['@/assets/css/base/_variables.css'], 
   runtimeConfig:{
     public:{
       apiBase: API_BASE_URL
@@ -22,16 +22,25 @@ export default defineNuxtConfig({
   i18n: {
     defaultLocale: 'en',
     strategy: 'prefix_except_default',
-     baseUrl: 'http://localhost:3000',
+    baseUrl: process.env.NUXT_PUBLIC_SITE_URL || 'http://localhost:3000',
+    lazy: true,
     locales: [
-      { code: 'en', language: 'en-US', dir: 'ltr', name: 'English' ,  files: ['en/header.json'] },
-      { code: 'ar', language: 'ar-SA', dir: 'rtl', name: 'العربية' ,  files: ['ar/header.json'] },
-      { code: 'en', language: 'en-US', dir: 'ltr', name: 'English' ,  files: ['en/cart.json'] },
-      { code: 'ar', language: 'ar-SA', dir: 'rtl', name: 'العربية' ,  files: ['ar/cart.json'] },
-      { code: 'en', language: 'en-US', dir: 'ltr', name: 'English' ,  files: ['en/best-seller.json'] },
-      { code: 'ar', language: 'ar-SA', dir: 'rtl', name: 'العربية' ,  files: ['ar/best-seller.json'] },
+      {
+        code: 'en',
+        language: 'en-US',
+        dir: 'ltr',
+        name: 'English',
+        files: ['en/header.json', 'en/cart.json', 'en/best-seller.json']
+      },
+      {
+        code: 'ar',
+        language: 'ar-SA',
+        dir: 'rtl',
+        name: 'العربية',
+        files: ['ar/header.json', 'ar/cart.json', 'ar/best-seller.json']
+      }
     ],
-    langDir: '../i18n/locales', 
+    langDir: 'i18n/locales',
     detectBrowserLanguage: {
       useCookie: true,
       cookieKey: 'locale',

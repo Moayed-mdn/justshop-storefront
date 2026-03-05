@@ -1,5 +1,5 @@
 <template>
-  <header class="relative px-4 w-full z-[var(--z-header)] bg-[var(--color-bg-page)] header-shadow">
+  <header class="relative px-[var(--site-gutter)] w-full z-[var(--z-header)] bg-[var(--header-bg)] shadow-[var(--header-shadow)] ">
 
     <HeaderTopRow>
       <template #start>
@@ -8,7 +8,7 @@
       
       <!-- Center (Desktop only) -->
       <template #center>
-          <div class="hidden lg:flex flex-1 items-center justify-center gap-6">
+          <div class="hidden lg:flex flex-1 items-center justify-center gap-[var(--header-gap-wide)]">
               <HeaderLinks/>
               <HeaderSearchInput class="max-w-md hidden lg:flex" />
           </div>
@@ -17,6 +17,7 @@
       <template #end>
           <HeaderActions  
             @open-menu="showLinks = !showLinks"
+            :menu-open="showLinks"
             />
       </template>
 
@@ -27,13 +28,10 @@
     </div>
   </header>
 
-
   <HeaderBurger
     class="lg:hidden"
     v-model:showLinks="showLinks"
   />
- 
- 
 </template>
 
 <script setup>
@@ -45,4 +43,5 @@ const showLinks = ref(false)
 //     if(val) showLinks.value = false
 // })
 //npx nuxt@latest module add vueuse
+
 </script>
