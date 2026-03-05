@@ -1,0 +1,32 @@
+:root {
+  /* Language Switcher Specific Variables */
+  --lang-switcher-text-size: var(--topbar-text-size);
+  /* Match topbar inverse text and use brand accent on hover */
+  --lang-switcher-text-color: var(--topbar-text-color);
+  --lang-switcher-text-hover: var(--color-accent);
+  --lang-switcher-gap: var(--space-1);
+  --lang-switcher-icon-size: 0.75rem;
+  --lang-switcher-transition-duration: var(--header-duration);
+  
+  /* Dropdown Variables */
+  --lang-switcher-dropdown-width: 10rem;
+  /* Slightly elevated card-style surface for the dropdown */
+  --lang-switcher-dropdown-bg: var(--color-bg-card);
+  --lang-switcher-dropdown-border: var(--color-border-default);
+  --lang-switcher-dropdown-shadow: var(--shadow-lg);
+  --lang-switcher-dropdown-z: var(--z-dropdown);
+  --lang-switcher-dropdown-padding: var(--space-2);
+  --lang-switcher-dropdown-radius: var(--radius-lg);
+  
+  /* Dropdown Item Variables */
+  --lang-switcher-item-padding: var(--space-2) var(--space-3);
+  --lang-switcher-item-hover-bg: var(--color-bg-hover);
+  --lang-switcher-item-active-bg: var(--color-primary);
+  --lang-switcher-item-active-text: var(--color-text-inverse);
+  --lang-switcher-item-hover-text: var(--color-text-primary);
+  
+  /* Transition Variables */
+  --lang-switcher-fade-duration: var(--duration-150);
+  --lang-switcher-fade-ease: var(--ease-out);
+  --lang-switcher-fade-offset: -5px;
+}
