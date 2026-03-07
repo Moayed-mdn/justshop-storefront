@@ -4,7 +4,6 @@
       <FilterSidebar
         v-if="backendFilters"
         :backend-filters="backendFilters"
-        @update-filters="updateFilters"
       />
     </aside>
 
@@ -20,11 +19,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import type { BackendFilters, ShopFilters } from '../../../types/filters'
-
-const router = useRouter()
-const route = useRoute()
+import type { BackendFilters } from '../../../types/api/product'
 
 const props = defineProps<{
   data?: {
@@ -39,19 +34,4 @@ const pagination = computed(() => props.data?.pagination)
 const backendFilters = computed<BackendFilters | null>(
   () => props.data?.filters ?? null
 )
-
-const updateFilters = (newFilters: ShopFilters) => {
-  router.push({
-    query: {
-      ...route.query,
-      category: newFilters.categorySlug ?? undefined,
-      min_price:
-        newFilters.minPrice != null ? newFilters.minPrice.toString() : undefined,
-      max_price:
-        newFilters.maxPrice != null ? newFilters.maxPrice.toString() : undefined,
-      earliest_manufacture: newFilters.manufactureFrom ?? undefined,
-      latest_expiry: newFilters.expiryTo ?? undefined
-    }
-  })
-}
 </script>

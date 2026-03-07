@@ -25,7 +25,7 @@
         <!-- Categories -->
         <FilterCategoryFilter
           :categories="backendFilters.descendants"
-          :selected-slug="categorySlug"
+          :selected-slug="filters.categorySlug"
           @select="setCategory"
           @clear="clearCategory"
         />
@@ -84,73 +84,45 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { manufactureDateFromPreset, expiryDateFromPreset } from '../../utils/dateFilters'
-import type { BackendFilters, ShopFilters } from '../../../types/filters'
+import type { BackendFilters } from '../../../types/api/product'
+import { useProductFilters } from '../../composables/useProductFilters'
 
 const { t } = useI18n()
-
 
 const props = defineProps<{
   backendFilters: BackendFilters
 }>()
 
-/* Emits */
-const emit = defineEmits<{
-  (e: 'updateFilters', filters: ShopFilters): void
-}>()
+const { filters } = useProductFilters()
 
-const route = useRoute()
 const isOpen = ref(false)
 
-/* State (initialized from URL or backend defaults) */
-const categorySlug = ref<string | null>((route.query.category as string) || null)
-const minPrice = ref<number | null>(route.query.min_price ? Number(route.query.min_price) : null)
-const maxPrice = ref<number | null>(route.query.max_price ? Number(route.query.max_price) : null)
-const manufactureFrom = ref<string | null>(
-  (route.query.earliest_manufacture as string) || null
-)
-const expiryTo = ref<string | null>((route.query.latest_expiry as string) || null)
-
-/* Price helpers for numeric props (backend may send strings like \"63.00\") */
+/* Price helpers for numeric props (backend may send strings like "63.00") */
 const numericMinPrice = computed(() => Number(props.backendFilters.min_price))
 const numericMaxPrice = computed(() => Number(props.backendFilters.max_price))
-const numericInitialMin = computed(() =>
-  minPrice.value != null ? minPrice.value : numericMinPrice.value
+const numericInitialMin = computed(
+  () => filters.value.minPrice ?? numericMinPrice.value
 )
-const numericInitialMax = computed(() =>
-  maxPrice.value != null ? maxPrice.value : numericMaxPrice.value
+const numericInitialMax = computed(
+  () => filters.value.maxPrice ?? numericMaxPrice.value
 )
-
-/* Derived filters */
-const filters = computed<ShopFilters>(() => ({
-  categorySlug: categorySlug.value,
-  minPrice: minPrice.value,
-  maxPrice: maxPrice.value,
-  manufactureFrom: manufactureFrom.value,
-  expiryTo: expiryTo.value
-}))
-
-const applyFilters = () => {
-  emit('updateFilters', filters.value)
-}
 
 /* Category helpers */
 const setCategory = (slug: string) => {
-  categorySlug.value = slug
+  filters.value.categorySlug = slug
 }
 
 const clearCategory = () => {
-  categorySlug.value = null
+  filters.value.categorySlug = null
 }
 
 /* Price helpers */
 const onPriceChange = (range: { min: number; max: number }) => {
-  minPrice.value = range.min
-  maxPrice.value = range.max
-  applyFilters()
+  filters.value.minPrice = range.min
+  filters.value.maxPrice = range.max
 }
 
 /* Date handling */
@@ -174,25 +146,23 @@ const expiryOptions = [
 
 const setManufacture = (preset: string) => {
   manufacturePreset.value = preset
-  manufactureFrom.value = manufactureDateFromPreset(preset)
+  filters.value.manufactureFrom = manufactureDateFromPreset(preset)
 }
 
 const setExpiry = (preset: string) => {
   expiryPreset.value = preset
-  expiryTo.value = expiryDateFromPreset(preset)
+  filters.value.expiryTo = expiryDateFromPreset(preset)
 }
 
 /* Reset */
 const resetFilters = () => {
-  categorySlug.value = null
-  minPrice.value = null
-  maxPrice.value = null
+  filters.value.categorySlug = null
+  filters.value.minPrice = null
+  filters.value.maxPrice = null
   manufacturePreset.value = 'all'
   expiryPreset.value = 'all'
-  manufactureFrom.value = manufactureDateFromPreset('all')
-  expiryTo.value = expiryDateFromPreset('all')
-
-  applyFilters()
+  filters.value.manufactureFrom = manufactureDateFromPreset('all')
+  filters.value.expiryTo = expiryDateFromPreset('all')
 }
 
 const buttonClass = (isActive: boolean) => {
@@ -200,10 +170,4 @@ const buttonClass = (isActive: boolean) => {
     ? 'bg-blue-600 text-white rounded px-2 py-1'
     : 'bg-gray-200 rounded px-2 py-1'
 }
-
-watch(
-  () => [filters.value.categorySlug, filters.value.manufactureFrom, filters.value.expiryTo],
-  applyFilters,
-  { deep: true }
-)
 </script>
