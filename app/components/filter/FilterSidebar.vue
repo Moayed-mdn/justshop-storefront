@@ -92,7 +92,7 @@ import type { BackendFilters, ShopFilters } from '../../../types/filters'
 
 const { t } = useI18n()
 
-/* Props */
+
 const props = defineProps<{
   backendFilters: BackendFilters
 }>()
@@ -106,7 +106,7 @@ const route = useRoute()
 const isOpen = ref(false)
 
 /* State (initialized from URL or backend defaults) */
-const categorySlug = ref<string | null>((route.query.category_slug as string) || null)
+const categorySlug = ref<string | null>((route.query.category as string) || null)
 const minPrice = ref<number | null>(route.query.min_price ? Number(route.query.min_price) : null)
 const maxPrice = ref<number | null>(route.query.max_price ? Number(route.query.max_price) : null)
 const manufactureFrom = ref<string | null>(

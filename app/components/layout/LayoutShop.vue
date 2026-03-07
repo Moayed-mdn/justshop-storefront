@@ -13,7 +13,7 @@
     </section>
 
     <div class="md:col-span-12">
-      <ProductPagination :total-pages="pagination?.last_page" />
+      <ProductPagination :total-pages="pagination?.last_page ?? 1" />
     </div>
   </div>
 </template>
@@ -21,30 +21,34 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import type { ShopFilters } from '../../../types/filters'
+import type { BackendFilters, ShopFilters } from '../../../types/filters'
 
 const router = useRouter()
 const route = useRoute()
 
 const props = defineProps<{
-  data: {
+  data?: {
     data: unknown[]
     pagination?: { last_page: number }
-    filters?: unknown
+    filters?: BackendFilters
   }
 }>()
 
 const products = computed(() => props.data?.data)
 const pagination = computed(() => props.data?.pagination)
-const backendFilters = computed(() => props.data?.filters)
+const backendFilters = computed<BackendFilters | null>(
+  () => props.data?.filters ?? null
+)
 
 const updateFilters = (newFilters: ShopFilters) => {
   router.push({
     query: {
       ...route.query,
-      category_slug: newFilters.categorySlug ?? undefined,
-      min_price: newFilters.minPrice ?? undefined,
-      max_price: newFilters.maxPrice ?? undefined,
+      category: newFilters.categorySlug ?? undefined,
+      min_price:
+        newFilters.minPrice != null ? newFilters.minPrice.toString() : undefined,
+      max_price:
+        newFilters.maxPrice != null ? newFilters.maxPrice.toString() : undefined,
       earliest_manufacture: newFilters.manufactureFrom ?? undefined,
       latest_expiry: newFilters.expiryTo ?? undefined
     }
