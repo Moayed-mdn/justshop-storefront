@@ -1,0 +1,21 @@
+{
+    "search": {
+      "results_for": "نتائج البحث عن",
+      "no_results": "لا توجد نتائج لـ",
+      "try_different": "جرّب كلمة بحث مختلفة أو تصفّح الأقسام",
+      "products": "المنتجات",
+      "categories": "الأقسام",
+      "brands": "العلامات التجارية",
+      "see_all": "عرض كل النتائج لـ",
+      "no_suggestions": "لا توجد اقتراحات",
+      "searching": "جارٍ البحث...",
+      "product": "منتج",
+      "category": "قسم",
+      "brand": "علامة تجارية",
+      "reviews": "تقييمات",
+      "no_reviews": "لا توجد تقييمات",
+      "enter_search": "أدخل كلمة للبحث عن المنتجات",
+      "in_category": "في {category}",
+      "view_products": "عرض المنتجات"
+    }
+  }

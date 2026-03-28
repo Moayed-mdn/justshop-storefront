@@ -1,51 +1,70 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
+import tailwindcss from '@tailwindcss/vite'
 
-const API_BASE_URL = process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:8000';
+const API_BASE_URL = process.env.NUXT_PUBLIC_API_BASE ;
 
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
-  devtools: { enabled: true },
-  css:['@/assets/css/base/_variables.css'], 
-  runtimeConfig:{
-    public:{
-      apiBase: API_BASE_URL
+  devtools: {
+    enabled: true,
+
+    timeline: {
+      enabled: true
     }
   },
-  modules: ['@nuxtjs/tailwindcss', '@vueuse/nuxt','@nuxtjs/i18n'],
-//   image: {
-//     alias: {
-//       backend: API_BASE_URL
-//     },
-//     domains: ['localhost:8000']
-//   }
-// ,
+  css:['@/assets/css/main.css'], 
+  vite: {
+    plugins: [
+      tailwindcss(),
+    ],
+    optimizeDeps: {
+      include: ['@apollo/client/core', 'graphql-tag'],
+    },
+  },
+  runtimeConfig:{
+    public:{
+      apiBase: API_BASE_URL,
+      graphqlUrl: process.env.NUXT_PUBLIC_GRAPHQL_URL,
+    },
+    
+  },
+  modules: ['@vueuse/nuxt', '@nuxtjs/i18n', 'nuxt-ssr-api-logger',
+     '@pinia/nuxt','@nuxt/ui','pinia-plugin-persistedstate/nuxt', 
+    //  '@nuxt/icon',
+     
+    ],
+
   i18n: {
     defaultLocale: 'en',
     strategy: 'prefix_except_default',
     baseUrl: process.env.NUXT_PUBLIC_SITE_URL || 'http://localhost:3000',
-    lazy: true,
-    locales: [
+    langDir: 'locales',
+      detectBrowserLanguage: {
+      useCookie: true,
+      cookieKey: "i18n_redirected",
+      redirectOn: "root",
+      alwaysRedirect: true,
+    },
+      locales: [
       {
         code: 'en',
         language: 'en-US',
         dir: 'ltr',
         name: 'English',
-        files: ['en/header.json', 'en/cart.json', 'en/best-seller.json']
+        icon: 'i-circle-flags-gb' ,
+        files: ['en/header.json', 'en/cart.json', 'en/best-seller.json','en/product.json','en/search.json',
+           'en/filter.json', 'en/topbar.json','en/footer.json', 'en/checkout.json','en/orders.json']
       },
       {
         code: 'ar',
         language: 'ar-SA',
         dir: 'rtl',
         name: 'العربية',
-        files: ['ar/header.json', 'ar/cart.json', 'ar/best-seller.json']
-      }
-    ],
-    langDir: 'i18n/locales',
-    detectBrowserLanguage: {
-      useCookie: true,
-      cookieKey: 'locale',
-      redirectOn: 'root',
-    },
+        icon: 'i-circle-flags-sa' ,
+        files: ['ar/header.json', 'ar/cart.json', 'ar/best-seller.json','ar/product.json', 'ar/search.json',
+           'ar/filter.json', 'ar/topbar.json','ar/footer.json', 'ar/checkout.json','ar/orders.json']
+      },
+      
+    ]
   },
   typescript: {
     // This adds your custom types to the generated .nuxt/tsconfig.json

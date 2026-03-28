@@ -1,0 +1,8 @@
+@import "tailwindcss";
+@import "@nuxt/ui";
+
+@import "./tokens/_index.css";
+@import "./base/_index.css";
+@import "./components/_index.css";
+@import "./pages/_index.css";
+

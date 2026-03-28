@@ -23,3 +23,8 @@ export interface BackendFilters {
 }
 
 
+export interface CartItem {
+  productId: string | number
+  quantity: number
+  
+}

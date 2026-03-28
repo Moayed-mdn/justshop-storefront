@@ -1,8 +1,11 @@
-import { $api } from '../../app/utils/api';
+import { $serverApi } from "~/utils/serverApi";
 
 export default defineEventHandler(async (event) => {
 
-  const response =  await $api(event, 'homepage/hero')
+  const config = useRuntimeConfig()
+  // const lang = getCookie(event, 'i18n_redirected')
+
+  const response = await $serverApi(event, 'homepage/hero');
   
   return response;
 })

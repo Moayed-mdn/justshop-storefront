@@ -1,0 +1,25 @@
+:root {
+  /* Product Pagination Variables */
+  --pg-bg: var(--color-bg-page);
+  --pg-padding: var(--space-4);
+  --pg-gap: var(--space-2);
+  --pg-btn-bg: var(--color-bg-card);
+  --pg-btn-text: var(--color-text-secondary);
+  --pg-btn-ctrl-text: var(--color-primary);
+  --pg-btn-border-color: var(--color-primary);
+  --pg-btn-hover-bg: var(--color-bg-hover);
+  --pg-btn-active-bg: var(--color-primary);
+  --pg-btn-active-text: var(--color-text-inverse);
+  --pg-btn-active-border: var(--color-primary);
+  --pg-btn-padding-x: var(--space-2);
+  --pg-btn-padding-x-md: var(--space-4);
+  --pg-btn-padding-y: var(--space-2);
+  --pg-btn-min-width: 2rem;
+  --pg-btn-min-width-md: 3rem;
+  --pg-disabled-opacity: 0.5;
+  --pg-ellipsis-text: var(--color-text-secondary);
+  /* --pg-ellipsis-margin: -1.25rem; -5px */
+
+  
+
+}

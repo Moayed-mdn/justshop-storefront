@@ -1,19 +1,33 @@
+// app/composables/useProductFilters.ts
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import type { ShopFilters } from '~/types/filters/shopFilters'
-import type { ProductApiFilters } from '~/types/api/product'
+import type { ShopFilters } from '~~/types/filters/shopFilters'
+import type { ProductApiFilters } from '~~/types/api/product'
+
+const defaultFilters = (): ShopFilters => ({
+  categorySlug: null,
+  minPrice: null,
+  maxPrice: null,
+  manufactureFrom: null,
+  expiryTo: null
+})
 
 export const useProductFilters = () => {
   const route = useRoute()
   const router = useRouter()
 
-  const filters = useState<ShopFilters>('productFilters', () => ({
-    categorySlug: null,
-    minPrice: null,
-    maxPrice: null,
-    manufactureFrom: null,
-    expiryTo: null
-  }))
+  const filters = useState<ShopFilters>('productFilters', defaultFilters)
+
+  // ✅ Move date presets into the composable so they're globally accessible
+  const manufacturePreset = useState<string>('filter-manufacture-preset', () => 'all')
+  const expiryPreset = useState<string>('filter-expiry-preset', () => 'all')
+
+  // ✅ Global reset — call from ANY component
+  const resetFilters = () => {
+    filters.value = defaultFilters()
+    manufacturePreset.value = 'all'
+    expiryPreset.value = 'all'
+  }
 
   const syncFromUrl = () => {
     const q = route.query
@@ -28,8 +42,6 @@ export const useProductFilters = () => {
   }
 
   const syncToUrl = () => {
-    // When filters change, reset pagination back to the first page
-    // by stripping any existing `page` param from the current query.
     const { page, ...restQuery } = route.query
 
     router.push({
@@ -54,9 +66,11 @@ export const useProductFilters = () => {
 
   return {
     filters,
+    manufacturePreset,
+    expiryPreset,
+    resetFilters,
     syncFromUrl,
     syncToUrl,
     apiQuery
   }
 }
-

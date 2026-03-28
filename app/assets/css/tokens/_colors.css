@@ -1,38 +1,57 @@
 :root {
-  /* Brand Primary Colors */
-  --brand-primary: #333;
-  --brand-primary-hover: #003D29;
-  --brand-primary-light: #F5F5F5;
-  
-  /* Background Colors */
-  --bg-page: #FFFFFF;
-  --bg-white: #FFFFFF;
-  --bg-gray-light: #F9FAFB;
-  --bg-gray-medium: #F3F4F6;
-  --bg-overlay: rgba(0, 0, 0, 0.5);
-  
-  /* Text Colors */
-  --text-primary: #231F1E;
-  --text-secondary: #6B7280;
-  --text-tertiary: #9CA3AF;
-  --text-white: #FFFFFF;
-  --text-disabled: #D1D5DB;
-  
-  /* Border Colors */
-  --border-light: #E5E7EB;
-  --border-medium: #D1D5DB;
-  --border-focus: var(--brand-primary);
-  --border-error: #EF4444;
-  --border-success: #10B981;
-  
-  /* Status Colors */
-  --status-error: #EF4444;
-  --status-success: #10B981;
-  --status-warning: #F59E0B;
-  --status-info: #3B82F6;
-  
-  /* Overlay Colors */
-  --overlay-light: rgba(255, 255, 255, 0.1);
-  --overlay-medium: rgba(0, 0, 0, 0.05);
-  --overlay-dark: rgba(0, 0, 0, 0.1);
+
+  /* =======================================================
+     =============== PRIMITIVE COLOR TOKENS ================
+     ======================================================= */
+
+  /* Brand Base */
+  --green-900: #003D29;
+  --orange-500: #FF7006;
+  --orange-300: #FFB23C;
+  --pink-500: #C34482;
+
+  /* Neutral Scale */
+  --gray-900: #231F1E;
+  --gray-700: #333333;
+  --gray-400: #D3D2D2;
+  --gray-200: #F5F6F6;
+  --gray-100: #F3F4F6;
+  --white: #FFFFFF;
+  --black: #000000;
+  --transparent: transparent;
+
+  /* State */
+  --green-success: #08AC0A;
+  --red-error: #EF4444;
+
+
+  /* =======================================================
+     =============== SEMANTIC COLOR TOKENS =================
+     ======================================================= */
+
+  /* Brand */
+  --color-primary: var(--green-900);
+  --color-accent: var(--orange-500);
+  --color-accent-hover: var(--orange-300);
+
+  /* Backgrounds */
+  --color-bg-page: var(--white);
+  --color-bg-card: var(--gray-200);
+
+  /* Text */
+  --color-text-primary: var(--gray-900);
+  --color-text-secondary: var(--gray-700);
+  --color-text-inverse: var(--white);
+  --color-text-black: var(--black);
+
+  /* Borders */
+  --color-border-default: var(--gray-400);
+  --color-border-active: var(--color-primary);
+
+  /* Status */
+  --color-error: var(--red-error);
+
+
+  /* Interactive States */
+  --color-bg-hover: var(--gray-200);
 }

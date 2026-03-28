@@ -1,0 +1,58 @@
+<template>
+  <div class="flex items-center gap-(--header-gap-wide)">
+
+    <!-- ═══ NOT LOGGED IN ═══ -->
+    <NuxtLinkLocale
+      v-if="!isLoggedIn"
+      to="/login"
+      class="group flex font-semibold gap-(--header-gap-tight) items-center transition-all duration-(--header-duration) hover:text-(--header-action-hover-color) cursor-pointer"
+    >
+      <img class="w-4 sm:w-6" src="~/assets/icons/user.png" alt="">
+      <span class="hidden sm:block group-hover:opacity-(--header-opacity)">
+        {{ $t('header.account') }}
+      </span>
+    </NuxtLinkLocale>
+
+    <!-- ═══ LOGGED IN — Profile Dropdown ═══ -->
+    <ClientOnly v-else>
+       <HeaderProfileDropdown  />
+    </ClientOnly>
+
+    <!-- ═══ CART ═══ -->
+    <ClientOnly>
+      <NuxtLinkLocale
+        class="relative group flex font-semibold gap-(--header-gap-tight) items-center transition-all duration-(--header-duration) hover:text-(--header-action-hover-color) cursor-pointer"
+        to="/cart"
+      >
+        <img class="w-4 sm:w-6" src="~/assets/icons/cart.png" alt="">
+        <span class="hidden sm:block group-hover:opacity-(--header-opacity)">{{ $t('header.cart') }}</span>
+        <div
+          v-if="cart.itemsCount.value > 0"
+          class="absolute -top-1 sm:-top-2 -right-1 sm:right-8 bg-(--color-accent) text-white rounded-full w-3 h-3 sm:w-5 sm:h-5 flex items-center justify-center text-xs"
+        >
+          {{ cart.itemsCount.value }}
+        </div>
+      </NuxtLinkLocale>
+    </ClientOnly>
+    <!-- ═══ BURGER MENU ═══ -->
+    <button
+      @click="emit('openMenu')"
+      class="lg:hidden hover:opacity-(--header-opacity) cursor-pointer"
+      id="burger-menu-trigger"
+      type="button"
+      aria-controls="header-mobile-nav"
+      :aria-expanded="menuOpen ? 'true' : 'false'"
+      aria-label="Open menu"
+    >
+      <div class="text-2xl leading-none">☰</div>
+    </button>
+  </div>
+</template>
+
+<script setup lang="ts">
+const cart = useCart()
+const { isLoggedIn } = useAuth()
+
+defineProps<{ menuOpen?: boolean }>()
+const emit = defineEmits(['openMenu'])
+</script>

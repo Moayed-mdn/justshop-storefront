@@ -1,7 +1,6 @@
 <template>
   <section>
-    <h3 class="font-semibold mb-2">{{ t('filter.categories') }}</h3>
-
+    <h3 class="font-semibold mb-(--filter-section-gap)">{{ t('filter.categories') }}</h3>
     <ul class="space-y-1">
       <p v-if="!categories?.length">
         {{ t('filter.no_categories') }}
@@ -12,10 +11,13 @@
         :key="cat.id"
       >
         <button
-          class="text-start w-full"
+          class="text-start w-full cursor-pointer transition-colors"
           :class="cat.slug === selectedSlug
-            ? 'font-bold text-blue-600'
+            ? 'text-(--filter-text-active) font-(--filter-text-weight)'
             : 'hover:underline'"
+          :style="{
+            fontSize: 'var(--filter-text-size)'
+          }"
           @click="onSelect(cat.slug)"
         >
           {{ cat.name }}
@@ -25,7 +27,7 @@
 
     <button
       v-if="selectedSlug"
-      class="text-sm text-red-500 mt-2"
+      class="mt-(--filter-section-gap) text-sm text-(--color-error) cursor-pointer"
       @click="onClear"
     >
       {{ t('filter.clear_category') }}

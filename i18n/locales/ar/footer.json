@@ -1,0 +1,57 @@
+{
+  "description": "هذا وصف وهمي للنسخة العربية. إنه ليس نفس الوصف الأصلي.",
+  "accepted_payments": "المدفوعات المقبولة",
+  "department": "القسم",
+  "departments": {
+    "fashion": "أزياء",
+    "education": "منتجات تعليمية",
+    "frozen_food": "أطعمة مجمدة",
+    "beverages": "مشروبات",
+    "organic_grocery": "بقالة عضوية",
+    "office_supplies": "لوازم مكتبية",
+    "beauty_products": "منتجات التجميل",
+    "books": "كتب",
+    "electronics": "إلكترونيات وأجهزة",
+    "travel": "اكسسوارات السفر",
+    "fitness": "لياقة بدنية",
+    "sneakers": "أحذية رياضية",
+    "toys": "ألعاب",
+    "furniture": "أثاث"
+  },
+  "about_us": "معلومات عنا",
+  "about": {
+    "about_shopcart": "حول شوبكارت",
+    "careers": "وظائف",
+    "news_blog": "الأخبار والمدونة",
+    "help": "مساعدة",
+    "press_center": "المركز الصحفي",
+    "shop_by_location": "تسوق حسب الموقع",
+    "shopcart_brands": "ماركات شوبكارت",
+    "affiliate_partners": "الشركاء والمنتسبون",
+    "ideas_guides": "أفكار وأدلة"
+  },
+  "services": "خدمات",
+  "service_list": {
+    "gift_card": "بطاقة هدية",
+    "mobile_app": "تطبيق الجوال",
+    "shipping_delivery": "الشحن والتوصيل",
+    "order_pickup": "استلام الطلب",
+    "account_signup": "تسجيل حساب"
+  },
+  "help_section": "مساعدة",
+  "help_list": {
+    "shopcart_help": "مساعدة شوبكارت",
+    "returns": "المرتجعات",
+    "track_orders": "تتبع الطلبات",
+    "contact_us": "اتصل بنا",
+    "feedback": "ردود الفعل",
+    "security_fraud": "الأمن والاحتيال"
+  },
+  "bottom": {
+    "become_seller": "كن بائعًا",
+    "gift_cards": "بطاقات الهدايا",
+    "help_center": "مركز المساعدة",
+    "terms_of_service": "شروط الخدمة",
+    "privacy_policy": "سياسة الخصوصية"
+  }
+}

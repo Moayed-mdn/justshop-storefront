@@ -1,0 +1,23 @@
+{
+    "filter": {
+      "open": "فتح الفلاتر",
+      "categories": "الفئات",
+      "no_categories": "لا توجد فئات",
+      "clear_category": "مسح الفئة",
+      "price": "السعر",
+      "from": "من",
+      "to": "إلى",
+      "products_between": "المنتجات بين",
+      "manufactured": "صنعت في",
+      "last_30_days": "آخر 30 يومًا",
+      "last_6_months": "آخر 6 أشهر",
+      "last_year": "العام الماضي",
+      "all": "الكل",
+      "expiry": "انتهاء الصلاحية",
+      "month": "شهر واحد",
+      "months3": "3 أشهر",
+      "months6": "6 أشهر",
+      "later_year": "بعد عام",
+      "reset": "إعادة تعيين الفلاتر"
+    }
+  }

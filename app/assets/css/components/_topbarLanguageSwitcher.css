@@ -14,7 +14,7 @@
   --lang-switcher-dropdown-bg: var(--color-bg-card);
   --lang-switcher-dropdown-border: var(--color-border-default);
   --lang-switcher-dropdown-shadow: var(--shadow-lg);
-  --lang-switcher-dropdown-z: var(--z-dropdown);
+  /* --lang-switcher-dropdown-z: var(--z-dropdown); */
   --lang-switcher-dropdown-padding: var(--space-2);
   --lang-switcher-dropdown-radius: var(--radius-lg);
   

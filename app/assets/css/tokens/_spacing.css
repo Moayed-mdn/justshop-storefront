@@ -18,11 +18,11 @@
   --space-24: calc(var(--space-unit) * 24); /* 96px */
   
   /* Layout Max Widths */
-  --container-sm: 640px;
+  /* --container-sm: 640px;
   --container-md: 768px;
   --container-lg: 1024px;
   --container-xl: 1280px;
-  --container-2xl: 1536px;
+  --container-2xl: 1536px; */
 
   /* The Semantic Layout Token */
   --site-gutter: var(--space-4);

@@ -1,0 +1,26 @@
+{
+    "checkout": {
+      "redirecting": "جاري التحويل إلى الدفع...",
+      "redirecting_description": "سيتم نقلك إلى صفحة دفع Stripe آمنة. لا تغلق هذه النافذة.",
+      "success_title": "تم تأكيد الطلب!",
+      "success_description": "شكراً لشرائك. تم تقديم طلبك بنجاح.",
+      "order_number": "رقم الطلب",
+      "payment_status": "حالة الدفع",
+      "confirmation_email": "سيتم إرسال تأكيد إلى",
+      "status_paid": "مدفوع",
+      "status_pending": "قيد المعالجة",
+      "status_unpaid": "بانتظار الدفع",
+      "view_orders": "عرض طلباتي",
+      "continue_shopping": "متابعة التسوق",
+      "create_account_title": "حفظ بياناتك للمرة القادمة؟",
+      "create_account_description": "أنشئ حساباً لتتبع الطلبات والدفع بشكل أسرع.",
+      "create_account_button": "إنشاء حساب",
+      "cancel_title": "تم إلغاء الدفع",
+      "cancel_description": "لم تتم معالجة دفعتك. عناصر سلتك لا تزال محفوظة.",
+      "return_to_cart": "العودة إلى السلة",
+      "error_title": "حدث خطأ ما",
+      "error_description": "لم نتمكن من استرداد تفاصيل طلبك. يرجى التواصل مع الدعم إذا تم خصم المبلغ.",
+      "processing_title": "جاري معالجة طلبك...",
+      "processing_description": "يرجى الانتظار بينما نؤكد الدفع."
+    }
+  }

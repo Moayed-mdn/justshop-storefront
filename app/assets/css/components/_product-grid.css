@@ -1,0 +1,7 @@
+:root {
+  /* Product Grid Variables */
+  --product-grid-gap: var(--space-4);
+  --product-grid-padding: var(--space-4);
+  --product-grid-bg: var(--color-bg-page);
+  --product-grid-section-height: 1.875rem; /* 30px */
+}

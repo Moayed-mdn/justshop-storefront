@@ -1,15 +1,21 @@
 {
-    "header": {
-      "logo_alt": "MyStore Logo",
-      "logo_img": "/images/logo-en.png",
-      "search_placeholder": "Search for products...",
-      "account": "Account",
-      "cart": "Cart",
-      "links": {
-        "home": "Home",
-        "shop": "Shop",
-        "contact": "Contact Us"
-      }
+  "header": {
+    "logo_alt": "MyStore Logo",
+    "logo_img": "/images/logo-en.png",
+    "search_placeholder": "Search for products...",
+    "account": "Account",
+    "profile": "Profile",
+    "cart": "Cart",
+    "links": {
+      "home": "Home",
+      "shop": "Shop",
+      "contact": "Contact Us"
+    },
+    "dropdown": {
+      "google_linked": "Google linked",
+      "my_profile": "My Profile",
+      "my_orders": "My Orders",
+      "logout": "Log Out"
     }
+  }
 }
-  

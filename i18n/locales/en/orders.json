@@ -1,0 +1,81 @@
+{
+    "orders": {
+      "title": "My Orders",
+      "subtitle": "Track and manage your orders",
+      "empty_title": "No orders yet",
+      "empty_description": "When you place an order, it will appear here.",
+      "start_shopping": "Start Shopping",
+  
+      "filter_all": "All",
+      "filter_pending": "Pending",
+      "filter_processing": "Processing",
+      "filter_shipped": "Shipped",
+      "filter_delivered": "Delivered",
+      "filter_cancelled": "Cancelled",
+  
+      "date_from": "From",
+      "date_to": "To",
+      "clear_filters": "Clear Filters",
+  
+      "order_number": "Order",
+      "placed_on": "Placed on",
+      "items_count": "{count} item | {count} items",
+      "view_details": "View Details",
+      "buy_again": "Buy Again",
+      "cancel_order": "Cancel Order",
+      "track_order": "Track Order",
+  
+      "detail_title": "Order Details",
+      "back_to_orders": "Back to Orders",
+      "order_summary": "Order Summary",
+      "subtotal": "Subtotal",
+      "shipping": "Shipping",
+      "tax": "Tax",
+      "discount": "Discount",
+      "total": "Total",
+      "free": "Free",
+  
+      "shipping_address": "Shipping Address",
+      "tracking_number": "Tracking Number",
+      "payment_status": "Payment",
+      "order_status": "Status",
+  
+      "status_pending": "Pending",
+      "status_processing": "Processing",
+      "status_shipped": "Shipped",
+      "status_delivered": "Delivered",
+      "status_cancelled": "Cancelled",
+  
+      "payment_pending": "Pending",
+      "payment_paid": "Paid",
+      "payment_failed": "Failed",
+      "payment_refunded": "Refunded",
+      "payment_cancelled": "Cancelled",
+  
+      "cancel_confirm_title": "Cancel Order?",
+      "cancel_confirm_message": "This will cancel your order and issue a refund if payment was made. This action cannot be undone.",
+      "cancel_confirm_button": "Yes, Cancel Order",
+      "cancel_keep": "Keep Order",
+      "cancel_success": "Order cancelled successfully.",
+  
+      "reorder_success": "{count} item(s) added to your cart.",
+      "reorder_partial": "{added} item(s) added. {failed} item(s) could not be added.",
+      "reorder_failed": "None of the items could be added to your cart.",
+      "reorder_price_changed": "Note: Some prices have changed since your original order.",
+  
+      "item_unavailable": "Unavailable",
+  
+      "guest_title": "Track Your Order",
+      "guest_description": "Enter your order number and the email used during checkout.",
+      "guest_order_number": "Order Number",
+      "guest_order_placeholder": "e.g. ORD-6789ABC",
+      "guest_email": "Email Address",
+      "guest_email_placeholder": "Email used during checkout",
+      "guest_lookup": "Find Order",
+      "guest_not_found": "No order found with that order number and email.",
+      "guest_new_search": "Search Another Order",
+  
+      "shipped_at": "Shipped",
+      "delivered_at": "Delivered"
+    }
+  }

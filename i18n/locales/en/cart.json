@@ -1,5 +1,31 @@
 {
     "cart": {
-        "add_to_cart":"add to cart"
+      "add_to_cart": "Add to cart",
+      "title": "Shopping Cart",
+      "item": "item",
+      "items": "items",
+      "breadcrumb_home": "Home",
+      "breadcrumb_cart": "Shopping Cart",
+      "empty_title": "Your cart is empty",
+      "empty_description": "Looks like you haven't added anything to your cart yet. Start shopping to find great products!",
+      "continue_shopping": "Continue Shopping",
+      "remove": "Remove",
+      "only_x_left": "Only {count} left in stock",
+      "order_summary": "Order Summary",
+      "subtotal": "Subtotal",
+      "shipping": "Shipping",
+      "calculated_at_checkout": "Calculated at checkout",
+      "total": "Total",
+      "tax_note": "Tax included where applicable",
+      "promo_code": "Have a promo code?",
+      "enter_promo": "Enter code",
+      "apply": "Apply",
+      "checkout": "Proceed to Checkout",
+      "secure_checkout": "Secure checkout — your data is protected",
+      "money_back": "30-day money back guarantee",
+      "clear_cart": "Clear Cart",
+      "clear_confirm_title": "Clear Cart?",
+      "clear_confirm_message": "This will remove all items from your cart. This action cannot be undone.",
+      "cancel": "Cancel"
     }
-}
+  }

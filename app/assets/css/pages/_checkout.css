@@ -1,9 +1,9 @@
 :root {
   /* Checkout Page Variables */
-  --checkout-max-width: 1200px;
+  --checkout-max-width: var(--container-xl);
   --checkout-column-gap: var(--space-8);
   --checkout-section-spacing: var(--space-6);
-  --checkout-summary-bg: var(--bg-gray-light);
+  --checkout-summary-bg: var(--color-bg-card);
   --checkout-summary-padding: var(--space-6);
   --checkout-summary-radius: var(--radius-lg);
 }

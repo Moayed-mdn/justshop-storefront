@@ -1,22 +1,18 @@
 /* app/assets/css/components/_hero.css */
 :root {
   /* --- Primitive Tokens (The Foundation) --- */
-  --hero-h-mobile: 400px;
-  --hero-h-desktop: 600px;
-  
-  /* --- Semantic Tokens (The Usage) --- */
-  /* Skeleton / Loading */
-  --hero-skeleton-bg: var(--color-gray-200);
-  --hero-skeleton-shimmer: var(--color-gray-300);
+  --hero-h-mobile: 25rem; /* 400px using 16px base */
+  --hero-h-desktop: 37.5rem; /* 600px using 16px base */
   
   /* Banner Visuals */
-  --hero-overlay-bg: rgba(0, 0, 0, var(--hero-overlay-opacity));
-  --hero-overlay-opacity: 0.4;
-  --hero-text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  --hero-overlay-bg: rgba(0, 0, 0, 0.4);
+  /* --hero-overlay-opacity: 0.4; */
+  --hero-text-shadow: var(--shadow-md);
   
   /* Content Colors */
-  --hero-title-color: var(--color-text-secondary);
-  --hero-subtitle-color: rgba(255, 255, 255, 0.9);
-  --hero-btn-bg: var(--color-bg-white);
-  --hero-btn-text: var(--color-text-primary);
+  --hero-title-color: var(--color-primary);
+  --hero-subtitle-color: var(--color-text-secondary);
+ 
+  --hero-btn-bg: var(--color-primary);
+  --hero-btn-text: var(--color-text-inverse);
 }

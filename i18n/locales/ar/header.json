@@ -1,15 +1,21 @@
 {
-    "header": {
-      "logo_alt": "شعار متجري",
-      "logo_img": "/images/logo-ar.png",
-      "search_placeholder": "البحث عن المنتجات...",
-      "account": "حسابي",
-      "cart": "السلة",
-      "links": {
-        "home": "الرئيسية",
-        "shop": "المتجر",
-        "contact": "اتصل بنا"
-      }
+  "header": {
+    "logo_alt": "شعار متجري",
+    "logo_img": "/images/logo-ar.png",
+    "search_placeholder": "البحث عن المنتجات...",
+    "account": "حسابي",
+    "profile": "الملف الشخصي",
+    "cart": "السلة",
+    "links": {
+      "home": "الرئيسية",
+      "shop": "المتجر",
+      "contact": "اتصل بنا"
+    },
+    "dropdown": {
+      "google_linked": "مرتبط بجوجل",
+      "my_profile": "ملفي الشخصي",
+      "my_orders": "طلباتي",
+      "logout": "تسجيل الخروج"
     }
+  }
 }
-  

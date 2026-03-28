@@ -1,0 +1,7 @@
+:root {
+  /* Layout Variables */
+  --layout-container-gap: var(--space-5);
+  --layout-sidebar-width: 25%; /* 3/12 columns */
+  --layout-main-width: 75%; /* 9/12 columns */
+  --layout-full-width: 100%; /* 12/12 columns */
+}

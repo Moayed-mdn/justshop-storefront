@@ -1,0 +1,57 @@
+{
+  "description": "This is a fake description for the English version. It is not the same as the original one.",
+  "accepted_payments": "Accepted Payments",
+  "department": "Department",
+  "departments": {
+    "fashion": "Fashion",
+    "education": "Education Product",
+    "frozen_food": "Frozen Food",
+    "beverages": "Beverages",
+    "organic_grocery": "Organic Grocery",
+    "office_supplies": "Office Supplies",
+    "beauty_products": "Beauty Products",
+    "books": "Books",
+    "electronics": "Electronics & Gadget",
+    "travel": "Travel Accessories",
+    "fitness": "Fitness",
+    "sneakers": "Sneakers",
+    "toys": "Toys",
+    "furniture": "Furniture"
+  },
+  "about_us": "About us",
+  "about": {
+    "about_shopcart": "About Shopcart",
+    "careers": "Careers",
+    "news_blog": "News & Blog",
+    "help": "Help",
+    "press_center": "Press Center",
+    "shop_by_location": "Shop by location",
+    "shopcart_brands": "Shopcart brands",
+    "affiliate_partners": "Affiliate & Partners",
+    "ideas_guides": "Ideas & Guides"
+  },
+  "services": "Services",
+  "service_list": {
+    "gift_card": "Gift Card",
+    "mobile_app": "Mobile App",
+    "shipping_delivery": "Shipping & Delivery",
+    "order_pickup": "Order Pickup",
+    "account_signup": "Account Signup"
+  },
+  "help_section": "Help",
+  "help_list": {
+    "shopcart_help": "Shopcart Help",
+    "returns": "Returns",
+    "track_orders": "Track Orders",
+    "contact_us": "Contact Us",
+    "feedback": "Feedback",
+    "security_fraud": "Security & Fraud"
+  },
+  "bottom": {
+    "become_seller": "Become Seller",
+    "gift_cards": "Gift Cards",
+    "help_center": "Help Center",
+    "terms_of_service": "Terms of Service",
+    "privacy_policy": "Privacy & Policy"
+  }
+}

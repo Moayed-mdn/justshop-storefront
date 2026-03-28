@@ -1,0 +1,8 @@
+:root{
+    --topbar-height: 2rem;
+    --topbar-mobile-height: 4rem;
+    --topbar-bg: var(--color-primary);
+    --topbar-text-color: var(--color-text-inverse);
+    --topbar-text-size: var(--text-xs);
+    --topbar-z: var(--z-dropdown);
+}

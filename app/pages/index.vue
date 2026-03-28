@@ -3,5 +3,4 @@
             <HeroSection/>
             <LayoutBestSellers/>
     </div>
-
 </template>

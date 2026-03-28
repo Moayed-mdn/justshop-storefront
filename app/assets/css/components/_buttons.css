@@ -1,29 +1,20 @@
 :root {
-  /* Button Variables */
-  --btn-padding-y: var(--space-2);
-  --btn-padding-x: var(--space-4);
-  --btn-border-radius: var(--radius-full);
-  --btn-font-weight: var(--weight-bold);
-  --btn-transition: all var(--duration-300) var(--ease-out);
-  
-  /* Primary Button */
-  --btn-primary-bg: var(--brand-primary);
-  --btn-primary-text: var(--text-white);
-  --btn-primary-hover-bg: var(--brand-primary-hover);
-  --btn-primary-hover-text: var(--text-white);
-  
-  /* Secondary Button */
-  --btn-secondary-bg: transparent;
-  --btn-secondary-border: var(--border-medium);
-  --btn-secondary-text: var(--brand-primary);
-  --btn-secondary-hover-bg: var(--brand-primary-hover);
-  --btn-secondary-hover-text: var(--text-white);
-  
-  /* Add to Cart Button */
-  --btn-cart-bg: transparent;
-  --btn-cart-border: var(--brand-primary);
-  --btn-cart-text: var(--brand-primary);
-  --btn-cart-hover-bg: var(--brand-primary-hover);
-  --btn-cart-hover-border: var(--brand-primary-hover);
-  --btn-cart-hover-text: var(--text-white);
+
+  --btn-primary-bg: var(--color-primary);
+  --btn-primary-text: var(--color-text-inverse);
+  --btn-primary-hover-bg: var(--color-primary-hover);
+  --btn-primary-hover-text: var(--color-text-inverse);
+
+  --btn-secondary-bg: var(--color-bg-page);
+  --btn-secondary-border: var(--color-text-primary);
+  --btn-secondary-text: var(--color-text-primary);
+  --btn-secondary-hover-bg: var(--color-primary);
+  --btn-secondary-hover-text: var(--color-text-inverse);
+
+  --btn-cart-bg: var(--color-bg-page);
+  --btn-cart-border: var(--color-text-primary);
+  --btn-cart-text: var(--color-text-primary);
+  --btn-cart-hover-bg: var(--color-primary);
+  --btn-cart-hover-border: var(--color-primary);
+  --btn-cart-hover-text: var(--color-text-inverse);
 }

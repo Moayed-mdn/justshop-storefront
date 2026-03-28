@@ -1,5 +1,31 @@
-{ 
-  "cart": { 
-    "add_to_cart": "اضف الى السلة" 
+{
+  "cart": {
+    "add_to_cart": "أضف إلى السلة",
+    "title": "سلة التسوق",
+    "item": "منتج",
+    "items": "منتجات",
+    "breadcrumb_home": "الرئيسية",
+    "breadcrumb_cart": "سلة التسوق",
+    "empty_title": "سلتك فارغة",
+    "empty_description": "يبدو أنك لم تضف أي شيء إلى سلتك بعد. ابدأ التسوق لاكتشاف منتجات رائعة!",
+    "continue_shopping": "متابعة التسوق",
+    "remove": "إزالة",
+    "only_x_left": "باقي {count} فقط في المخزون",
+    "order_summary": "ملخص الطلب",
+    "subtotal": "المجموع الفرعي",
+    "shipping": "الشحن",
+    "calculated_at_checkout": "يُحسب عند الدفع",
+    "total": "الإجمالي",
+    "tax_note": "الضريبة مشمولة حيثما ينطبق",
+    "promo_code": "هل لديك رمز ترويجي؟",
+    "enter_promo": "أدخل الرمز",
+    "apply": "تطبيق",
+    "checkout": "المتابعة إلى الدفع",
+    "secure_checkout": "دفع آمن — بياناتك محمية",
+    "money_back": "ضمان استرداد الأموال خلال 30 يومًا",
+    "clear_cart": "تفريغ السلة",
+    "clear_confirm_title": "تفريغ السلة؟",
+    "clear_confirm_message": "سيؤدي هذا إلى إزالة جميع المنتجات من سلتك. لا يمكن التراجع عن هذا الإجراء.",
+    "cancel": "إلغاء"
   }
 }

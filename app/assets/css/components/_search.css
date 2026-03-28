@@ -1,0 +1,51 @@
+/* app/assets/css/components/_search.css */
+
+:root {
+    /* ── Dropdown ─────────────────────────── */
+    --search-dropdown-bg: var(--white);
+    --search-dropdown-shadow: var(--shadow-lg);
+    --search-dropdown-border: var(--color-border-default);
+    --search-dropdown-max-height: 26rem;
+  
+    /* ── Suggestion Items ─────────────────── */
+    --search-item-hover: var(--gray-100);
+    --search-item-active: var(--gray-200);
+    --search-item-text: var(--color-text-primary);
+    --search-item-secondary: var(--color-text-secondary);
+  
+    /* ── Type Badges ──────────────────────── */
+    --search-badge-product-bg: #DBEAFE;
+    --search-badge-product-text: #1E40AF;
+    --search-badge-category-bg: #D1FAE5;
+    --search-badge-category-text: #065F46;
+    --search-badge-brand-bg: #FEF3C7;
+    --search-badge-brand-text: #92400E;
+  
+    /* ── Rating Stars ─────────────────────── */
+    --search-star-filled: var(--orange-500);
+    --search-star-empty: var(--gray-400);
+  
+    /* ── Search Page ──────────────────────── */
+    --search-page-gutter: 1.5rem;
+  }
+  
+  /* ── Dropdown Animation ─────────────────── */
+  .search-dropdown-enter-active,
+  .search-dropdown-leave-active {
+    transition: opacity 150ms ease, transform 150ms ease;
+  }
+  
+  .search-dropdown-enter-from,
+  .search-dropdown-leave-to {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  
+  /* ── Loading Spinner ────────────────────── */
+  @keyframes search-spin {
+    to { transform: rotate(360deg); }
+  }
+  
+  .search-spinner {
+    animation: search-spin 0.6s linear infinite;
+  }

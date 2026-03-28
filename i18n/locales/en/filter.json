@@ -1,0 +1,23 @@
+{
+    "filter": {
+      "open": "Open Filters",
+      "categories": "Categories",
+      "no_categories": "No categories",
+      "clear_category": "Clear category",
+      "price": "Price",
+      "from": "From",
+      "to": "To",
+      "products_between": "Products between",
+      "manufactured": "Manufactured",
+      "last_30_days": "Last 30 days",
+      "last_6_months": "Last 6 months",
+      "last_year": "Last year",
+      "all": "All",
+      "expiry": "Expiry",
+      "month": "1 month",
+      "months3": "3 months",
+      "months6": "6 months",
+      "later_year": "Later year",
+      "reset": "Reset Filters"
+    }
+  }

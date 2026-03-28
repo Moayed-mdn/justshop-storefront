@@ -1,32 +1,34 @@
+<!-- components/layout/LayoutShop.vue -->
 <template>
-  <div class="grid grid-cols-1 grid-rows-[auto_1fr_auto] md:grid-cols-12 container mx-auto md:gap-5">
-    <aside class="md:col-span-3">
-      <FilterSidebar
-        v-if="backendFilters"
-        :backend-filters="backendFilters"
-      />
-    </aside>
+  <div>
+    <!-- Optional header slot (used by category page) -->
+    <slot name="header" />
 
-    <section class="md:col-span-9">
-      <ProductGrid :products="products" />
-    </section>
+    <div class="grid grid-cols-1 grid-rows-[auto_1fr_auto] md:grid-cols-12 container mx-auto md:gap-(--layout-container-gap)">
+      <aside class="md:col-span-3">
+        <FilterSidebar
+          v-if="backendFilters"
+          :backend-filters="backendFilters"
+        />
+      </aside>
 
-    <div class="md:col-span-12">
-      <ProductPagination :total-pages="pagination?.last_page ?? 1" />
+      <section class="md:col-span-9">
+        <ProductGrid :products="products" />
+      </section>
+
+      <div class="md:col-span-12">
+        <ProductPagination :total-pages="pagination?.last_page ?? 1" />
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
 import type { BackendFilters } from '../../../types/api/product'
+import type { ShopLayout } from '../../../types/api/shopLayout'
 
 const props = defineProps<{
-  data?: {
-    data: unknown[]
-    pagination?: { last_page: number }
-    filters?: BackendFilters
-  }
+  data: ShopLayout | undefined
 }>()
 
 const products = computed(() => props.data?.data)

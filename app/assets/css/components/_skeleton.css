@@ -1,0 +1,6 @@
+/* app/assets/css/components/_skeleton.css */
+:root {
+  --skeleton-surface: var(--color-bg-card);
+  --skeleton-shimmer: var(--color-gray-400);
+}
+

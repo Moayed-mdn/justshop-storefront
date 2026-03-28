@@ -1,0 +1,26 @@
+{
+    "checkout": {
+      "redirecting": "Redirecting to payment...",
+      "redirecting_description": "You'll be taken to a secure Stripe payment page. Do not close this window.",
+      "success_title": "Order Confirmed!",
+      "success_description": "Thank you for your purchase. Your order has been placed successfully.",
+      "order_number": "Order Number",
+      "payment_status": "Payment Status",
+      "confirmation_email": "A confirmation will be sent to",
+      "status_paid": "Paid",
+      "status_pending": "Processing",
+      "status_unpaid": "Awaiting Payment",
+      "view_orders": "View My Orders",
+      "continue_shopping": "Continue Shopping",
+      "create_account_title": "Save your details for next time?",
+      "create_account_description": "Create an account to track orders and checkout faster.",
+      "create_account_button": "Create Account",
+      "cancel_title": "Checkout Cancelled",
+      "cancel_description": "Your payment was not processed. Your cart items are still saved.",
+      "return_to_cart": "Return to Cart",
+      "error_title": "Something Went Wrong",
+      "error_description": "We couldn't retrieve your order details. Please contact support if you were charged.",
+      "processing_title": "Processing Your Order...",
+      "processing_description": "Please wait while we confirm your payment."
+    }
+  }

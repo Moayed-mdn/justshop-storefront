@@ -1,0 +1,53 @@
+:root {
+  /* Filter Sidebar Variables */
+  --filter-sidebar-bg: var(--color-bg-page);
+  --filter-sidebar-border: var(--color-border-default);
+  --filter-sidebar-padding: var(--space-4);
+  --filter-sidebar-gap: var(--space-6);
+  --filter-sidebar-height: 100%;
+  --filter-sidebar-z: var(--z-sticky);
+  
+  /* Filter Text select Variables */
+  --filter-text :  var(--color-text-inverse);
+  --filter-text-active: var(--color-accent);
+  --filter-text-size: var(--text-sm);
+  --filter-text-weight: var(--weight-medium);
+
+  /* Filter Button Variables */
+  --filter-button-bg: var(--color-bg-page);
+  --filter-button-text: var(--color-text-primary);
+  --filter-button-border: var(--color-border-default);
+  --filter-button-hover-bg: var(--color-bg-hover);
+  --filter-button-active-bg: var(--color-accent);
+  --filter-button-active-text: var(--color-text-inverse);
+  --filter-button-padding-x: var(--space-2);
+  --filter-button-padding-y: var(--space-1);
+  --filter-button-gap: var(--space-2);
+
+  /* Range Slider Variables */
+  --range-slider-track-bg: #e5e7eb;
+  --range-slider-active-bg: var(--color-accent);
+  --range-slider-thumb-bg: var(--color-accent);
+  --range-slider-thumb-border: var(--color-accent);
+  --range-slider-thumb-size: 1rem;
+  --range-slider-thumb-hover-scale: 1.2;
+  
+  /* Double Range Slider Variables */
+  --double-range-slider-height: 1.5rem;
+  --double-range-slider-track-height: .05rem;
+  --double-range-slider-thumb-width: 1.25rem;
+  --double-range-slider-thumb-height: 1.25rem;
+  --double-range-slider-thumb-border-width: 2px;
+  
+  /* Filter Section Variables */
+  --filter-section-gap: var(--space-2);
+  --filter-title-weight: var(--weight-semibold);
+  --filter-title-size: var(--text-base);
+  --filter-title-color: var(--color-text-primary);
+  --filter-clear-color: var(--color-error);
+  --filter-clear-size: var(--text-sm);
+
+  /* Filter Modal Variables */
+  --filter-modal-z: var(--z-modal);
+}
+

@@ -1,13 +1,19 @@
 :root {
-  /* Semantic Mappings */
-  --card-bg-light: var(--brand-primary-light);
+
+  --card-bg-light: var(--color-bg-card);
   --card-img-height-mobile: 16rem;
   --card-img-height-desktop: 18rem;
-  
-  --card-btn-border: var(--brand-primary);
-  --card-btn-hover: var(--brand-primary-hover);
-  --card-btn-text: var(--brand-primary);
-  
+
   --card-transition-speed: var(--duration-300);
   --card-btn-transition: var(--duration-500);
+
+  --card-title: var(--color-text-primary);
+  --card-description: var(--color-text-secondary);
+  --card-rating: var(--color-success);
+
+  --card-btn-border: var(--color-text-primary);
+  --card-btn-text: var(--color-text-primary);
+
+  --card-btn-hover: var(--color-primary);
 }
+

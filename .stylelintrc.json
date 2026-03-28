@@ -1,0 +1,16 @@
+{
+    "extends": [
+      "stylelint-config-standard-vue",
+      "stylelint-config-tailwindcss"
+    ],
+    "rules": {
+      "at-rule-no-unknown": [
+        true,
+        {
+          "ignoreAtRules": ["theme", "utility", "source", "reference"]
+        }
+      ],
+      "no-unknown-custom-properties": true
+    }
+  }
+  

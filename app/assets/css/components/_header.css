@@ -1,19 +1,45 @@
 :root {
-  /* Header Component Variables */
-  --header-height: 4rem;              /* 64px */
-  --header-mobile-search-height: 3rem; /* 48px */
-  --header-total-height: calc(var(--header-height) + var(--header-mobile-search-height));
-  --header-bg: var(--bg-white);
+  --header-height: 4rem;
+  --header-mobile-search-height: 3rem;
+  --header-total-height: calc(var(--header-height) + var(--header-mobile-search-height) + var(--topbar-height));
+  --header-total-height-mobile: 11rem;
+  --header-logo-width: 8.25rem; /* 100px using 16px base */
   --header-shadow: var(--shadow-sm);
-  --header-logo-width: 100px;
   --header-gap-tight: var(--space-2);  
   --header-gap-base: var(--space-4);   
   --header-gap-wide: var(--space-6);
-  --header-opacity: 0.6;
+  --header-opacity: 0.7;
   --header-duration: var(--duration-200);
+  --header-bg: var(--white);
+  --header-z: var(--z-header);
+
+  /* Input Search */
+  --header-input-search-bg: var(--transparent);
+
+  /* Logo */
+  /* --header-logo-text-color: var(--color-primary);
+  --header-logo-icon-color: var(--color-accent); */
+  
+  /* Links */
+  --header-link-color: var(--color-text-primary);
+
+  /* Actions */
+  --header-action-color: var(--color-text-black);
+  --header-action-hover-color: var(--color-accent);
+
+  /* Burger */
+  --header-burger-bg: var(--white);
   --header-burger-duration: var(--duration-500);
-  --header-search-border: var(--border-light);
-  --header-search-focus: var(--brand-primary);
+  --header-burger-z: var(--z-burger-menu);
+  --header-burger-top: var(--header-total-height);
+  --header-burger-top-mobile: var(--header-total-height-mobile);
+
+  /* Serach bar */
+  --header-search-border: var(--color-border-default);
+  --header-search-focus: var(--color-primary);
+  --header-search-radius: var(--radius-full);
+
+
 }
 
 /* Fix for the "Double X" button in Chrome/Safari */
@@ -23,4 +49,3 @@ input[type="search"]::-webkit-search-results-button,
 input[type="search"]::-webkit-search-results-decoration {
   display: none;
 }
-

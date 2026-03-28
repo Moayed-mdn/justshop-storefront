@@ -11,25 +11,25 @@ html {
 
 body {
   background-color: var(--bg-page);
-  color: var(--text-primary);
+  color: var(--color-text-secondary);
   /* Use your typography tokens */
   font-family: var(--font-main);
   line-height: var(--leading-normal);
+}
+
+a{
+  white-space: nowrap;
 }
 
 
 ::-webkit-scrollbar {
     width: 5px;
     height: 2px;
-    background-color: var(--text-tertiary);
+    background-color: var(--gray-400);
   }
   
 ::-webkit-scrollbar-thumb {
-background-color: var(--text-primary);
+background-color:  var(--gray-700);
 border-radius: var(--radius-xl);
 }
 
-/* Optional: Add hover state for better UX */
-::-webkit-scrollbar-thumb:hover {
-background-color: var(--brand-primary);
-}

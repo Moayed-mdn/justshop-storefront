@@ -1,0 +1,81 @@
+{
+    "orders": {
+      "title": "طلباتي",
+      "subtitle": "تتبع وإدارة طلباتك",
+      "empty_title": "لا توجد طلبات بعد",
+      "empty_description": "عندما تقوم بتقديم طلب، سيظهر هنا.",
+      "start_shopping": "ابدأ التسوق",
+  
+      "filter_all": "الكل",
+      "filter_pending": "قيد الانتظار",
+      "filter_processing": "قيد المعالجة",
+      "filter_shipped": "تم الشحن",
+      "filter_delivered": "تم التوصيل",
+      "filter_cancelled": "ملغي",
+  
+      "date_from": "من",
+      "date_to": "إلى",
+      "clear_filters": "مسح الفلاتر",
+  
+      "order_number": "طلب",
+      "placed_on": "بتاريخ",
+      "items_count": "{count} منتج | {count} منتجات",
+      "view_details": "عرض التفاصيل",
+      "buy_again": "اشتري مجدداً",
+      "cancel_order": "إلغاء الطلب",
+      "track_order": "تتبع الطلب",
+  
+      "detail_title": "تفاصيل الطلب",
+      "back_to_orders": "العودة للطلبات",
+      "order_summary": "ملخص الطلب",
+      "subtotal": "المجموع الفرعي",
+      "shipping": "الشحن",
+      "tax": "الضريبة",
+      "discount": "الخصم",
+      "total": "الإجمالي",
+      "free": "مجاني",
+  
+      "shipping_address": "عنوان الشحن",
+      "tracking_number": "رقم التتبع",
+      "payment_status": "الدفع",
+      "order_status": "الحالة",
+  
+      "status_pending": "قيد الانتظار",
+      "status_processing": "قيد المعالجة",
+      "status_shipped": "تم الشحن",
+      "status_delivered": "تم التوصيل",
+      "status_cancelled": "ملغي",
+  
+      "payment_pending": "قيد الانتظار",
+      "payment_paid": "مدفوع",
+      "payment_failed": "فشل الدفع",
+      "payment_refunded": "تم الاسترداد",
+      "payment_cancelled": "ملغي",
+  
+      "cancel_confirm_title": "إلغاء الطلب؟",
+      "cancel_confirm_message": "سيتم إلغاء طلبك واسترداد المبلغ إذا تم الدفع. لا يمكن التراجع عن هذا الإجراء.",
+      "cancel_confirm_button": "نعم، إلغاء الطلب",
+      "cancel_keep": "إبقاء الطلب",
+      "cancel_success": "تم إلغاء الطلب بنجاح.",
+  
+      "reorder_success": "تمت إضافة {count} منتج(ات) إلى سلتك.",
+      "reorder_partial": "تمت إضافة {added} منتج(ات). {failed} منتج(ات) لم تتم إضافتها.",
+      "reorder_failed": "لم يتم إضافة أي منتج إلى سلتك.",
+      "reorder_price_changed": "ملاحظة: بعض الأسعار تغيرت منذ طلبك الأصلي.",
+  
+      "item_unavailable": "غير متوفر",
+  
+      "guest_title": "تتبع طلبك",
+      "guest_description": "أدخل رقم الطلب والبريد الإلكتروني المستخدم أثناء الدفع.",
+      "guest_order_number": "رقم الطلب",
+      "guest_order_placeholder": "مثال: ORD-6789ABC",
+      "guest_email": "البريد الإلكتروني",
+      "guest_email_placeholder": "البريد المستخدم أثناء الدفع",
+      "guest_lookup": "البحث عن الطلب",
+      "guest_not_found": "لم يتم العثور على طلب بهذا الرقم والبريد الإلكتروني.",
+      "guest_new_search": "البحث عن طلب آخر",
+  
+      "shipped_at": "تم الشحن",
+      "delivered_at": "تم التوصيل"
+    }
+  }

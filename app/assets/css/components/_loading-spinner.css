@@ -1,0 +1,12 @@
+:root {
+  /* Loading Spinner Variables */
+  --spinner-size-small: 1.5rem; /* 24px */
+  --spinner-size-medium: 2rem; /* 32px */
+  --spinner-size-large: 2.5rem; /* 40px */
+  --spinner-border-width: 0;
+  --spinner-border-color: var(--transparent);
+  --spinner-border-active-color: var(--color-primary);
+  --spinner-border-active-width: 2px;
+  --spinner-animation-duration: var(--duration-1000);
+  --spinner-container-bg: transparent;
+}
