@@ -4,7 +4,7 @@ export const $serverApi = async (
   endpoint: string,
   options: Record<string, any> = {}
 ) => {
-  await new Promise((resolve) => setTimeout(resolve, 1000)) // dev delay
+  // await new Promise((resolve) => setTimeout(resolve, 1000)) // dev delay
 
   const config = useRuntimeConfig()
   const base = config.public.apiBase || 'https://e-commerce-backend-production-4b78.up.railway.app/api/v1/users/products?page=1'
