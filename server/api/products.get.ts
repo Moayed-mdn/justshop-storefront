@@ -1,4 +1,4 @@
-import { $serverApi } from '~/utils/serverApi'
+import { useServerApi } from '../utils/api'
 import type { ProductApiFilters } from '../../types/api/product'
 
 export default defineEventHandler(async (event) => {
@@ -20,13 +20,11 @@ export default defineEventHandler(async (event) => {
     page: rawQuery.page ? Number(rawQuery.page as string) : 1
   }
 
-  const config = useRuntimeConfig()
-  // const lang = getCookie(event, 'i18n_redirected')
+  const api = useServerApi(event)
 
-  const response = await $serverApi(event, 'products',{
-    query: apiFilters
-
-  });
+  const response = await api('products', {
+    query: apiFilters,
+  })
 
   return response
 })

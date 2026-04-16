@@ -1,5 +1,4 @@
-import type { BackendFilters } from './product'
-import type { ProductCardDTO } from '../generated'
+import type { ProductCard, ProductListFilters } from '../product'
 
 export interface Pagination {
     current_page: number
@@ -9,9 +8,9 @@ export interface Pagination {
 }
 
 export interface ShopLayout {
-    data: ProductCardDTO[]
+    data: ProductCard[]
     pagination?: Pagination
-    filters?: BackendFilters
+    filters?: ProductListFilters
 }
 
 export interface CategoryShopLayout extends ShopLayout {

@@ -15,37 +15,26 @@
   </template>
   
   <script setup lang="ts">
-  import type { CategoryShopLayout } from '~~/types/api/shopLayout'
+import type { ProductListCategoryMeta } from '~~/types/product'
+
   
   const route = useRoute()
   const slug = route.params.slug as string
   
-  const { data: rawData, pending } = await useProductByCategory(slug)
+  const { data, pending } = await useProductByCategory(slug)
   
   provide('pending', pending)
   
   // Extract category info separately
-  const categoryInfo = computed(() => {
-    const raw = rawData.value as CategoryShopLayout | null
-    return raw?.category ?? null
+  const categoryInfo = computed(():ProductListCategoryMeta | undefined => {
+    return data.value?.meta?.category
   })
   
-  const totalProducts = computed(() => {
-    const raw = rawData.value as CategoryShopLayout | null
-    return raw?.pagination?.total ?? undefined
+  const totalProducts = computed(():number | undefined  => {
+    return data.value?.meta.pagination.total
   })
   
-  // Pass to LayoutShop as ShopLayout (compatible shape)
-  const data = computed(() => {
-    const raw = rawData.value as CategoryShopLayout | null
-    if (!raw) return undefined
-  
-    return {
-      data: raw.data,
-      pagination: raw.pagination,
-      filters: raw.filters,
-    }
-  })
+
   
   // Update page title
   const { t } = useI18n()

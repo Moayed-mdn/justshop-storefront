@@ -46,9 +46,11 @@
   </template>
   
   <script setup lang="ts">
+import type { BreadcrumbItem } from '~~/types/product';
+
   defineProps<{
     name: string
-    breadcrumb?: Array<{ id: number; name: string; slug: string }>
+    breadcrumb?: BreadcrumbItem[]
     totalProducts?: number
   }>()
   </script>

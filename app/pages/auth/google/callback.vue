@@ -39,7 +39,7 @@
   
   const route = useRoute()
   const { handleGoogleCallback } = useAuth()
-  const toast = useToast()
+  const { showSuccessToast, showErrorToast } = useAppToast()
   const error = ref(null)
   
   onMounted(async () => {
@@ -49,12 +49,7 @@
     // Handle error from Laravel
     if (errorParam) {
       error.value = 'Google authentication failed. Please try again.'
-      toast.add({
-        title: 'Authentication Failed',
-        description: 'Could not sign in with Google.',
-        color: 'error',
-        icon: 'i-heroicons-x-circle',
-      })
+      showErrorToast('Could not sign in with Google.')
       return
     }
   
@@ -67,20 +62,10 @@
     // Process the token
     try {
       await handleGoogleCallback(token)
-      toast.add({
-        title: 'Welcome!',
-        description: 'Signed in with Google successfully.',
-        color: 'success',
-        icon: 'i-heroicons-check-circle',
-      })
+      showSuccessToast('Signed in with Google successfully.')
     } catch (err) {
       error.value = 'Failed to complete sign-in. Please try again.'
-      toast.add({
-        title: 'Authentication Failed',
-        description: 'Could not complete Google sign-in.',
-        color: 'error',
-        icon: 'i-heroicons-x-circle',
-      })
+      showErrorToast('Could not complete Google sign-in.')
     }
   })
   </script>

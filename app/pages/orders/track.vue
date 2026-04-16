@@ -216,6 +216,8 @@
   </template>
   
   <script setup lang="ts">
+ import { formatPrice } from '../../utils/price'
+ import { formatDate } from '../../utils/date'
   definePageMeta({
     layout: 'default',
   })
@@ -230,23 +232,6 @@
   
   const foundOrder = ref<any>(null)
   const lookupError = ref<string | null>(null)
-  
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat(undefined, {
-      style: 'currency',
-      currency: 'USD',
-    }).format(price)
-  }
-  
-  const formatDate = (dateStr: string) => {
-    return new Date(dateStr).toLocaleDateString(undefined, {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    })
-  }
   
   const handleLookup = async () => {
     lookupError.value = null

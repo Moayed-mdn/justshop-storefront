@@ -34,7 +34,7 @@
             :product-id="product.product_id"
             :product-variant-id="product.product_variant_id"
             :name="product.product_name"
-            :price="product.price"
+            :price="String(product.price)"
             :image="product.primary_image"
           />
           <template #fallback>
@@ -50,9 +50,10 @@
 </template>
 
 <script setup lang="ts">
-import type { ProductCardDTO } from '~~/types/generated'
+import type { ProductCard } from '~~/types/product'
 
-defineProps<{ product: ProductCardDTO }>()
+
+defineProps<{ product: ProductCard }>()
 </script>
 
 <style scoped>

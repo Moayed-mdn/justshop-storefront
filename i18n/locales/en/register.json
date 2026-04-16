@@ -1,0 +1,24 @@
+{
+  "register": {
+    "title": "Create your account",
+    "check_your_email_title": "✓ Check your email",
+    "verification_sent": "We sent a verification link to {email}.",
+    "verification_sent_description": "Please click the link to activate your account.",
+    "sending": "Sending...",
+    "resend_verification_email": "Resend Verification Email",
+    "back_to_login": "Back to Login",
+    "name": "Name",
+    "email_address": "Email address",
+    "password": "Password",
+    "confirm_password": "Confirm Password",
+    "creating_account": "Creating account...",
+    "register": "Register",
+    "or_continue_with": "Or continue with",
+    "sign_up_with_google": "Sign up with Google",
+    "already_have_account": "Already have an account?",
+    "log_in": "Log in",
+    "verification_email_sent_fallback": "Verification email sent!",
+    "already_verified_title": "Already Verified",
+    "resend_failed": "Failed to send verification email. Please try again."
+  }
+}

@@ -67,17 +67,20 @@
 
 <script setup lang="ts">
 import { manufactureDateFromPreset, expiryDateFromPreset } from '../../utils/dateFilters'
-import type { BackendFilters } from '../../../types/api/product'
+import type { UIProductListFilters } from '../../../types/api/product'
+import type { ProductListFilters } from '~~/types/product';
 
 const { t } = useI18n()
 
 const props = defineProps<{
-  backendFilters: BackendFilters
+  backendFilters: ProductListFilters /// ProductListFilters
 }>()
 
 const emit = defineEmits<{
   (e: 'close'): void
 }>()
+
+const FiltersData = mapToUIFilters(props.backendFilters);
 
 // ✅ Everything comes from the composable now — no local filter state
 const {
@@ -88,8 +91,8 @@ const {
 } = useProductFilters()
 
 /* Price helpers */
-const numericMinPrice = computed(() => Number(props.backendFilters.min_price))
-const numericMaxPrice = computed(() => Number(props.backendFilters.max_price))
+const numericMinPrice = computed(() => Number(FiltersData.min_price))
+const numericMaxPrice = computed(() => Number(FiltersData.max_price))
 const numericInitialMin = computed(
   () => filters.value.minPrice ?? numericMinPrice.value
 )

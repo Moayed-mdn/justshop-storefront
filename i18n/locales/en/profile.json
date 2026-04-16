@@ -1,0 +1,51 @@
+{
+  "profile": {
+    "title": "My Profile",
+    "subtitle": "Manage your account settings",
+    "avatar": {
+      "title": "Profile Photo",
+      "change": "Change Photo",
+      "hint": "JPG, PNG or WebP. Max 2MB."
+    },
+    "personalInfo": {
+      "title": "Personal Information",
+      "googleLinked": "Google linked",
+      "nameLabel": "Full Name",
+      "emailLabel": "Email",
+      "phoneLabel": "Phone Number",
+      "phonePlaceholder": "Optional",
+      "saveButton": "Save Changes",
+      "savingButton": "Saving..."
+    },
+    "password": {
+      "changeTitle": "Change Password",
+      "setTitle": "Set a Password",
+      "changeSubtitle": "Update your password to keep your account secure.",
+      "setSubtitle": "You signed up with Google. Set a password to also log in with email.",
+      "currentPasswordLabel": "Current Password",
+      "newPasswordLabel": "New Password",
+      "confirmPasswordLabel": "Confirm New Password",
+      "updateButton": "Update Password",
+      "setButton": "Set Password"
+    },
+    "dangerZone": {
+      "title": "Danger Zone",
+      "subtitle": "Once you delete your account, there is no going back.",
+      "deleteButton": "Delete Account",
+      "confirm": {
+        "title": "Delete Account?",
+        "message": "This will permanently delete your account, orders, and all associated data. This action cannot be undone.",
+        "cancelButton": "Cancel",
+        "confirmButton": "Yes, Delete",
+        "deletingButton": "Deleting..."
+      }
+    },
+    "toasts": {
+      "loadProfileError": "Failed to load profile.",
+      "updateInfoSuccess": "Profile information saved.",
+      "updatePasswordSuccess": "Password updated.",
+      "updateAvatarSuccess": "Avatar updated.",
+      "deleteAccountError": "Failed to delete account."
+    }
+  }
+}

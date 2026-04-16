@@ -1,0 +1,20 @@
+{
+  "login": {
+    "title": "تسجيل الدخول إلى حسابك",
+    "email_not_verified_title": "البريد الإلكتروني غير مُؤكَّد.",
+    "email_not_verified_description": "يرجى التحقق من صندوق الوارد لـ {email} أو اضغط أدناه لإعادة الإرسال.",
+    "sending": "جارٍ الإرسال...",
+    "resend_verification_email": "إعادة إرسال رسالة التحقق",
+    "email_address": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "forgot_password": "هل نسيت كلمة المرور؟",
+    "signing_in": "جارٍ تسجيل الدخول...",
+    "log_in": "تسجيل الدخول",
+    "or": "أو",
+    "sign_in_with_google": "تسجيل الدخول باستخدام Google",
+    "no_account": "ليس لديك حساب؟",
+    "sign_up": "إنشاء حساب",
+    "verify_email_before_login": "يرجى تأكيد بريدك الإلكتروني قبل تسجيل الدخول.",
+    "resend_failed": "تعذر إرسال رسالة التحقق. يرجى المحاولة مرة أخرى."
+  }
+}

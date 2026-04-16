@@ -78,34 +78,34 @@
     isMobile.value = window.innerWidth <= 640
   })
   const pageList = computed(() => {
-  const current = currentPage.value
-  const last = props.totalPages
-  const range = isMobile.value ? 1 : 2
-  const list = [1]
+    const current = currentPage.value
+    const last = props.totalPages
+    const range = isMobile.value ? 1 : 2
+    const list = [1]
 
-  // Left side
-  if (current - range > 2) {
-    list.push('...')
-  } else if (current - range === 2) {
-    list.push(2)
-  }
+    // Left side
+    if (current - range > 2) {
+      list.push('...')
+    } else if (current - range === 2) {
+      list.push(2)
+    }
 
-  // Middle
-  const start = Math.max(2, current - range)
-  const end = Math.min(last - 1, current + range)
-  for (let i = start; i <= end; i++) {
-    if (!list.includes(i)) list.push(i)
-  }
+    // Middle
+    const start = Math.max(2, current - range)
+    const end = Math.min(last - 1, current + range)
+    for (let i = start; i <= end; i++) {
+      if (!list.includes(i)) list.push(i)
+    }
 
-  // Right side
-  if (current + range < last - 1) {
-    list.push('...')
-  } else if (current + range === last - 1) {
-    list.push(last - 1)
-  }
+    // Right side
+    if (current + range < last - 1) {
+      list.push('...')
+    } else if (current + range === last - 1) {
+      list.push(last - 1)
+    }
 
   if (last > 1) list.push(last)
-  return list
+    return list
 })
 
 

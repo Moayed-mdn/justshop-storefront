@@ -21,6 +21,7 @@ export default defineNuxtConfig({
     },
   },
   runtimeConfig:{
+    apiBase: API_BASE_URL,
     public:{
       apiBase: API_BASE_URL,
       graphqlUrl: process.env.NUXT_PUBLIC_GRAPHQL_URL,
@@ -52,7 +53,8 @@ export default defineNuxtConfig({
         name: 'English',
         icon: 'i-circle-flags-gb' ,
         files: ['en/header.json', 'en/cart.json', 'en/best-seller.json','en/product.json','en/search.json',
-           'en/filter.json', 'en/topbar.json','en/footer.json', 'en/checkout.json','en/orders.json']
+           'en/filter.json', 'en/topbar.json','en/footer.json', 'en/checkout.json','en/orders.json',
+           'en/login.json', 'en/register.json', 'en/profile.json']
       },
       {
         code: 'ar',
@@ -61,7 +63,8 @@ export default defineNuxtConfig({
         name: 'العربية',
         icon: 'i-circle-flags-sa' ,
         files: ['ar/header.json', 'ar/cart.json', 'ar/best-seller.json','ar/product.json', 'ar/search.json',
-           'ar/filter.json', 'ar/topbar.json','ar/footer.json', 'ar/checkout.json','ar/orders.json']
+           'ar/filter.json', 'ar/topbar.json','ar/footer.json', 'ar/checkout.json','ar/orders.json',
+           'ar/login.json', 'ar/register.json', 'ar/profile.json']
       },
       
     ]

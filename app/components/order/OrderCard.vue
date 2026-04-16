@@ -103,8 +103,12 @@
   </template>
   
   <script setup lang="ts">
+  import { formatPrice } from '../../utils/price'
+  import { formatDate as formatDateUtil } from '../../utils/date'
+  import type { Order } from '~~/types/order'
+  
   const props = defineProps<{
-    order: any
+    order: Order
     reordering?: boolean
   }>()
   
@@ -123,18 +127,10 @@
     return Math.max(0, items.length - 3)
   })
   
-  const formatDate = (dateStr: string) => {
-    return new Date(dateStr).toLocaleDateString(undefined, {
+  const formatDate = (dateStr: string) =>
+    formatDateUtil(dateStr, undefined, {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
     })
-  }
-  
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat(undefined, {
-      style: 'currency',
-      currency: 'USD',
-    }).format(price)
-  }
   </script>

@@ -1,0 +1,24 @@
+{
+  "register": {
+    "title": "إنشاء حساب جديد",
+    "check_your_email_title": "✓ تحقّق من بريدك الإلكتروني",
+    "verification_sent": "لقد أرسلنا رابط التحقق إلى {email}.",
+    "verification_sent_description": "يرجى الضغط على الرابط لتفعيل حسابك.",
+    "sending": "جارٍ الإرسال...",
+    "resend_verification_email": "إعادة إرسال رسالة التحقق",
+    "back_to_login": "العودة لتسجيل الدخول",
+    "name": "الاسم",
+    "email_address": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "confirm_password": "تأكيد كلمة المرور",
+    "creating_account": "جارٍ إنشاء الحساب...",
+    "register": "إنشاء حساب",
+    "or_continue_with": "أو المتابعة باستخدام",
+    "sign_up_with_google": "إنشاء حساب باستخدام Google",
+    "already_have_account": "لديك حساب بالفعل؟",
+    "log_in": "تسجيل الدخول",
+    "verification_email_sent_fallback": "تم إرسال رسالة التحقق!",
+    "already_verified_title": "تم التحقق بالفعل",
+    "resend_failed": "تعذر إرسال رسالة التحقق. يرجى المحاولة مرة أخرى."
+  }
+}

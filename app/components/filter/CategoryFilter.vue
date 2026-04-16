@@ -43,7 +43,7 @@ const { t } = useI18n()
 
 const props = defineProps<{
   categories?: Category[]
-  selectedSlug: string | null
+  selectedSlug: string | null | undefined
 }>()
 
 const emit = defineEmits<{

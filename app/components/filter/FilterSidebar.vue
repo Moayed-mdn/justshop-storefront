@@ -22,12 +22,12 @@
 </template>
 
 <script setup lang="ts">
-import type { BackendFilters } from '../../../types/api/product'
+import type { ProductListFilters } from '~~/types/product'
 
 const { t } = useI18n()
 
 defineProps<{
-  backendFilters: BackendFilters
+  backendFilters: ProductListFilters
 }>()
 
 const isOpen = ref(false)

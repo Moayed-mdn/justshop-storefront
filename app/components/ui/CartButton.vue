@@ -33,7 +33,9 @@
             :name="cartItem.quantity === 1
               ? 'heroicons:trash-20-solid'
               : 'heroicons:minus'"
+            
             class="w-5 h-5 hover:text-(--color-primary) hover:scale-125"
+            :class="cartItem.quantity === 1 ? 'hover:text-red-500' : 'hover:text-(--color-primary)'"
           />
         </button>
 
@@ -61,17 +63,17 @@
 <script setup lang="ts">
 const props = defineProps<{
   productId: number
-  productVariantId: number             // ✅ Renamed & now required
+  productVariantId: number            
   name: string
   price: string
   image?: string | null
   maxQuantity?: number
 }>()
 
-const cart = useCartStore()
+const cart = useCart()
 
 const cartItem = computed(() =>
-  cart.getItemByProductId(props.productId, props.productVariantId)
+  cart.getCartItem(props.productId, props.productVariantId)
 )
 
 const atMaxQuantity = computed(() => {
@@ -91,14 +93,14 @@ const isLoading = computed(() => {
 })
 
 // ✅ Fixed: added catch block to prevent unhandled promise rejection
-const handle = async (fn: () => Promise<void>) => {
+const handle = async (fn: () => Promise<any>) => {
   if (isLoading.value) return
 
   localLoading.value = true
   try {
     await fn()
   } catch {
-    // error is already set on cartStore.error
+    // error is already set on cartStore.error and handled by useCart
   } finally {
     setTimeout(() => {
       localLoading.value = false
@@ -107,8 +109,7 @@ const handle = async (fn: () => Promise<void>) => {
 }
 
 const add = async () => {
-  // ✅ Fixed: send product_variant_id
-  await cart.addItem({
+  await cart.addToCart({
     product_id: props.productId,
     product_variant_id: props.productVariantId,
     name: props.name,
@@ -121,17 +122,12 @@ const add = async () => {
 
 const increment = async () => {
   if (!cartItem.value) return
-  await cart.updateItem(cartItem.value.id, cartItem.value.quantity + 1)
+  await cart.increment(cartItem.value)
 }
 
 const decrement = async () => {
   if (!cartItem.value) return
-
-  if (cartItem.value.quantity <= 1) {
-    await cart.removeItem(cartItem.value.id)
-  } else {
-    await cart.updateItem(cartItem.value.id, cartItem.value.quantity - 1)
-  }
+  await cart.decrement(cartItem.value)
 }
 </script>
 

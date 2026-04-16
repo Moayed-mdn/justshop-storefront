@@ -1,43 +1,53 @@
 // composables/useProductByCategory.ts
-import type { CategoryShopLayout } from '../../types/api/shopLayout'
+import type { ProductListResponse } from '~~/types/product';
+import { useApi } from '~/composables/useApi';
 
 export const useProductByCategory = async (categorySlug: string) => {
-  const { locale } = useI18n()
-  const route = useRoute()
-  const api = useClientApi()
-  const { filters, syncFromUrl, syncToUrl, apiQuery } = useProductFilters()
-
-  onMounted(syncFromUrl)
-  watch(filters, syncToUrl, { deep: true })
+  const { locale } = useI18n();
+  const route = useRoute();
+  const { filters, syncFromUrl, syncToUrl, apiQuery } = useProductFilters();
+  const config = useRuntimeConfig()
+  const baseURL = config.public.apiBase
+  onMounted(syncFromUrl);
+  watch(filters, syncToUrl, { deep: true });
 
   const filterApiQuery = computed(() =>
     Object.entries(apiQuery.value)
       .sort()
       .map(([k, v]) => (v ? `${k}:${v}` : ''))
-      .join('|')
-  )
+      .join('|'),
+  );
 
   const key = computed(
     () =>
-      `category-products-${categorySlug}-${locale.value}-${route.query.page ?? 1}-${filterApiQuery.value}`
-  )
+      `category-products-${categorySlug}-${locale.value}-${
+        route.query.page ?? 1
+      }-${filterApiQuery.value}`,
+  );
 
-  const { data, pending } = await useLazyAsyncData(
+  const { data, pending } = useLazyAsyncData<ProductListResponse | null>(
     key,
-    () => {
-      const page = Number(route.query.page ?? 1)
+    async () => {
+      const page = Number(route.query.page ?? 1);
       const finalQuery = {
         ...apiQuery.value,
         page,
-        per_page:15
-      }
+        per_page: 15,
+      };
 
-      return api<CategoryShopLayout>(`/products/category/${categorySlug}`, {
-        query: finalQuery,
-      })
+      const { data } = await useApi<ProductListResponse>(
+        `${baseURL}/products/category/${categorySlug}`,
+        {
+          query: finalQuery,
+        },
+      );
+      return data;
     },
-    { dedupe: 'cancel' }
-  )
+    {
+      dedupe: 'cancel',
+      default: () => null,
+    },
+  );
 
-  return { data, pending }
-}
+  return { data, pending };
+};

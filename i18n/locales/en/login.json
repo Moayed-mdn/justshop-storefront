@@ -1,0 +1,20 @@
+{
+  "login": {
+    "title": "Log into your account",
+    "email_not_verified_title": "Email not verified.",
+    "email_not_verified_description": "Please check your inbox for {email} or click below to resend.",
+    "sending": "Sending...",
+    "resend_verification_email": "Resend Verification Email",
+    "email_address": "Email address",
+    "password": "Password",
+    "forgot_password": "Forgot password?",
+    "signing_in": "Signing in...",
+    "log_in": "Log in",
+    "or": "Or",
+    "sign_in_with_google": "Sign in with Google",
+    "no_account": "Don't have an account?",
+    "sign_up": "Sign Up",
+    "verify_email_before_login": "Please verify your email before logging in.",
+    "resend_failed": "Failed to send verification email. Please try again."
+  }
+}

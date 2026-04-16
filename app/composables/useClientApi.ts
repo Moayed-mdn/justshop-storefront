@@ -2,7 +2,7 @@
 export const useClientApi = () => {
   const config = useRuntimeConfig()
   const authStore = useAuthStore()
-  // const { locale } = useI18n()                      // ← ADDED
+  const { showErrorToast, showSuccessToast } = useAppToast()
 
   const nuxtApp = useNuxtApp()
 
@@ -21,7 +21,21 @@ export const useClientApi = () => {
       options.headers.set('Accept-Language', locale.value)   // ← ADDED
     },
 
-    onResponseError({ response }) {
+    onResponse({ options, response }) {
+      if (options.successMessage) {
+        const message =
+          typeof options.successMessage === 'string'
+            ? options.successMessage
+            : response._data?.message ?? 'Success'
+        showSuccessToast(message)
+      }
+    },
+    onResponseError({ response, options }) {
+      if (options.showError !== false) {
+        const message = response._data?.message ?? 'An unexpected error occurred'
+        showErrorToast(message)
+      }
+
       if (response.status === 401) {
         authStore.clearAuth()
       }

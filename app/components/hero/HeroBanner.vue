@@ -14,11 +14,11 @@
     <AppContainer class="relative">
       <div class="max-w-sm  md:max-w-xl text-shadow-(--hero-text-shadow)">
 
-        <h1 class="text-3xl md:text-5xl font-extrabold  leading-tight text-(--hero-title-color)">
+        <h1 class="text-3xl md:text-5xl font-extrabold capitalize  leading-tight text-(--hero-title-color)">
           {{ bannerData.title }}
         </h1>
     
-        <p v-if="bannerData.subtitle" class="mt-4 text-base md:text-lg leading-relaxed font-normal text-(--hero-subtitle-color)">
+        <p v-if="bannerData.subtitle" class="mt-4 text-base md:text-lg first-letter:uppercase  leading-relaxed font-normal text-(--hero-subtitle-color)">
           {{ bannerData.subtitle }}
         </p>
     
@@ -38,17 +38,17 @@
 </template>
 
 <script setup lang="ts">
-import type { HeroBannerDTO } from '~/../types/generated'
-import heroBannerImage from '~/assets/images/hero-banner.jpg'
+import type { HeroBanner } from '~~/types/homepage';
+
 
 const props = defineProps<{
-  bannerData: HeroBannerDTO
+  bannerData: HeroBanner
 }>()
 
 const backgroundStyle = computed(() => {
   if (props.bannerData.visual.type === 'image') {
     return {
-      backgroundImage: `url(${heroBannerImage})`, ////${props.banner.visual.img_url})
+      backgroundImage: `url(${props.bannerData.visual.img_url})`,
       backgroundSize: 'cover',
       backgroundPosition: 'center'
     }

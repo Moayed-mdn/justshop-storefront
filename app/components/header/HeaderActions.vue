@@ -24,11 +24,11 @@
         class="relative group flex font-semibold gap-(--header-gap-tight) items-center transition-all duration-(--header-duration) hover:text-(--header-action-hover-color) cursor-pointer"
         to="/cart"
       >
-        <img class="w-4 sm:w-6" src="~/assets/icons/cart.png" alt="">
+        <img class="w-5 sm:w-6" src="~/assets/icons/cart.png" alt="">
         <span class="hidden sm:block group-hover:opacity-(--header-opacity)">{{ $t('header.cart') }}</span>
         <div
           v-if="cart.itemsCount.value > 0"
-          class="absolute -top-1 sm:-top-2 -right-1 sm:right-8 bg-(--color-accent) text-white rounded-full w-3 h-3 sm:w-5 sm:h-5 flex items-center justify-center text-xs"
+          class="absolute -top-1 sm:-top-2 -right-1 sm:right-8 bg-(--color-accent) text-white rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center text-xs"
         >
           {{ cart.itemsCount.value }}
         </div>

@@ -1,32 +1,42 @@
-import { defineStore } from 'pinia'
+import { defineStore } from 'pinia';
+import { ref, computed } from 'vue';
+import type { AuthUser } from '~~/types/auth';
 
-export const useAuthStore = defineStore('auth', {
-  state: () => ({
-    token: null as string | null,
-    user: null as any | null,
-  }),
+export const useAuthStore = defineStore('auth', () => {
+  // State
+  const token = ref<string | null>(null);
+  const user = ref<AuthUser | null>(null);
 
-  getters: {
-    isLoggedIn: (state) => !!state.token,
-  },
+  // Getters
+  const isLoggedIn = computed(() => !!token.value);
 
-  actions: {
-    setToken(token: string | null) {
-      this.token = token
-    },
-    setUser(user: any | null) {
-      console.log('this user',user)
-      this.user = user
-    },
-    clearAuth() {
-      this.token = null
-      this.user = null
-    },
-  },
+  // Actions
+  function setToken(newToken: string | null) {
+    token.value = newToken;
+  }
 
+  function setUser(newUser: AuthUser | null) {
+    
+    user.value = newUser;
+  }
+
+  function clearAuth() {
+    token.value = null;
+    user.value = null;
+  }
+
+  return {
+    token,
+    user,
+    isLoggedIn,
+    setToken,
+    setUser,
+    clearAuth,
+  };
+}, {
   persist: {
     key: 'auth',
-    storage: piniaPluginPersistedstate.cookies(),   // ✅ correct auto-imported name
+    storage: piniaPluginPersistedstate.cookies(),
     pick: ['token'],
   },
-})
+});

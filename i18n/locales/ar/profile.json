@@ -1,0 +1,51 @@
+{
+  "profile": {
+    "title": "ملفي الشخصي",
+    "subtitle": "إدارة إعدادات حسابك",
+    "avatar": {
+      "title": "صورة الملف الشخصي",
+      "change": "تغيير الصورة",
+      "hint": "JPG, PNG or WebP. Max 2MB."
+    },
+    "personalInfo": {
+      "title": "المعلومات الشخصية",
+      "googleLinked": "مرتبط بـ Google",
+      "nameLabel": "الاسم الكامل",
+      "emailLabel": "البريد الإلكتروني",
+      "phoneLabel": "رقم الهاتف",
+      "phonePlaceholder": "اختياري",
+      "saveButton": "حفظ التغييرات",
+      "savingButton": "جاري الحفظ..."
+    },
+    "password": {
+      "changeTitle": "تغيير كلمة المرور",
+      "setTitle": "تعيين كلمة مرور",
+      "changeSubtitle": "قم بتحديث كلمة المرور الخاصة بك للحفاظ على أمان حسابك.",
+      "setSubtitle": "لقد قمت بالتسجيل باستخدام Google. قم بتعيين كلمة مرور لتسجيل الدخول باستخدام البريد الإلكتروني أيضًا.",
+      "currentPasswordLabel": "كلمة المرور الحالية",
+      "newPasswordLabel": "كلمة المرور الجديدة",
+      "confirmPasswordLabel": "تأكيد كلمة المرور الجديدة",
+      "updateButton": "تحديث كلمة المرور",
+      "setButton": "تعيين كلمة المرور"
+    },
+    "dangerZone": {
+      "title": "منطقة الخطر",
+      "subtitle": "بمجرد حذف حسابك ، لا يمكنك التراجع.",
+      "deleteButton": "حذف الحساب",
+      "confirm": {
+        "title": "حذف الحساب؟",
+        "message": "سيؤدي هذا إلى حذف حسابك وأوامرك وجميع البيانات المرتبطة به بشكل دائم. لا يمكن التراجع عن هذا الإجراء.",
+        "cancelButton": "إلغاء",
+        "confirmButton": "نعم ، احذف",
+        "deletingButton": "جاري الحذف ..."
+      }
+    },
+    "toasts": {
+      "loadProfileError": "فشل تحميل الملف الشخصي.",
+      "updateInfoSuccess": "تم حفظ معلومات الملف الشخصي.",
+      "updatePasswordSuccess": "تم تحديث كلمة السر.",
+      "updateAvatarSuccess": "تم تحديث الصورة الرمزية.",
+      "deleteAccountError": "فشل حذف الحساب."
+    }
+  }
+}

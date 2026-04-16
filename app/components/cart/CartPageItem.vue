@@ -140,7 +140,8 @@
   </template>
   
   <script setup lang="ts">
-  import type { CartItem } from '~/stores/cart'
+  import { formatPrice } from '../../utils/price'
+  import type { CartItem } from '~~/types/cart'
   
   const props = defineProps<{
     item: CartItem
@@ -170,14 +171,6 @@
     if (!props.item.max_quantity) return false
     return props.item.max_quantity <= 5 && props.item.max_quantity > 0
   })
-  
-  // ── Price formatting ──
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat(undefined, {
-      style: 'currency',
-      currency: 'USD',
-    }).format(price)
-  }
   
   // ── Actions ──
   const handleIncrement = async () => {

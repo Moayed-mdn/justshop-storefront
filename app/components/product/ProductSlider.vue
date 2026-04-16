@@ -1,9 +1,27 @@
 <template>
   <div class="py-2 my-4 relative ">
     <!-- :to="`/products/${categorySlug}`" -->
-    <NuxtLinkLocale v-if="categoryName" :to="`/products/category/${categorySlug}`"> 
+    <NuxtLinkLocale
+      class="group   items-center gap-2 "
+      v-if="categoryName" 
+      :to="`/products/category/${categorySlug}`"
+      > 
       <h2 class="my-8 max-w-[80%] capitalize text-2xl font-semibold text-(--slider-title-color) whitespace-pre-wrap wrap-break-word">
-         {{ $t('best-seller.title') }} {{ categoryName }}
+         {{ $t('best-seller.title') }}  {{ categoryName }}
+            <!-- Inline SVG Icon -->
+         <svg 
+           xmlns="http://w3.org" 
+           fill="none" 
+           viewBox="0 0 24 24" 
+           stroke-width="2.5" 
+           stroke="currentColor" 
+           :class="[
+             'inline-block w-6 h-6 text-(--color-primary) transition-transform duration-300',
+             isRtl ? 'rotate-180 group-hover:-translate-x-2' : 'group-hover:translate-x-2',
+           ]"
+         >
+           <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+         </svg>
       </h2>
     </NuxtLinkLocale>
     
@@ -25,18 +43,23 @@
 </template>
 
 <script setup lang="ts">
-import type { ProductCardDTO } from '~~/types/generated'
-import { ref, watch } from 'vue'
+import type { ProductCard } from '~~/types/product'
+
+import { computed, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 const scrollRef = ref<HTMLElement | null>(null)
 const scrollStep = 350
 const isBoundFromLeft = ref(false)
 const isBoundFromRight = ref(false)
 
+const { locale } = useI18n()
+const isRtl = computed(() => locale.value === 'ar')
+
 const props = defineProps<{
   categoryName: string
   categorySlug: string
-  products: ProductCardDTO[]
+  products: ProductCard[]
 }>()
 
 const showBounceFromLeft = () => {

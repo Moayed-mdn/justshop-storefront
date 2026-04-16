@@ -1,11 +1,7 @@
-import { $serverApi } from "~/utils/serverApi";
 
+// server/api/hero.get.ts
 export default defineEventHandler(async (event) => {
-
-  const config = useRuntimeConfig()
-  // const lang = getCookie(event, 'i18n_redirected')
-
-  const response = await $serverApi(event, 'homepage/hero');
+  const api = useServerApi(event)
+  return await api('homepage/hero')
   
-  return response;
 })

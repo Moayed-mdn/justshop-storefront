@@ -11,21 +11,22 @@
     <div v-else class="text-center py-10">
       No hero available
     </div>
-
+ 
+   
   </section>
 </template>
 
 <script setup lang="ts">
 const isClientNavigation = ref(false)
 
-const {data, pending, error } = useUseHero()
+const {data, pending, error } = useHero()
 
 onMounted(() => {
   isClientNavigation.value = true
 })
 
 const bannerData = computed(() => {
-  return data.value?.[0] ?? null
+  return data.value?.[0]
 })
 
 </script>

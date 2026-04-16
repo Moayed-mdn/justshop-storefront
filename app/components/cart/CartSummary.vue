@@ -152,6 +152,8 @@
 </template>
 
 <script setup lang="ts">
+import { formatPrice } from '../../utils/price'
+
 defineProps<{
   total: number
   itemsCount: number
@@ -163,24 +165,7 @@ const toast = useToast()
 const showPromo = ref(false)
 const promoCode = ref('')
 
-const formatPrice = (price: number) => {
-  return new Intl.NumberFormat(undefined, {
-    style: 'currency',
-    currency: 'USD',
-  }).format(price)
-}
-
 const handleCheckout = async () => {
-  try {
-    await startCheckout()
-    // If we get here, the redirect didn't happen (unlikely)
-  } catch (err: any) {
-    toast.add({
-      title: 'Checkout Failed',
-      description: err?.data?.message || err?.message || 'An error occurred.',
-      color: 'error',
-      icon: 'i-heroicons-x-circle',
-    })
-  }
+  await startCheckout()
 }
 </script>

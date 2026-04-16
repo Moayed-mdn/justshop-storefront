@@ -1,8 +1,8 @@
-import { $serverApi } from "~/utils/serverApi"
+import { useServerApi } from "../utils/api"
 
 export default defineEventHandler(async (event) => {
-  
-    const response = await $serverApi(event,'homepage/best-seller');
+  const api = useServerApi(event)
+  const response = await api('homepage/best-seller');
 
     return response;
 

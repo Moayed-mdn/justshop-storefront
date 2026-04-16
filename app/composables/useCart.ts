@@ -1,116 +1,91 @@
-// composables/useCart.ts
+import type { CartItem, GuestCartItem, AddToCartPayload } from '~~/types/cart';
+
+type CartActionResult = { success: true } | { success: false; message?: string };
 
 export function useCart() {
-  const cartStore = useCartStore()
+  const cartStore = useCartStore();
+  const { t } = useI18n();
+  const { showSuccessToast, showErrorToast } = useAppToast();
 
-
-
-  // ✅ Updated: product_variant_id instead of variant_id
-  async function addToCart(product: {
-    product_id: number
-    product_variant_id: number
-    name: string
-    image?: string | null
-    price: number
-    quantity?: number
-    max_quantity?: number
-  }) {
-    try {
-        console.log(product)      
-      await cartStore.addItem(product)
-      return { success: true }
-    } catch (err: any) {
-      return {
-        success: false,
-        message:
-          err?.data?.message || cartStore.error || 'Failed to add item',
-      }
+  function getErrorMessage(err: unknown, fallback: string) {
+    if (err && typeof err === 'object' && 'message' in err) {
+      const maybeMessage = (err as any).message;
+      if (typeof maybeMessage === 'string' && maybeMessage.trim()) return maybeMessage;
     }
+    return cartStore.error || fallback;
+  }
+
+  async function runAction(action: () => Promise<void>, fallbackMessage: string): Promise<CartActionResult> {
+    try {
+      await action();
+      return { success: true };
+    } catch (err: any) {
+      return { success: false, message: getErrorMessage(err, fallbackMessage) };
+    }
+  }
+
+  async function addToCart(product: AddToCartPayload) {
+    const result = await runAction(() => cartStore.addItem(product), 'Failed to add item');
+    if (result.success) {
+      showSuccessToast(t('product.added_to_cart'));
+    } else {
+      showErrorToast(result.message || 'Failed to add item');
+    }
+    return result;
   }
 
   async function updateQuantity(itemId: string | number, quantity: number) {
-    try {
-      await cartStore.updateItem(itemId, quantity)
-      return { success: true }
-    } catch (err: any) {
-      return {
-        success: false,
-        message:
-          err?.data?.message || cartStore.error || 'Failed to update item',
-      }
-    }
+    return runAction(() => cartStore.updateItem(itemId, quantity), 'Failed to update item');
   }
 
-  async function increment(item: CartItem) {
-    return updateQuantity(item.id, item.quantity + 1)
+  async function increment(item: CartItem | GuestCartItem) {
+    return updateQuantity(item.id, item.quantity + 1);
   }
 
-  async function decrement(item: CartItem) {
+  async function decrement(item: CartItem | GuestCartItem) {
     if (item.quantity <= 1) {
-      return removeFromCart(item.id)
+      return removeFromCart(item.id);
     }
-    return updateQuantity(item.id, item.quantity - 1)
+    return updateQuantity(item.id, item.quantity - 1);
   }
 
   async function removeFromCart(itemId: string | number) {
-    try {
-      await cartStore.removeItem(itemId)
-      return { success: true }
-    } catch (err: any) {
-      return {
-        success: false,
-        message:
-          err?.data?.message || cartStore.error || 'Failed to remove item',
-      }
-    }
+    return runAction(() => cartStore.removeItem(itemId), 'Failed to remove item');
   }
 
   async function clearCart() {
-    try {
-      await cartStore.clear()
-      return { success: true }
-    } catch (err: any) {
-      return {
-        success: false,
-        message:
-          err?.data?.message || cartStore.error || 'Failed to clear cart',
-      }
-    }
+    return runAction(() => cartStore.clear(), 'Failed to clear cart');
   }
 
-  // ✅ Updated parameter name
-  function isInCart(
-    productId: number,
-    productVariantId?: number | null
-  ): boolean {
-    return cartStore.isInCart(productId, productVariantId)
+  function isInCart(productId: number, variantId?: number | null): boolean {
+    return cartStore.isInCart(productId, variantId);
   }
 
   function getCartItem(
     productId: number,
-    productVariantId?: number | null
-  ): CartItem | undefined {
-    return cartStore.getItemByProductId(productId, productVariantId)
+    variantId?: number | null
+  ): CartItem | GuestCartItem | undefined {
+    return cartStore.getItemByProductId(productId, variantId);
   }
 
   return {
+    // State
     items: computed(() => cartStore.items),
     total: computed(() => cartStore.total),
     itemsCount: computed(() => cartStore.itemsCount),
     isEmpty: computed(() => cartStore.isEmpty),
     loading: computed(() => cartStore.loading),
     error: computed(() => cartStore.error),
-
     isItemLoading: cartStore.isItemLoading,
 
+    // Actions
     addToCart,
     updateQuantity,
     increment,
     decrement,
     removeFromCart,
     clearCart,
-
     isInCart,
     getCartItem,
-  }
+  };
 }

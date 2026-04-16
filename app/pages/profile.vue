@@ -1,217 +1,68 @@
 <!-- pages/profile.vue -->
-<template>
+  <template>
     <div class="min-h-screen bg-gray-50 py-8 px-4">
       <div class="max-w-2xl mx-auto space-y-6">
-  
-        <!-- Page Header -->
-        <div>
-          <h1 class="text-2xl font-bold text-gray-900">My Profile</h1>
-          <p class="text-sm text-gray-500 mt-1">Manage your account settings</p>
-        </div>
-  
-        <!-- ═══ AVATAR SECTION ═══ -->
-        <div class="bg-white rounded-lg shadow-sm p-6">
-          <h2 class="text-lg font-semibold text-gray-900 mb-4">Profile Photo</h2>
-  
-          <div class="flex items-center gap-6">
-            <!-- Current Avatar -->
-            <div class="relative group">
-              <div class="w-20 h-20 rounded-full overflow-hidden bg-[#003D29] flex items-center justify-center">
-                <img
-                  v-if="avatarUrl"
-                  :src="avatarUrl"
-                  alt="Avatar"
-                  class="w-full h-full object-cover"
-                >
-                <span v-else class="text-white text-2xl font-bold">
-                  {{ initials }}
-                </span>
-              </div>
-            </div>
-  
-            <div class="flex flex-col gap-2">
-              <label
-                class="px-4 py-2 text-sm font-medium text-[#003D29] border border-[#003D29] rounded-md cursor-pointer hover:bg-[#003D29]/5 transition-colors text-center"
-              >
-                Change Photo
-                <input
-                  type="file"
-                  accept="image/jpeg,image/png,image/webp"
-                  class="hidden"
-                  @change="handleAvatarChange"
-                >
-              </label>
-              <p class="text-xs text-gray-400">JPG, PNG or WebP. Max 2MB.</p>
-            </div>
-          </div>
-        </div>
-  
-        <!-- ═══ PERSONAL INFO SECTION ═══ -->
-        <div class="bg-white rounded-lg shadow-sm p-6">
-          <div class="flex items-center justify-between mb-4">
-            <h2 class="text-lg font-semibold text-gray-900">Personal Information</h2>
-            <div v-if="user?.has_google_linked" class="flex items-center gap-1.5 px-2 py-1 bg-gray-50 rounded-full">
-              <img class="w-4 h-4" src="https://www.svgrepo.com/show/475656/google-color.svg" alt="">
-              <span class="text-xs text-gray-500">Google linked</span>
-            </div>
-          </div>
-  
-          <form @submit.prevent="handleUpdateInfo" class="space-y-4">
-            <div>
-              <label for="name" class="block text-sm font-medium text-gray-700">Full Name</label>
-              <input
-                id="name"
-                v-model="infoForm.name"
-                type="text"
-                required
-                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#003D29] focus:border-[#003D29] sm:text-sm"
-              >
-              <span v-if="infoErrors?.name" class="text-xs text-red-500">{{ infoErrors.name[0] }}</span>
-            </div>
-  
-            <div>
-              <label for="profile-email" class="block text-sm font-medium text-gray-700">Email</label>
-              <input
-                id="profile-email"
-                v-model="infoForm.email"
-                type="email"
-                required
-                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#003D29] focus:border-[#003D29] sm:text-sm"
-              >
-              <span v-if="infoErrors?.email" class="text-xs text-red-500">{{ infoErrors.email[0] }}</span>
-            </div>
-  
-            <div>
-              <label for="phone" class="block text-sm font-medium text-gray-700">Phone Number</label>
-              <input
-                id="phone"
-                v-model="infoForm.phone"
-                type="tel"
-                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#003D29] focus:border-[#003D29] sm:text-sm"
-                placeholder="Optional"
-              >
-              <span v-if="infoErrors?.phone" class="text-xs text-red-500">{{ infoErrors.phone[0] }}</span>
-            </div>
-  
-            <div class="flex justify-end">
-              <button
-                type="submit"
-                :disabled="profileLoading"
-                class="px-6 py-2 text-sm font-medium text-white bg-[#003D29] rounded-md hover:bg-[#00251C] disabled:opacity-50 transition-colors"
-              >
-                {{ profileLoading ? 'Saving...' : 'Save Changes' }}
-              </button>
-            </div>
-          </form>
-        </div>
-  
-        <!-- ═══ PASSWORD SECTION ═══ -->
-        <div class="bg-white rounded-lg shadow-sm p-6">
-          <h2 class="text-lg font-semibold text-gray-900 mb-1">
-            {{ user?.has_password ? 'Change Password' : 'Set a Password' }}
-          </h2>
-          <p class="text-sm text-gray-500 mb-4">
-            {{
-              user?.has_password
-                ? 'Update your password to keep your account secure.'
-                : 'You signed up with Google. Set a password to also log in with email.'
-            }}
-          </p>
-  
-          <form @submit.prevent="handleUpdatePassword" class="space-y-4">
-            <!-- Only show current password if user has one -->
-            <div v-if="user?.has_password">
-              <label for="current_password" class="block text-sm font-medium text-gray-700">Current Password</label>
-              <input
-                id="current_password"
-                v-model="passwordForm.current_password"
-                type="password"
-                required
-                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#003D29] focus:border-[#003D29] sm:text-sm"
-              >
-              <span v-if="passwordErrors?.current_password" class="text-xs text-red-500">
-                {{ passwordErrors.current_password[0] }}
-              </span>
-            </div>
-  
-            <div>
-              <label for="new_password" class="block text-sm font-medium text-gray-700">New Password</label>
-              <input
-                id="new_password"
-                v-model="passwordForm.password"
-                type="password"
-                required
-                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#003D29] focus:border-[#003D29] sm:text-sm"
-              >
-              <span v-if="passwordErrors?.password" class="text-xs text-red-500">
-                {{ passwordErrors.password[0] }}
-              </span>
-            </div>
-  
-            <div>
-              <label for="password_confirmation" class="block text-sm font-medium text-gray-700">Confirm New Password</label>
-              <input
-                id="password_confirmation"
-                v-model="passwordForm.password_confirmation"
-                type="password"
-                required
-                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#003D29] focus:border-[#003D29] sm:text-sm"
-              >
-            </div>
-  
-            <div class="flex justify-end">
-              <button
-                type="submit"
-                :disabled="profileLoading"
-                class="px-6 py-2 text-sm font-medium text-white bg-[#003D29] rounded-md hover:bg-[#00251C] disabled:opacity-50 transition-colors"
-              >
-                {{ profileLoading ? 'Saving...' : user?.has_password ? 'Update Password' : 'Set Password' }}
-              </button>
-            </div>
-          </form>
-        </div>
-  
-        <!-- ═══ DANGER ZONE ═══ -->
-        <div class="bg-white rounded-lg shadow-sm p-6 border border-red-200">
-          <h2 class="text-lg font-semibold text-red-600 mb-1">Danger Zone</h2>
-          <p class="text-sm text-gray-500 mb-4">Once you delete your account, there is no going back.</p>
-  
-          <button
-            @click="showDeleteConfirm = true"
-            class="px-6 py-2 text-sm font-medium text-red-600 border border-red-300 rounded-md hover:bg-red-50 transition-colors"
-          >
-            Delete Account
-          </button>
-  
-          <!-- Delete Confirmation Modal -->
-          <div
-            v-if="showDeleteConfirm"
-            class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
-            @click.self="showDeleteConfirm = false"
-          >
-            <div class="bg-white rounded-lg p-6 max-w-sm w-full shadow-xl">
-              <h3 class="text-lg font-bold text-gray-900">Delete Account?</h3>
-              <p class="text-sm text-gray-500 mt-2">
-                This will permanently delete your account, orders, and all associated data. This action cannot be undone.
-              </p>
-              <div class="flex justify-end gap-3 mt-6">
-                <button
-                  @click="showDeleteConfirm = false"
-                  class="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50"
-                >
-                  Cancel
-                </button>
-                <button
-                  @click="handleDeleteAccount"
-                  :disabled="profileLoading"
-                  class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 disabled:opacity-50"
-                >
-                  {{ profileLoading ? 'Deleting...' : 'Yes, Delete' }}
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+
+        <ProfilePageHeader
+          :title="t('profile.title')"
+          :subtitle="t('profile.subtitle')"
+        />
+
+        <ProfileAvatarSection
+          :title="t('profile.avatar.title')"
+          :avatar-url="avatarUrl"
+          :initials="initials"
+          :button-text="t('profile.avatar.change')"
+          :hint="t('profile.avatar.hint')"
+          @change="handleAvatarChange"
+        />
+
+        <ProfilePersonalInfoSection
+          :title="t('profile.personalInfo.title')"
+          :model="infoForm"
+          :name-label="t('profile.personalInfo.nameLabel')"
+          :email-label="t('profile.personalInfo.emailLabel')"
+          :phone-label="t('profile.personalInfo.phoneLabel')"
+          :phone-placeholder="t('profile.personalInfo.phonePlaceholder')"
+          :save-button-text="t('profile.personalInfo.saveButton')"
+          :saving-button-text="t('profile.personalInfo.savingButton')"
+          :google-linked="Boolean(user?.has_google_linked)"
+          :google-linked-text="t('profile.personalInfo.googleLinked')"
+          :loading="profileLoading"
+          :errors="infoErrors"
+          @submit="handleUpdateInfo"
+        />
+
+        <ProfilePasswordSection
+          :title="user?.has_password ? t('profile.password.changeTitle') : t('profile.password.setTitle')"
+          :subtitle="user?.has_password ? t('profile.password.changeSubtitle') : t('profile.password.setSubtitle')"
+          :model="passwordForm"
+          :show-current-password="Boolean(user?.has_password)"
+          :current-password-label="t('profile.password.currentPasswordLabel')"
+          :new-password-label="t('profile.password.newPasswordLabel')"
+          :confirm-password-label="t('profile.password.confirmPasswordLabel')"
+          :submit-button-text="user?.has_password ? t('profile.password.updateButton') : t('profile.password.setButton')"
+          :saving-button-text="t('profile.personalInfo.savingButton')"
+          :loading="profileLoading"
+          :errors="passwordErrors"
+          @submit="handleUpdatePassword"
+        />
+
+        <ProfileDangerZoneSection
+          :title="t('profile.dangerZone.title')"
+          :subtitle="t('profile.dangerZone.subtitle')"
+          :delete-button-text="t('profile.dangerZone.deleteButton')"
+          :confirm-open="showDeleteConfirm"
+          :confirm-title="t('profile.dangerZone.confirm.title')"
+          :confirm-message="t('profile.dangerZone.confirm.message')"
+          :cancel-text="t('profile.dangerZone.confirm.cancelButton')"
+          :confirm-text="t('profile.dangerZone.confirm.confirmButton')"
+          :loading-text="t('profile.dangerZone.confirm.deletingButton')"
+          :loading="profileLoading"
+          @request-delete="showDeleteConfirm = true"
+          @cancel-delete="showDeleteConfirm = false"
+          @confirm-delete="handleDeleteAccount"
+        />
   
       </div>
     </div>
@@ -222,10 +73,11 @@
     middleware: 'auth',
   })
   
+  const { t } = useI18n()
   const { user } = useAuth()
   const { fetchProfile, updateInfo, updatePassword, updateAvatar, deleteAccount, loading: profileLoading } = useProfile()
   const { getAvatarUrl, getInitials } = useAvatar()
-  const toast = useToast()
+  const { showErrorToast } = useAppToast()
   
   // ── Reactive Data ──
   const infoForm = reactive({
@@ -258,11 +110,7 @@
         infoForm.phone = user.value.phone || ''
       }
     } catch {
-      toast.add({
-        title: 'Error',
-        description: 'Failed to load profile.',
-        color: 'error',
-      })
+      showErrorToast(t('profile.toasts.loadProfileError'))
     }
   })
   
@@ -270,22 +118,10 @@
   const handleUpdateInfo = async () => {
     infoErrors.value = null
     try {
-      await updateInfo(infoForm)
-      toast.add({
-        title: 'Success',
-        description: 'Profile updated successfully.',
-        color: 'success',
-        icon: 'i-heroicons-check-circle',
-      })
+      await updateInfo(infoForm, { successMessage: t('profile.toasts.updateInfoSuccess') })
     } catch (err: any) {
       if (err.data?.errors) {
         infoErrors.value = err.data.errors
-      } else {
-        toast.add({
-          title: 'Error',
-          description: err.data?.message || 'Failed to update profile.',
-          color: 'error',
-        })
       }
     }
   }
@@ -293,13 +129,7 @@
   const handleUpdatePassword = async () => {
     passwordErrors.value = null
     try {
-      const response = await updatePassword(passwordForm)
-      toast.add({
-        title: 'Success',
-        description: response.message,
-        color: 'success',
-        icon: 'i-heroicons-check-circle',
-      })
+      await updatePassword(passwordForm, { successMessage: t('profile.toasts.updatePasswordSuccess') })
       // Clear form
       passwordForm.current_password = ''
       passwordForm.password = ''
@@ -309,36 +139,15 @@
     } catch (err: any) {
       if (err.data?.errors) {
         passwordErrors.value = err.data.errors
-      } else {
-        toast.add({
-          title: 'Error',
-          description: err.data?.message || 'Failed to update password.',
-          color: 'error',
-        })
       }
     }
   }
   
-  const handleAvatarChange = async (event: Event) => {
-    const file = (event.target as HTMLInputElement).files?.[0]
-    if (!file) return
-  
+  const handleAvatarChange = async (file: File) => { 
     try {
-      await updateAvatar(file)
-      toast.add({
-        title: 'Success',
-        description: 'Avatar updated.',
-        color: 'success',
-        icon: 'i-heroicons-check-circle',
-      })
-      // Refresh profile to get fresh avatar URL
+      await updateAvatar(file, { successMessage: t('profile.toasts.updateAvatarSuccess') })
       await fetchProfile()
     } catch (err: any) {
-      toast.add({
-        title: 'Error',
-        description: err.data?.message || 'Failed to upload avatar.',
-        color: 'error',
-      })
     }
   }
   
@@ -346,11 +155,7 @@
     try {
       await deleteAccount()
     } catch {
-      toast.add({
-        title: 'Error',
-        description: 'Failed to delete account.',
-        color: 'error',
-      })
+      showErrorToast(t('profile.toasts.deleteAccountError'))
     }
   }
   </script>

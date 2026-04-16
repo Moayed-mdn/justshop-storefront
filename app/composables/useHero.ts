@@ -1,24 +1,21 @@
-import type { HeroBannerDTO } from '~~/types/generated'
+// composables/useHero.ts
+import type { HeroBanner, HeroBannerResponse } from '~~/types/homepage';
+import { useApi } from '~/composables/useApi';
 
-export const useUseHero = () => {
-  const { locale } = useI18n()
-  const { data, pending, error } =  useLazyAsyncData(
-    `hero-data-${locale.value}`,
-    // Type the $fetch return, Nuxt does the rest!
-    () => $fetch<ApiResponse<HeroBannerDTO[]>>('/api/hero',{
-      headers:useRequestHeaders(['cookie']) 
-    }), 
+export const useHero = () => {
+  const { locale } = useI18n();
+  const key = computed(() => `hero-banners-${locale.value}`)
+
+  const { data, pending, error } = useAsyncData<HeroBanner[]>(
+    key,
+    async () => {
+      const { data } = await useApi<HeroBannerResponse>('/api/hero');
+      return data?.data ?? [];
+    },
     {
       server: true,
-      watch: [locale],
-      transform: (res) => res.data 
     },
-  )
+  );
 
-
-  return {
-    data,
-    pending,
-    error
-  }
-}
+  return { data, pending, error };
+};

@@ -1,104 +1,118 @@
 <template>
-  <div class="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-    <div class="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
-      <div class="flex flex-col items-center">
-        <div class="w-40 mx-auto">
-            <NuxtLinkLocale  to="/" class="block w-full h-full">
-              <img src="~/assets/icons/logo.png" alt="" class="h-full w-full">
-            </NuxtLinkLocale>
-        </div>
-        <h2 class="mt-6 text-2xl font-bold text-center text-gray-900">Create your account</h2>
-      </div>
+  <AuthCard>
+    <AuthHeader :title="$t('register.title')" />
 
-      <!-- General Error Alert -->
-      <div v-if="errors?.message && !errors?.errors" class="p-3 text-sm text-red-600 bg-red-50 rounded-md">
-        {{ errors.message }}
-      </div>
+    <AuthEmailVerificationNotice
+      v-if="showVerificationPanel"
+      :email="registeredEmail"
+      :sending-text="$t('register.sending')"
+      :resend-text="$t('register.resend_verification_email')"
+      :resend="resendVerificationEmail"
+      :already-verified-title="$t('register.already_verified_title')"
+    >
+      <template #content>
+        <p>
+          <strong class="text-[#003D29]">{{ $t('register.check_your_email_title') }}</strong><br>
+          {{ $t('register.verification_sent', { email: registeredEmail }) }}<br>
+          {{ $t('register.verification_sent_description') }}
+        </p>
+      </template>
 
-      <!-- Success Message Alert -->
-      <div v-if="successMessage" class="p-3 text-sm text-green-600 bg-green-50 rounded-md">
-        {{ successMessage }}
-      </div>
-
-      <form class="space-y-6" @submit.prevent="handleRegister">
-        <div>
-          <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
-          <div class="mt-1">
-            <input id="name" v-model="form.name" type="text" required class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-brand-500 focus:border-brand-500 sm:text-sm">
-            <span v-if="errors?.name" class="text-xs text-red-500">{{ errors.name[0] }}</span>
-          </div>
-        </div>
-
-        <div>
-          <label for="email" class="block text-sm font-medium text-gray-700">Email address</label>
-          <div class="mt-1">
-            <input id="email" v-model="form.email" type="email" required class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-brand-500 focus:border-brand-500 sm:text-sm">
-            <span v-if="errors?.email" class="text-xs text-red-500">{{ errors.email[0] }}</span>
-          </div>
-        </div>
-
-        <div>
-          <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-          <div class="mt-1">
-            <input id="password" v-model="form.password" type="password" required class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-brand-500 focus:border-brand-500 sm:text-sm">
-            <span v-if="errors?.password" class="text-xs text-red-500">{{ errors.password[0] }}</span>
-          </div>
-        </div>
-
-        <div>
-          <label for="password_confirmation" class="block text-sm font-medium text-gray-700">Confirm Password</label>
-          <div class="mt-1">
-            <input id="password_confirmation" v-model="form.password_confirmation" type="password" required class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-brand-500 focus:border-brand-500 sm:text-sm">
-          </div>
-        </div>
-
-        <div>
-          <button 
-            type="submit" 
-            :disabled="loading"
-            class="w-full flex justify-center px-4 py-2 text-sm font-medium text-white 
-                   bg-[#003D29] border border-transparent rounded-md shadow-sm 
-                   hover:bg-[#00251C] focus:outline-none disabled:opacity-50"
+      <template #footer>
+        <div class="pt-2 border-t border-gray-200">
+          <NuxtLink
+            to="/login"
+            class="text-sm font-medium text-[#003D29] hover:text-[#00251C] inline-flex items-center gap-1"
           >
-          {{ loading ? 'Creating account...' : 'Register' }}
-        </button>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+            </svg>
+            {{ $t('register.back_to_login') }}
+          </NuxtLink>
         </div>
-      </form>
+      </template>
+    </AuthEmailVerificationNotice>
 
-      <div class="relative">
-        <div class="absolute inset-0 flex items-center">
-          <div class="w-full border-t border-gray-300"></div>
-        </div>
-        <div class="relative flex justify-center text-sm">
-          <span class="px-2 text-gray-500 bg-white">Or</span>
-        </div>
-      </div>
+    <AuthAlert type="error" :message="errors?.message && !errors?.errors ? errors.message : undefined" />
+    <AuthAlert type="success" :message="successMessage && !showVerificationPanel ? successMessage : undefined" />
 
-      <div>
-        <button @click="loginWithGoogle" class="w-full flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50">
-          <img class="w-5 h-5" src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google logo">
-          <span class="ml-2">Sign up with Google</span>
-        </button>
-      </div>
+    <form v-if="!showVerificationPanel" class="space-y-6" @submit.prevent="handleRegister" novalidate>
+      <AuthFormInput
+        id="name"
+        type="text"
+        :label="$t('register.name')"
+        v-model="form.name"
+        required
+        autocomplete="name"
+        :error="errors?.errors?.name?.[0]"
+      />
 
-      <p class="text-sm text-center text-gray-600">
-        Already have an account?
-        <NuxtLink to="/login" class="font-medium text-brand-600 hover:text-brand-500">Log in</NuxtLink>
-      </p>
-    </div>
-  </div>
+      <AuthFormInput
+        id="email"
+        type="email"
+        :label="$t('register.email_address')"
+        v-model="form.email"
+        required
+        autocomplete="email"
+        :error="errors?.errors?.email?.[0]"
+      />
+
+      <AuthFormInput
+        id="password"
+        type="password"
+        :label="$t('register.password')"
+        v-model="form.password"
+        required
+        autocomplete="new-password"
+        minlength="8"
+        :error="errors?.errors?.password?.[0]"
+      />
+
+      <AuthFormInput
+        id="password_confirmation"
+        type="password"
+        :label="$t('register.confirm_password')"
+        v-model="form.password_confirmation"
+        required
+        autocomplete="new-password"
+      />
+
+      <AuthSubmitButton
+        :loading="loading"
+        :text="$t('register.register')"
+        :loading-text="$t('register.creating_account')"
+      />
+    </form>
+
+    <template v-if="!showVerificationPanel">
+      <AuthDivider :text="$t('register.or_continue_with')" />
+      <AuthGoogleButton :text="$t('register.sign_up_with_google')" @click="loginWithGoogle" />
+      <AuthFooterLink
+        :text="$t('register.already_have_account')"
+        :link-text="$t('register.log_in')"
+        to="/login"
+      />
+    </template>
+  </AuthCard>
 </template>
 
-<script setup>
+<script setup lang='ts'>
+import type { ApiError } from '~~/types/api'
+
 definePageMeta({
   layout: 'auth',
-  middleware: 'guest',  // ← add this
+  middleware: 'guest',
 })
 
-const { register, loading, loginWithGoogle } = useAuth()
-const errors = ref(null)
-const successMessage = ref(null)
-const toast = useToast()
+const { register, loading, loginWithGoogle, resendVerificationEmail } = useAuth()
+const errors = ref<ApiError | null>(null)
+const successMessage = ref<string | null>(null)
+const { showSuccessToast } = useAppToast()
+
+// ✨ State for post-registration verification flow
+const showVerificationPanel = ref(false)
+const registeredEmail = ref('')
+
 const form = reactive({
   name: '',
   email: '',
@@ -106,49 +120,54 @@ const form = reactive({
   password_confirmation: 'password'
 })
 
+/**
+ * Handle registration form submission
+ */
 const handleRegister = async () => {
-  errors.value = null // Clear previous errors
+  errors.value = null
   successMessage.value = null
+  
   try {
     const response = await register(form)
-    if (response.message) {
+    
+    // ✨ Handle successful registration with email verification requirement
+    if (response?.message && 
+        (response.message.toLowerCase().includes('verify') || 
+         response.message.toLowerCase().includes('check your email'))) {
+      
+      showVerificationPanel.value = true
+      registeredEmail.value = form.email
       successMessage.value = response.message
-      toast.add({
-        title: 'Registration Successful',
-        description: response.message,
-        color: 'success',
-        icon: 'i-heroicons-check-circle'
-      })
-      // Reset form
+      
+      return
+    }
+    
+    // Fallback for other success responses
+    if (response?.message) {
+      successMessage.value = response.message
+      
+      // Reset form fields
       form.name = ''
       form.email = ''
       form.password = ''
       form.password_confirmation = ''
     }
+    
   } catch (err) {
-    errors.value = err.data?.errors
-    // Handle Field-Specific Validation Errors
-    if (err.data?.errors) {
-      errors.value = err.data?.errors
-    } 
-    // Handle General Error
-   if (err.data?.message) {
-    toast.add({
-      title: 'Registration Failed',
-      description: err.data.message,
-      color: 'error',
-      icon: 'i-heroicons-x-circle'
-    })
-  }
-    // Fallback for unexpected errors
-    else {
-      toast.add({
-        title: 'Registration Failed',
-        description: 'An unexpected error occurred. Please try again.',
-        color: 'error',
-        icon: 'i-heroicons-x-circle'
-      })
+    // The useAuth composable now shows a toast for errors.
+    // We just need to set the local errors state for the UI.
+    // console.log({errData:err.data})
+    const error = err?.data as Error & { data: ApiError }
+    if(error?.data?.errors) {
+      errors.value = error.data
     }
   }
 }
+
+/**
+ * Clear verification state when navigating away
+ */
+onBeforeUnmount(() => {
+  // Optional: Clear state if needed
+})
 </script>

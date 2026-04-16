@@ -1,3 +1,5 @@
+import type { FilterDescendant } from "../product"
+
 export interface ProductApiFilters {
   category_slug?: string
   min_price?: number
@@ -8,14 +10,10 @@ export interface ProductApiFilters {
   page?: number
 }
 
-export interface Category {
-  id: number
-  name: string
-  slug: string
-}
 
-export interface BackendFilters {
-  descendants: Category[]
+
+export interface UIProductListFilters {
+  descendants: FilterDescendant[]
   min_price: number
   max_price: number
   earliest_manufacture?: string

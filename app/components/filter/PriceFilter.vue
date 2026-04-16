@@ -40,14 +40,15 @@
         />
       </div>
       <p class="mt-2 text-xs text-gray-600">
-        {{ t('filter.products_between') }} {{ formatPrice(localMin) }} -
-        {{ formatPrice(localMax) }}
+        {{ t('filter.products_between') }} {{ formatPriceCompact(localMin) }} -
+        {{ formatPriceCompact(localMax) }}
       </p>
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
+ import { formatPrice } from '../../utils/price'
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
@@ -58,10 +59,6 @@ const props = defineProps<{
   max: number
   initialMin: number
   initialMax: number
-  /**
-   * أقل مسافة مسموح بها بين القيمتين (اختياري).
-   * مثال: 10 يعني يجب أن يكون max - min ≥ 10
-   */
   gap?: number
 }>()
 
@@ -157,12 +154,8 @@ const onChange = () => {
   emit('change', { min: localMin.value, max: localMax.value })
 }
 
-const formatPrice = (value: number) =>
-  new Intl.NumberFormat(undefined, {
-    style: 'currency',
-    currency: 'USD',
-    maximumFractionDigits: 0
-  }).format(value)
+const formatPriceCompact = (value: number) =>
+  formatPrice(value, 'USD', undefined, { maximumFractionDigits: 0 })
 </script>
 
 <style scoped>

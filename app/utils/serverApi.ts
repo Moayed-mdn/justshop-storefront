@@ -7,12 +7,11 @@ export const $serverApi = async (
   // await new Promise((resolve) => setTimeout(resolve, 1000)) // dev delay
 
   const config = useRuntimeConfig()
-  const base = config.public.apiBase || 'https://e-commerce-backend-production-4b78.up.railway.app/api/v1/users/products?page=1'
+  const baseURL = config.public.apiBase 
 
   // ── Locale ──
   let lang: string | undefined
   lang = getCookie(event, 'i18n_redirected')
-
   // ── Token from persisted Pinia cookie ──
   // pinia-plugin-persistedstate stores as JSON: {"token":"xxx"}
   let token: string | null = null
@@ -27,7 +26,7 @@ export const $serverApi = async (
   }
 
   const fetchInstance = $fetch.create({
-    baseURL: base,
+    baseURL: baseURL,
     credentials: 'include',
     headers: {
       Accept: 'application/json',

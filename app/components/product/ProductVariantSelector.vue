@@ -65,18 +65,11 @@
   </template>
   
   <script setup lang="ts">
+import type { ProductVariant } from '~~/types/productDetail';
+
   const props = defineProps<{
     attributes: Record<string, string[]>
-    variants: Array<{
-      id: number
-      sku?: string
-      price: number
-      stock: number
-      is_active: boolean
-      attributes: Array<{ name: string; value: string }>
-      attribute_map: Record<string, string>
-      images?: any[]
-    }>
+    variants:ProductVariant[]
   }>()
   
   const emit = defineEmits<{
