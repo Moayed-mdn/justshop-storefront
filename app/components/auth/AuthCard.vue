@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex flex-col items-center justify-center min-h-screen"
+    class="flex flex-col items-center justify-center py-4 min-h-screen"
     :style="{ background: 'var(--color-bg-surface)' }"
   >
     <div

@@ -74,7 +74,7 @@
           type="button"
           class="
             w-full px-4 py-3 text-sm font-medium
-            text-(--color-primary) bg-(--gray-100)
+            text-(--color-primary) bg-(--color-bg-page)
             hover:bg-(--gray-200) transition-colors
             border-t border-(--search-dropdown-border)
             cursor-pointer text-center
@@ -105,7 +105,7 @@
   }>()
   
   const grouped = computed(() => {
-    const groups: Record<string, Suggestion[]> = {
+    const groups: { PRODUCT: Suggestion[], CATEGORY: Suggestion[], BRAND: Suggestion[] } = {
       PRODUCT: [],
       CATEGORY: [],
       BRAND: [],

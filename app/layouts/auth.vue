@@ -1,6 +1,6 @@
 <template>
   <!-- <HeaderAuth/> -->
-  <div class="bg-(--gray-100)">
+  <div class="bg-(--color-bg-page)">
     <slot />
     <FooterAuth/>
   </div>
