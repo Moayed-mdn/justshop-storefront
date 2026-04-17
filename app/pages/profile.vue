@@ -1,6 +1,6 @@
 <!-- pages/profile.vue -->
   <template>
-    <div class="min-h-screen bg-gray-50 py-8 px-4">
+    <div class="min-h-screen py-8 px-4" :style="{ backgroundColor: 'var(--profile-page-bg)' }">
       <div class="max-w-2xl mx-auto space-y-6">
 
         <ProfilePageHeader

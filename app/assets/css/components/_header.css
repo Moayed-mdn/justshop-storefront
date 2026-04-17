@@ -10,7 +10,7 @@
   --header-gap-wide: var(--space-6);
   --header-opacity: 0.7;
   --header-duration: var(--duration-200);
-  --header-bg: var(--white);
+  --header-bg: var(--color-bg-elevated);
   --header-z: var(--z-header);
 
   /* Input Search */
@@ -24,11 +24,11 @@
   --header-link-color: var(--color-text-primary);
 
   /* Actions */
-  --header-action-color: var(--color-text-black);
+  --header-action-color: var(--color-text-primary);
   --header-action-hover-color: var(--color-accent);
 
   /* Burger */
-  --header-burger-bg: var(--white);
+  --header-burger-bg: var(--color-bg-elevated);
   --header-burger-duration: var(--duration-500);
   --header-burger-z: var(--z-burger-menu);
   --header-burger-top: var(--header-total-height);

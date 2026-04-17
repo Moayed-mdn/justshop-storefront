@@ -3,8 +3,8 @@
       <button
         @click="$emit('add-to-cart')"
         :disabled="!canAddToCart || isAddingToCart"
-        class="flex-1 py-3 px-6 bg-[#003D29] text-white font-semibold rounded-md
-               hover:bg-[#00251C] transition-colors disabled:opacity-50
+        class="flex-1 py-3 px-6 bg-(--color-primary) text-white font-semibold rounded-md
+               hover:bg-(--green-950) transition-colors disabled:opacity-50
                disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
         type="button"
       >
@@ -31,8 +31,8 @@
       <button
         @click="$emit('buy-now')"
         :disabled="!canAddToCart"
-        class="flex-1 sm:flex-initial py-3 px-6 border-2 border-[#003D29] text-[#003D29]
-               font-semibold rounded-md hover:bg-[#003D29]/5 transition-colors
+        class="flex-1 sm:flex-initial py-3 px-6 border-2 border-(--color-primary) text-(--color-primary)
+               font-semibold rounded-md hover:bg-(--color-primary)/5 transition-colors
                disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
         type="button"
       >

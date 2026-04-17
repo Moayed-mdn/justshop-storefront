@@ -212,13 +212,13 @@ const formatPriceCompact = (value: number) =>
   cursor: pointer;
   -webkit-appearance: none;
   appearance: none;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px var(--black-10);
   transition: transform 0.2s ease;
 }
 
 .slider::-webkit-slider-thumb:hover {
   transform: scale(var(--range-slider-thumb-hover-scale));
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 2px 6px var(--black-15);
 }
 
 .slider::-moz-range-thumb {
@@ -231,13 +231,13 @@ const formatPriceCompact = (value: number) =>
   cursor: pointer;
   border: none;
   outline: none;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px var(--black-10);
   transition: transform 0.2s ease;
 }
 
 .slider::-moz-range-thumb:hover {
   transform: scale(var(--range-slider-thumb-hover-scale));
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 2px 6px var(--black-15);
 }
 
 .slider-min {

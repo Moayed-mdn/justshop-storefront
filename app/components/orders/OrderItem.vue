@@ -19,7 +19,7 @@
         <div>
           <NuxtLinkLocale
             :to="item.product_slug ? `/products/${item.product_slug}` : '#'"
-            class="text-sm font-semibold text-gray-900 hover:text-[#003D29] transition-colors"
+            class="text-sm font-semibold text-gray-900 hover:text-(--color-primary) transition-colors"
           >
             {{ item.product_name }}
           </NuxtLinkLocale>

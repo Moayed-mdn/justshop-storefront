@@ -1,0 +1,22 @@
+:root {
+  --profile-page-bg: var(--color-bg-surface);
+  --profile-card-bg: var(--color-bg-elevated);
+  --profile-card-border: var(--color-border-default);
+
+  --profile-title: var(--color-text-primary);
+  --profile-subtitle: var(--color-text-muted);
+  --profile-label: var(--color-text-secondary);
+
+  --profile-input-bg: var(--color-bg-elevated);
+  --profile-input-border: var(--color-border-default);
+  --profile-input-text: var(--color-text-primary);
+
+  --profile-google-badge-bg: var(--color-bg-card);
+  --profile-google-badge-text: var(--color-text-muted);
+
+  --profile-danger-border: color-mix(in srgb, var(--color-error) 35%, transparent);
+  --profile-danger-title: var(--color-error);
+  --profile-danger-btn-border: color-mix(in srgb, var(--color-error) 55%, transparent);
+  --profile-danger-btn-hover-bg: color-mix(in srgb, var(--color-error) 12%, transparent);
+  --profile-danger-btn-text: var(--color-error);
+}

@@ -1,19 +1,20 @@
 <!-- components/layout/CategoryHeader.vue -->
 <template>
-    <div class="bg-white border-b border-gray-100">
+    <div class="border-b" :style="{ backgroundColor: 'var(--category-header-bg)', borderBottomColor: 'var(--category-header-border)' }">
       <div class="container mx-auto px-4 py-4 sm:py-6">
         <!-- Breadcrumb -->
         <nav
           v-if="breadcrumb?.length"
-          class="flex items-center gap-2 text-sm text-gray-500 mb-3"
+          class="flex items-center gap-2 text-sm mb-3"
+          :style="{ color: 'var(--category-header-crumb)' }"
         >
-          <NuxtLinkLocale to="/" class="hover:text-[#003D29] transition-colors">
+          <NuxtLinkLocale to="/" class="hover:text-(--color-primary) transition-colors">
             {{ $t('product.breadcrumb_home') }}
           </NuxtLinkLocale>
   
           <span>/</span>
   
-          <NuxtLinkLocale to="/products" class="hover:text-[#003D29] transition-colors">
+          <NuxtLinkLocale to="/products" class="hover:text-(--color-primary) transition-colors">
             {{ $t('product.breadcrumb_shop') }}
           </NuxtLinkLocale>
   
@@ -22,23 +23,23 @@
             <NuxtLinkLocale
               v-if="idx < breadcrumb.length - 1"
               :to="`/products/category/${crumb.slug}`"
-              class="hover:text-[#003D29] transition-colors"
+              class="hover:text-(--color-primary) transition-colors"
             >
               {{ crumb.name }}
             </NuxtLinkLocale>
-            <span v-else class="text-gray-900 font-medium">
+            <span v-else class="font-medium" :style="{ color: 'var(--category-header-crumb-current)' }">
               {{ crumb.name }}
             </span>
           </template>
         </nav>
   
         <!-- Category Title -->
-        <h1 class="text-xl sm:text-2xl font-bold text-gray-900">
+        <h1 class="text-xl sm:text-2xl font-bold" :style="{ color: 'var(--category-header-title)' }">
           {{ name }}
         </h1>
   
         <!-- Product Count -->
-        <p v-if="totalProducts !== undefined" class="text-sm text-gray-500 mt-1">
+        <p v-if="totalProducts !== undefined" class="text-sm mt-1" :style="{ color: 'var(--category-header-count)' }">
           {{ totalProducts }} {{ totalProducts === 1 ? $t('cart.item') : $t('cart.items') }}
         </p>
       </div>

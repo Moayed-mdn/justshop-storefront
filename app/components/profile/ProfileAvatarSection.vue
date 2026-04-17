@@ -1,6 +1,6 @@
 <template>
   <ProfileSectionCard>
-    <h2 class="text-lg font-semibold text-gray-900 mb-4">{{ title }}</h2>
+    <h2 class="text-lg font-semibold mb-4" :style="{ color: 'var(--profile-title)' }">{{ title }}</h2>
 
     <div class="flex items-center gap-6">
       <ProfileAvatarPreview :avatar-url="avatarUrl" :initials="initials" />

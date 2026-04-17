@@ -1,10 +1,11 @@
 <template>
-  <ProfileSectionCard card-class="border border-red-200">
-    <h2 class="text-lg font-semibold text-red-600 mb-1">{{ title }}</h2>
-    <p class="text-sm text-gray-500 mb-4">{{ subtitle }}</p>
+  <ProfileSectionCard card-class="border">
+    <h2 class="text-lg font-semibold mb-1" :style="{ color: 'var(--profile-danger-title)' }">{{ title }}</h2>
+    <p class="text-sm mb-4" :style="{ color: 'var(--profile-subtitle)' }">{{ subtitle }}</p>
 
     <button
-      class="px-6 py-2 text-sm font-medium text-red-600 border border-red-300 rounded-md hover:bg-red-50 transition-colors"
+      class="px-6 py-2 text-sm font-medium border rounded-md transition-colors hover:bg-(--profile-danger-btn-hover-bg)"
+      :style="{ color: 'var(--profile-danger-btn-text)', borderColor: 'var(--profile-danger-btn-border)' }"
       @click="$emit('requestDelete')"
     >
       {{ deleteButtonText }}

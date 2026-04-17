@@ -10,6 +10,9 @@
 @import "./_product-pagination.css";
 @import "./_filter-sidebar.css";
 @import "./_layout.css";
+@import "./_footer.css";
+@import "./_category-header.css";
+@import "./_profile.css";
 @import "./_skeleton.css";
 @import "./_loading-spinner.css";
 @import './_search.css';

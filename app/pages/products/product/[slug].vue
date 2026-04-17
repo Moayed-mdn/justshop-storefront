@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-white">
+  <div class="min-h-screen" :style="{ backgroundColor: 'var(--product-page-bg)' }">
     <!-- Breadcrumb -->
     <ProductBreadcrumb :product-name="product?.name || ''" />
 
@@ -27,7 +27,7 @@
           />
 
           <!-- Description -->
-          <div class="prose prose-sm max-w-none text-gray-600">
+          <div class="prose prose-sm max-w-none" :style="{ color: 'var(--product-desc-text)' }">
             {{ product.description }}
           </div>
 
@@ -40,7 +40,7 @@
           />
 
           <!-- Quantity + Actions -->
-          <div class="space-y-4 pb-6 border-b border-gray-200">
+          <div class="space-y-4 pb-6 border-b" :style="{ borderBottomColor: 'var(--product-divider)' }">
             <ProductQuantitySelector 
               v-model="quantity"
               :max-quantity="maxQuantity"
@@ -55,7 +55,7 @@
             />
 
             <!-- Error Message -->
-            <div v-if="!selectedVariant && hasVariants" class="text-sm text-amber-600">
+            <div v-if="!selectedVariant && hasVariants" class="text-sm" :style="{ color: 'var(--product-warning)' }">
               {{ $t('product.select_options') }}
             </div>
           </div>
@@ -77,10 +77,10 @@
 
     <!-- Error State -->
     <div v-else class="max-w-7xl mx-auto px-4 py-16 text-center">
-      <h1 class="text-2xl font-bold text-gray-900">
+      <h1 class="text-2xl font-bold" :style="{ color: 'var(--product-notfound-title)' }">
         {{ $t('product.not_found') }}
       </h1>
-      <NuxtLinkLocale to="/products" class="mt-4 inline-block text-[#003D29] hover:underline">
+      <NuxtLinkLocale to="/products" class="mt-4 inline-block text-(--color-primary) hover:underline">
         {{ $t('product.back_to_shop') }}
       </NuxtLinkLocale>
     </div>

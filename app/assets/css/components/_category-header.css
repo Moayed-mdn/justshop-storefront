@@ -1,0 +1,8 @@
+:root {
+  --category-header-bg: var(--color-bg-elevated);
+  --category-header-border: var(--color-border-default);
+  --category-header-crumb: var(--color-text-muted);
+  --category-header-title: var(--color-text-primary);
+  --category-header-count: var(--color-text-muted);
+  --category-header-crumb-current: var(--color-text-primary);
+}

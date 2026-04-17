@@ -5,7 +5,7 @@
         <img src="~/assets/icons/logo.png" alt="Logo" class="h-full w-full">
       </NuxtLinkLocale>
     </div>
-    <h2 class="mt-6 text-2xl font-bold text-center text-gray-900">
+    <h2 class="mt-6 text-2xl font-bold text-center" :style="{ color: 'var(--color-text-primary)' }">
       {{ title }}
     </h2>
   </div>

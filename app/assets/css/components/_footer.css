@@ -1,0 +1,9 @@
+:root {
+  --footer-bg: var(--color-bg-elevated);
+  --footer-border: var(--color-border-default);
+  --footer-text: var(--color-text-secondary);
+  --footer-heading: var(--color-text-primary);
+  --footer-link: var(--color-text-secondary);
+  --footer-link-hover: var(--color-accent);
+  --footer-payment-border: var(--color-border-default);
+}

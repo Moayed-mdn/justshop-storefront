@@ -25,7 +25,7 @@
   --filter-button-gap: var(--space-2);
 
   /* Range Slider Variables */
-  --range-slider-track-bg: #e5e7eb;
+  --range-slider-track-bg: var(--color-border-default);
   --range-slider-active-bg: var(--color-accent);
   --range-slider-thumb-bg: var(--color-accent);
   --range-slider-thumb-border: var(--color-accent);

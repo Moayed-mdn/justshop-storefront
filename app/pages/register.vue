@@ -12,7 +12,7 @@
     >
       <template #content>
         <p>
-          <strong class="text-[#003D29]">{{ $t('register.check_your_email_title') }}</strong><br>
+          <strong class="text-(--color-primary)">{{ $t('register.check_your_email_title') }}</strong><br>
           {{ $t('register.verification_sent', { email: registeredEmail }) }}<br>
           {{ $t('register.verification_sent_description') }}
         </p>
@@ -22,7 +22,7 @@
         <div class="pt-2 border-t border-gray-200">
           <NuxtLink
             to="/login"
-            class="text-sm font-medium text-[#003D29] hover:text-[#00251C] inline-flex items-center gap-1"
+            class="text-sm font-medium text-(--color-primary) hover:text-(--green-950) inline-flex items-center gap-1"
           >
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>

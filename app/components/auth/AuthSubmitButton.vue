@@ -3,8 +3,8 @@
     type="submit"
     :disabled="loading"
     class="w-full flex justify-center px-4 py-2 text-sm font-medium text-white 
-           bg-[#003D29] border border-transparent rounded-md shadow-sm 
-           hover:bg-[#00251C] focus:outline-none focus:ring-2 focus:ring-[#003D29]/30
+           bg-(--color-primary) border border-transparent rounded-md shadow-sm 
+           hover:bg-(--green-950) focus:outline-none focus:ring-2 focus:ring-(--color-primary)/30
            disabled:opacity-50 transition-colors"
   >
     <span v-if="loading" class="flex items-center gap-2">

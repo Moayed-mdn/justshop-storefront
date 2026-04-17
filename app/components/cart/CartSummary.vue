@@ -1,40 +1,40 @@
 <!-- components/cart/CartSummary.vue -->
 <template>
-  <div class="bg-white rounded-lg border border-gray-100 p-6 space-y-4">
-    <h2 class="text-lg font-bold text-gray-900">
+  <div class="bg-(--color-bg-elevated) rounded-lg border border-(--color-border-default) p-6 space-y-4">
+    <h2 class="text-lg font-bold text-(--color-text-primary)">
       {{ $t('cart.order_summary') }}
     </h2>
 
     <!-- Subtotal -->
     <div class="flex justify-between text-sm">
-      <span class="text-gray-600">
+      <span class="text-(--color-text-secondary)">
         {{ $t('cart.subtotal') }} ({{ itemsCount }} {{ $t('cart.items') }})
       </span>
-      <span class="font-semibold text-gray-900">{{ formatPrice(total) }}</span>
+      <span class="font-semibold text-(--color-text-primary)">{{ formatPrice(total) }}</span>
     </div>
 
     <!-- Shipping placeholder -->
     <div class="flex justify-between text-sm">
-      <span class="text-gray-600">{{ $t('cart.shipping') }}</span>
+      <span class="text-(--color-text-secondary)">{{ $t('cart.shipping') }}</span>
       <span class="text-green-600 font-medium">{{ $t('cart.calculated_at_checkout') }}</span>
     </div>
 
     <!-- Divider -->
-    <div class="border-t border-gray-200 pt-4">
+    <div class="border-t border-(--color-border-default) pt-4">
       <div class="flex justify-between">
-        <span class="text-base font-bold text-gray-900">{{ $t('cart.total') }}</span>
-        <span class="text-base font-bold text-gray-900">{{ formatPrice(total) }}</span>
+        <span class="text-base font-bold text-(--color-text-primary)">{{ $t('cart.total') }}</span>
+        <span class="text-base font-bold text-(--color-text-primary)">{{ formatPrice(total) }}</span>
       </div>
-      <p class="text-xs text-gray-400 mt-1 ltr:text-right rtl:text-left">
+      <p class="text-xs text-(--color-text-muted) mt-1 ltr:text-right rtl:text-left">
         {{ $t('cart.tax_note') }}
       </p>
     </div>
 
     <!-- Promo Code (placeholder for future) -->
-    <div class="border-t border-gray-200 pt-4">
+    <div class="border-t border-(--color-border-default) pt-4">
       <button
         @click="showPromo = !showPromo"
-        class="flex items-center gap-2 text-sm text-[#003D29] font-medium
+        class="flex items-center gap-2 text-sm text-(--color-primary) font-medium
                hover:underline cursor-pointer"
       >
         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -60,13 +60,13 @@
             v-model="promoCode"
             type="text"
             :placeholder="$t('cart.enter_promo')"
-            class="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-md
-                   focus:ring-[#003D29] focus:border-[#003D29]"
+            class="flex-1 px-3 py-2 text-sm border border-(--color-border-default) rounded-md
+                   focus:ring-(--color-primary) focus:border-(--color-primary)"
           >
           <button
             disabled
-            class="px-4 py-2 text-sm font-medium text-gray-400 bg-gray-100
-                   border border-gray-200 rounded-md cursor-not-allowed"
+            class="px-4 py-2 text-sm font-medium text-(--color-text-muted) bg-(--color-bg-surface)
+                   border border-(--color-border-default) rounded-md cursor-not-allowed"
           >
             {{ $t('cart.apply') }}
           </button>
@@ -83,8 +83,8 @@
     <button
       @click="handleCheckout"
       :disabled="checkoutLoading"
-      class="w-full py-3 px-4 bg-[#003D29] text-white font-semibold rounded-md
-             hover:bg-[#00251C] transition-colors text-sm sm:text-base cursor-pointer
+      class="w-full py-3 px-4 bg-(--color-primary) text-white font-semibold rounded-md
+             hover:bg-(--green-950) transition-colors text-sm sm:text-base cursor-pointer
              disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
     >
       <svg
@@ -103,15 +103,15 @@
     <!-- Continue Shopping -->
     <NuxtLinkLocale
       to="/"
-      class="block w-full text-center py-2 text-sm font-medium text-[#003D29]
+      class="block w-full text-center py-2 text-sm font-medium text-(--color-primary)
              hover:underline transition-colors"
     >
       {{ $t('cart.continue_shopping') }}
     </NuxtLinkLocale>
 
     <!-- Trust Badges -->
-    <div class="border-t border-gray-200 pt-4 space-y-3">
-      <div class="flex items-center gap-2 text-xs text-gray-500">
+    <div class="border-t border-(--color-border-default) pt-4 space-y-3">
+      <div class="flex items-center gap-2 text-xs text-(--color-text-secondary)">
         <svg class="w-4 h-4 text-green-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
             d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2
@@ -122,21 +122,21 @@
       </div>
 
       <div class="flex flex-wrap gap-2">
-        <div class="w-12 h-7 rounded border border-gray-200 flex items-center justify-center p-1">
+        <div class="w-12 h-7 rounded border border-(--color-border-default) flex items-center justify-center p-1">
           <img src="https://cdn.prod.website-files.com/63e857eaeaf853471d5335ff/63eb1ce82d440b7ab84a993f_visa.png" alt="Visa" class="max-h-full">
         </div>
-        <div class="w-12 h-7 rounded border border-gray-200 flex items-center justify-center p-1">
+        <div class="w-12 h-7 rounded border border-(--color-border-default) flex items-center justify-center p-1">
           <img src="https://cdn.prod.website-files.com/63e857eaeaf853471d5335ff/63eb1ce8f032504012a5896b_Mastercard.png" alt="Mastercard" class="max-h-full">
         </div>
-        <div class="w-12 h-7 rounded border border-gray-200 flex items-center justify-center p-1">
+        <div class="w-12 h-7 rounded border border-(--color-border-default) flex items-center justify-center p-1">
           <img src="https://cdn.prod.website-files.com/63e857eaeaf853471d5335ff/63eb1ce7c4510cf9a55828a0_PayPal.png" alt="PayPal" class="max-h-full">
         </div>
-        <div class="w-12 h-7 rounded border border-gray-200 flex items-center justify-center p-1">
+        <div class="w-12 h-7 rounded border border-(--color-border-default) flex items-center justify-center p-1">
           <img src="https://cdn.prod.website-files.com/63e857eaeaf853471d5335ff/63e8c4e4707380264b25e680_ApplePay.png" alt="Apple Pay" class="max-h-full">
         </div>
       </div>
 
-      <div class="flex items-center gap-2 text-xs text-gray-500">
+      <div class="flex items-center gap-2 text-xs text-(--color-text-secondary)">
         <svg class="w-4 h-4 text-green-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
             d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955

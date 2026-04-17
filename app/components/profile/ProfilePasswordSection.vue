@@ -1,7 +1,7 @@
 <template>
   <ProfileSectionCard>
-    <h2 class="text-lg font-semibold text-gray-900 mb-1">{{ title }}</h2>
-    <p class="text-sm text-gray-500 mb-4">{{ subtitle }}</p>
+    <h2 class="text-lg font-semibold mb-1" :style="{ color: 'var(--profile-title)' }">{{ title }}</h2>
+    <p class="text-sm mb-4" :style="{ color: 'var(--profile-subtitle)' }">{{ subtitle }}</p>
 
     <form class="space-y-4" @submit.prevent="$emit('submit')">
       <ProfileFormField
@@ -35,7 +35,7 @@
         <button
           type="submit"
           :disabled="loading"
-          class="px-6 py-2 text-sm font-medium text-white bg-[#003D29] rounded-md hover:bg-[#00251C] disabled:opacity-50 transition-colors"
+          class="px-6 py-2 text-sm font-medium text-white bg-(--color-primary) rounded-md hover:bg-(--green-950) disabled:opacity-50 transition-colors"
         >
           {{ loading ? savingButtonText : submitButtonText }}
         </button>

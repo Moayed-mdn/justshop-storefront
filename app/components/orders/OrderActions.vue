@@ -4,8 +4,8 @@
       v-if="status === 'delivered'"
       @click="$emit('reorder')"
       :disabled="reordering"
-      class="w-full py-2.5 px-4 text-sm font-semibold text-[#003D29] border border-[#003D29]
-             rounded-md hover:bg-[#003D29]/5 transition-colors disabled:opacity-50 cursor-pointer
+      class="w-full py-2.5 px-4 text-sm font-semibold text-(--color-primary) border border-(--color-primary)
+             rounded-md hover:bg-(--color-primary)/5 transition-colors disabled:opacity-50 cursor-pointer
              flex items-center justify-center gap-2"
     >
       <LoadingSpinner v-if="reordering" size="sm" />

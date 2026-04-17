@@ -11,7 +11,7 @@
     >
       <template #content>
         <p class="font-semibold">
-          <strong class="text-[#003D29]">{{ $t('login.email_not_verified_title') }}</strong><br>
+          <strong class="text-(--color-primary)">{{ $t('login.email_not_verified_title') }}</strong><br>
           {{ $t('login.email_not_verified_description', { email: pendingEmail }) }}
         </p>
       </template>
@@ -41,7 +41,7 @@
       />
 
       <div class="flex items-center justify-between">
-        <NuxtLink to="/forgot-password" class="text-sm font-medium text-[#003D29] hover:text-[#00251C]">
+        <NuxtLink to="/forgot-password" class="text-sm font-medium text-(--color-primary) hover:text-(--green-950)">
           {{ $t('login.forgot_password') }}
         </NuxtLink>
       </div>

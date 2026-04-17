@@ -6,7 +6,7 @@
       <UiPrice
         :price="price"
         currency="USD"
-        integerClass="text-3xl font-bold text-[#003D29]"
+        integerClass="text-3xl font-bold text-(--color-primary)"
       />
     </div>
   </template>

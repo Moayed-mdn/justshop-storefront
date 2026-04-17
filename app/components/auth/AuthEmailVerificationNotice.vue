@@ -1,10 +1,11 @@
 <template>
   <div
-    class="space-y-3 p-4 bg-gray-50 border-l-4 border-[#003D29] rounded-r-md"
+    class="space-y-3 p-4 border-l-4 border-(--color-primary) rounded-r-md"
+    :style="{ background: 'var(--color-bg-surface)' }"
     role="status"
     aria-live="polite"
   >
-    <div class="text-sm text-gray-800">
+    <div class="text-sm" :style="{ color: 'var(--color-text-primary)' }">
       <slot name="content" />
     </div>
 
@@ -13,18 +14,18 @@
       @click="onResend"
       :disabled="loading || !email"
       class="w-full px-4 py-2 text-sm font-medium text-white
-             bg-[#003D29] border border-transparent rounded-md
-             hover:bg-[#00251C] focus:outline-none focus:ring-2
-             focus:ring-[#003D29]/30 disabled:opacity-50 transition-colors"
+             bg-(--color-primary) border border-transparent rounded-md
+             hover:bg-(--green-950) focus:outline-none focus:ring-2
+             focus:ring-(--color-primary)/30 disabled:opacity-50 transition-colors"
     >
       {{ loading ? sendingText : resendText }}
     </button>
 
-    <p v-if="message" class="text-xs text-[#003D29] font-medium" role="status">
+    <p v-if="message" class="text-xs text-(--color-primary) font-medium" role="status">
       {{ message }}
     </p>
 
-    <p v-if="error" class="text-xs text-red-600" role="alert">
+    <p v-if="error" class="text-xs" role="alert" :style="{ color: 'var(--color-error)' }">
       {{ error }}
     </p>
 

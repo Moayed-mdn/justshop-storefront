@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-[60vh] bg-gray-50">
+  <div class="min-h-[60vh]" :style="{ backgroundColor: 'var(--orders-page-bg)' }">
     <!-- Show skeleton on initial load -->
     <OrdersSkeleton v-if="!isHydrated" />
 

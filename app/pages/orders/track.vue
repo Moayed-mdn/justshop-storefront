@@ -1,13 +1,13 @@
 <!-- pages/orders/track.vue -->
 <template>
-    <div class="min-h-[60vh] bg-gray-50">
+    <div class="min-h-[60vh]" :style="{ backgroundColor: 'var(--orders-page-bg)' }">
       <!-- Breadcrumb -->
-      <div class="bg-white border-b border-gray-100">
+      <div class="border-b" :style="{ backgroundColor: 'var(--color-bg-elevated)', borderBottomColor: 'var(--color-border-default)' }">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
-          <nav class="flex items-center gap-2 text-sm text-gray-500">
-            <NuxtLinkLocale to="/" class="hover:text-[#003D29]">{{ $t('cart.breadcrumb_home') }}</NuxtLinkLocale>
+          <nav class="flex items-center gap-2 text-sm" :style="{ color: 'var(--color-text-muted)' }">
+            <NuxtLinkLocale to="/" class="hover:text-(--color-primary)">{{ $t('cart.breadcrumb_home') }}</NuxtLinkLocale>
             <span>/</span>
-            <span class="text-gray-900 font-medium">{{ $t('orders.guest_title') }}</span>
+            <span class="font-medium" :style="{ color: 'var(--color-text-primary)' }">{{ $t('orders.guest_title') }}</span>
           </nav>
         </div>
       </div>
@@ -15,26 +15,26 @@
       <div class="max-w-lg mx-auto px-4 py-8 sm:py-12">
   
         <!-- ═══ Search Form ═══ -->
-        <div v-if="!foundOrder" class="bg-white rounded-lg border border-gray-200 p-6 sm:p-8">
+        <div v-if="!foundOrder" class="rounded-lg border p-6 sm:p-8" :style="{ backgroundColor: 'var(--color-bg-elevated)', borderColor: 'var(--color-border-default)' }">
           <div class="text-center mb-6">
-            <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-[#003D29]/10 flex items-center justify-center">
-              <svg class="w-8 h-8 text-[#003D29]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-(--color-primary)/10 flex items-center justify-center">
+              <svg class="w-8 h-8 text-(--color-primary)" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </div>
-            <h1 class="text-xl font-bold text-gray-900">{{ $t('orders.guest_title') }}</h1>
-            <p class="text-sm text-gray-500 mt-1">{{ $t('orders.guest_description') }}</p>
+            <h1 class="text-xl font-bold" :style="{ color: 'var(--color-text-primary)' }">{{ $t('orders.guest_title') }}</h1>
+            <p class="text-sm mt-1" :style="{ color: 'var(--color-text-muted)' }">{{ $t('orders.guest_description') }}</p>
           </div>
   
           <!-- Error -->
-          <div v-if="lookupError" class="p-3 mb-4 text-sm text-red-600 bg-red-50 rounded-md">
+          <div v-if="lookupError" class="p-3 mb-4 text-sm rounded-md" :style="{ color: 'var(--color-error)', backgroundColor: 'color-mix(in srgb, var(--color-error) 12%, transparent)' }">
             {{ lookupError }}
           </div>
   
           <form @submit.prevent="handleLookup" class="space-y-4">
             <div>
-              <label for="order_number" class="block text-sm font-medium text-gray-700">
+              <label for="order_number" class="block text-sm font-medium" :style="{ color: 'var(--color-text-secondary)' }">
                 {{ $t('orders.guest_order_number') }}
               </label>
               <input
@@ -43,13 +43,14 @@
                 type="text"
                 required
                 :placeholder="$t('orders.guest_order_placeholder')"
-                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm
-                       focus:ring-[#003D29] focus:border-[#003D29] sm:text-sm"
+                class="mt-1 block w-full px-3 py-2 border rounded-md shadow-sm
+                       focus:ring-(--color-primary) focus:border-(--color-primary) sm:text-sm"
+                :style="{ borderColor: 'var(--color-border)' }"
               >
             </div>
   
             <div>
-              <label for="email" class="block text-sm font-medium text-gray-700">
+              <label for="email" class="block text-sm font-medium" :style="{ color: 'var(--color-text-secondary)' }">
                 {{ $t('orders.guest_email') }}
               </label>
               <input
@@ -58,17 +59,19 @@
                 type="email"
                 required
                 :placeholder="$t('orders.guest_email_placeholder')"
-                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm
-                       focus:ring-[#003D29] focus:border-[#003D29] sm:text-sm"
+                class="mt-1 block w-full px-3 py-2 border rounded-md shadow-sm
+                       focus:ring-(--color-primary) focus:border-(--color-primary) sm:text-sm"
+                :style="{ borderColor: 'var(--color-border)' }"
               >
             </div>
   
             <button
               type="submit"
               :disabled="loading"
-              class="w-full py-3 px-4 bg-[#003D29] text-white font-semibold rounded-md
-                     hover:bg-[#00251C] transition-colors disabled:opacity-60
+              class="orders-track__submit w-full py-3 px-4 bg-(--color-primary) font-semibold rounded-md
+                     transition-colors disabled:opacity-60
                      disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
+              :style="{ color: 'var(--color-text-inverse)' }"
             >
               <svg
                 v-if="loading"
@@ -89,17 +92,17 @@
           <!-- Back button -->
           <button
             @click="foundOrder = null"
-            class="text-sm text-[#003D29] hover:underline cursor-pointer"
+            class="text-sm text-(--color-primary) hover:underline cursor-pointer"
           >
             ← {{ $t('orders.guest_new_search') }}
           </button>
   
           <!-- Order Header -->
-          <div class="bg-white rounded-lg border border-gray-200 p-6">
+          <div class="rounded-lg border p-6" :style="{ backgroundColor: 'var(--color-bg-elevated)', borderColor: 'var(--color-border-default)' }">
             <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
               <div>
-                <h2 class="font-bold text-gray-900 font-mono">#{{ foundOrder.order_number }}</h2>
-                <p class="text-xs text-gray-500 mt-1">
+                <h2 class="font-bold font-mono" :style="{ color: 'var(--color-text-primary)' }">#{{ foundOrder.order_number }}</h2>
+                <p class="text-xs mt-1" :style="{ color: 'var(--color-text-muted)' }">
                   {{ $t('orders.placed_on') }} {{ formatDate(foundOrder.created_at) }}
                 </p>
               </div>
@@ -110,13 +113,13 @@
             </div>
   
             <!-- Items -->
-            <div class="divide-y divide-gray-100 border-t border-gray-100">
+            <div class="orders-track__divide divide-y border-t" :style="{ borderTopColor: 'var(--color-border-default)' }">
               <div
                 v-for="item in foundOrder.items"
                 :key="item.id"
                 class="flex gap-3 py-4"
               >
-                <div class="w-14 h-14 rounded-md overflow-hidden bg-gray-100 flex-shrink-0">
+                <div class="w-14 h-14 rounded-md overflow-hidden flex-shrink-0" :style="{ backgroundColor: 'var(--color-bg-card)' }">
                   <img
                     v-if="item.image"
                     :src="item.image"
@@ -125,37 +128,37 @@
                   >
                 </div>
                 <div class="flex-1 min-w-0">
-                  <p class="text-sm font-medium text-gray-900 truncate">{{ item.product_name }}</p>
+                  <p class="text-sm font-medium truncate" :style="{ color: 'var(--color-text-primary)' }">{{ item.product_name }}</p>
                   <div v-if="item.attributes?.length" class="flex flex-wrap gap-x-2 mt-0.5">
-                    <span v-for="attr in item.attributes" :key="attr.name" class="text-xs text-gray-500">
+                    <span v-for="attr in item.attributes" :key="attr.name" class="text-xs" :style="{ color: 'var(--color-text-muted)' }">
                       {{ attr.name }}: {{ attr.value }}
                     </span>
                   </div>
-                  <p class="text-xs text-gray-500 mt-1">
+                  <p class="text-xs mt-1" :style="{ color: 'var(--color-text-muted)' }">
                     {{ formatPrice(item.unit_price) }} × {{ item.quantity }}
                   </p>
                 </div>
-                <div class="text-sm font-bold text-gray-900 flex-shrink-0">
+                <div class="text-sm font-bold flex-shrink-0" :style="{ color: 'var(--color-text-primary)' }">
                   {{ formatPrice(item.subtotal) }}
                 </div>
               </div>
             </div>
   
             <!-- Totals -->
-            <div class="border-t border-gray-200 pt-4 mt-2 space-y-2 text-sm">
+            <div class="border-t pt-4 mt-2 space-y-2 text-sm" :style="{ borderTopColor: 'var(--color-border)' }">
               <div class="flex justify-between">
-                <span class="text-gray-500">{{ $t('orders.subtotal') }}</span>
+                <span :style="{ color: 'var(--color-text-muted)' }">{{ $t('orders.subtotal') }}</span>
                 <span>{{ formatPrice(foundOrder.subtotal) }}</span>
               </div>
               <div class="flex justify-between">
-                <span class="text-gray-500">{{ $t('orders.shipping') }}</span>
-                <span :class="foundOrder.shipping_amount === 0 ? 'text-green-600' : ''">
+                <span :style="{ color: 'var(--color-text-muted)' }">{{ $t('orders.shipping') }}</span>
+                <span :style="foundOrder.shipping_amount === 0 ? { color: 'var(--color-success)' } : undefined">
                   {{ foundOrder.shipping_amount === 0 ? $t('orders.free') : formatPrice(foundOrder.shipping_amount) }}
                 </span>
               </div>
-              <div class="flex justify-between border-t pt-2 border-gray-200">
-                <span class="font-bold text-gray-900">{{ $t('orders.total') }}</span>
-                <span class="font-bold text-gray-900">{{ formatPrice(foundOrder.total) }}</span>
+              <div class="flex justify-between border-t pt-2" :style="{ borderTopColor: 'var(--color-border)' }">
+                <span class="font-bold" :style="{ color: 'var(--color-text-primary)' }">{{ $t('orders.total') }}</span>
+                <span class="font-bold" :style="{ color: 'var(--color-text-primary)' }">{{ formatPrice(foundOrder.total) }}</span>
               </div>
             </div>
           </div>
@@ -163,11 +166,12 @@
           <!-- Shipping Address -->
           <div
             v-if="foundOrder.shipping_address_data"
-            class="bg-white rounded-lg border border-gray-200 p-6"
+            class="rounded-lg border p-6"
+            :style="{ backgroundColor: 'var(--color-bg-elevated)', borderColor: 'var(--color-border-default)' }"
           >
-            <h2 class="font-semibold text-gray-900 mb-3">{{ $t('orders.shipping_address') }}</h2>
-            <div class="text-sm text-gray-600 space-y-1">
-              <p v-if="foundOrder.shipping_address_data.name" class="font-medium text-gray-900">
+            <h2 class="font-semibold mb-3" :style="{ color: 'var(--color-text-primary)' }">{{ $t('orders.shipping_address') }}</h2>
+            <div class="text-sm space-y-1" :style="{ color: 'var(--color-text-secondary)' }">
+              <p v-if="foundOrder.shipping_address_data.name" class="font-medium" :style="{ color: 'var(--color-text-primary)' }">
                 {{ foundOrder.shipping_address_data.name }}
               </p>
               <p v-if="foundOrder.shipping_address_data.address?.line1">
@@ -192,20 +196,21 @@
           <!-- Tracking -->
           <div
             v-if="foundOrder.tracking_number"
-            class="bg-white rounded-lg border border-gray-200 p-6"
+            class="rounded-lg border p-6"
+            :style="{ backgroundColor: 'var(--color-bg-elevated)', borderColor: 'var(--color-border-default)' }"
           >
-            <h2 class="font-semibold text-gray-900 mb-3">{{ $t('orders.track_order') }}</h2>
+            <h2 class="font-semibold mb-3" :style="{ color: 'var(--color-text-primary)' }">{{ $t('orders.track_order') }}</h2>
             <div class="text-sm space-y-2">
               <div class="flex justify-between">
-                <span class="text-gray-500">{{ $t('orders.tracking_number') }}</span>
+                <span :style="{ color: 'var(--color-text-muted)' }">{{ $t('orders.tracking_number') }}</span>
                 <span class="font-mono font-semibold">{{ foundOrder.tracking_number }}</span>
               </div>
               <div v-if="foundOrder.shipped_at" class="flex justify-between">
-                <span class="text-gray-500">{{ $t('orders.shipped_at') }}</span>
+                <span :style="{ color: 'var(--color-text-muted)' }">{{ $t('orders.shipped_at') }}</span>
                 <span>{{ formatDate(foundOrder.shipped_at) }}</span>
               </div>
               <div v-if="foundOrder.delivered_at" class="flex justify-between">
-                <span class="text-gray-500">{{ $t('orders.delivered_at') }}</span>
+                <span :style="{ color: 'var(--color-text-muted)' }">{{ $t('orders.delivered_at') }}</span>
                 <span>{{ formatDate(foundOrder.delivered_at) }}</span>
               </div>
             </div>
@@ -214,6 +219,16 @@
       </div>
     </div>
   </template>
+
+  <style scoped>
+  .orders-track__submit:hover:not(:disabled) {
+    background-color: var(--color-primary-hover, var(--color-primary));
+  }
+
+  .orders-track__divide > :not([hidden]) ~ :not([hidden]) {
+    border-top-color: var(--color-border-subtle);
+  }
+  </style>
   
   <script setup lang="ts">
  import { formatPrice } from '../../utils/price'

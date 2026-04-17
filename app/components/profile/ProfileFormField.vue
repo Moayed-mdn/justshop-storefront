@@ -1,16 +1,17 @@
 <template>
   <div>
-    <label :for="id" class="block text-sm font-medium text-gray-700">{{ label }}</label>
+    <label :for="id" class="block text-sm font-medium" :style="{ color: 'var(--profile-label)' }">{{ label }}</label>
     <input
       :id="id"
       :value="modelValue"
       :type="type"
       :required="required"
       :placeholder="placeholder"
-      class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#003D29] focus:border-[#003D29] sm:text-sm"
+      class="mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:ring-(--color-primary) focus:border-(--color-primary) sm:text-sm"
+      :style="{ backgroundColor: 'var(--profile-input-bg)', borderColor: 'var(--profile-input-border)', color: 'var(--profile-input-text)' }"
       @input="onInput"
     >
-    <span v-if="error" class="text-xs text-red-500">{{ error }}</span>
+    <span v-if="error" class="text-xs" :style="{ color: 'var(--color-error)' }">{{ error }}</span>
   </div>
 </template>
 

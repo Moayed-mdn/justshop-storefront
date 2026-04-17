@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col gap-2">
     <label
-      class="px-4 py-2 text-sm font-medium text-[#003D29] border border-[#003D29] rounded-md cursor-pointer hover:bg-[#003D29]/5 transition-colors text-center"
+      class="px-4 py-2 text-sm font-medium text-(--color-primary) border border-(--color-primary) rounded-md cursor-pointer hover:bg-(--color-primary)/5 transition-colors text-center"
     >
       {{ buttonText }}
       <input
@@ -11,7 +11,7 @@
         @change="onChange"
       >
     </label>
-    <p v-if="hint" class="text-xs text-gray-400">{{ hint }}</p>
+    <p v-if="hint" class="text-xs" :style="{ color: 'var(--color-text-muted)' }">{{ hint }}</p>
   </div>
 </template>
 

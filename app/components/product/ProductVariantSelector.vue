@@ -117,10 +117,10 @@ import type { ProductVariant } from '~~/types/productDetail';
     }
   
     if (isSelected) {
-      return 'border-[#003D29] bg-[#003D29] text-white'
+      return 'border-(--color-primary) bg-(--color-primary) text-white'
     }
   
-    return 'border-gray-300 text-gray-700 hover:border-[#003D29]'
+    return 'border-gray-300 text-gray-700 hover:border-(--color-primary)'
   }
   
   // Handle attribute selection

@@ -1,6 +1,6 @@
 <!-- pages/orders/[orderNumber].vue -->
 <template>
-  <div class="min-h-[60vh] bg-gray-50">
+  <div class="min-h-[60vh]" :style="{ backgroundColor: 'var(--orders-page-bg)' }">
     <OrderBreadcrumb :order-number="orderNumber" />
 
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">

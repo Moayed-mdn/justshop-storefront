@@ -6,7 +6,7 @@
         <!-- ── Loading / Processing ── -->
         <div v-if="status === 'loading'" class="text-center space-y-4">
           <div class="flex justify-center">
-            <svg class="animate-spin h-12 w-12 text-[#003D29]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <svg class="animate-spin h-12 w-12 text-(--color-primary)" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
             </svg>
@@ -85,8 +85,8 @@
             <NuxtLinkLocale
               v-if="isLoggedIn"
               to="/orders"
-              class="flex-1 py-3 px-4 text-center text-sm font-semibold text-white bg-[#003D29]
-                     rounded-md hover:bg-[#00251C] transition-colors"
+              class="flex-1 py-3 px-4 text-center text-sm font-semibold text-white bg-(--color-primary)
+                     rounded-md hover:bg-(--green-950) transition-colors"
             >
               {{ $t('checkout.view_orders') }}
             </NuxtLinkLocale>
@@ -95,7 +95,7 @@
               to="/"
               class="flex-1 py-3 px-4 text-center text-sm font-semibold border border-gray-300
                      rounded-md hover:bg-gray-50 transition-colors"
-              :class="isLoggedIn ? 'text-gray-700' : 'text-white bg-[#003D29] hover:bg-[#00251C] border-transparent'"
+              :class="isLoggedIn ? 'text-gray-700' : 'text-white bg-(--color-primary) hover:bg-(--green-950) border-transparent'"
             >
               {{ $t('checkout.continue_shopping') }}
             </NuxtLinkLocale>
@@ -120,8 +120,8 @@
   
           <NuxtLinkLocale
             to="/"
-            class="inline-block py-3 px-6 text-sm font-semibold text-white bg-[#003D29]
-                   rounded-md hover:bg-[#00251C] transition-colors"
+            class="inline-block py-3 px-6 text-sm font-semibold text-white bg-(--color-primary)
+                   rounded-md hover:bg-(--green-950) transition-colors"
           >
             {{ $t('checkout.continue_shopping') }}
           </NuxtLinkLocale>

@@ -5,7 +5,7 @@
         <!-- Loading State -->
         <div v-if="!error">
           <div class="flex justify-center">
-            <svg class="animate-spin h-10 w-10 text-[#003D29]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <svg class="animate-spin h-10 w-10 text-(--color-primary)" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
             </svg>
@@ -23,7 +23,7 @@
           <p class="mt-4 text-red-600 font-medium">{{ error }}</p>
           <NuxtLink
             to="/login"
-            class="mt-4 inline-block px-4 py-2 text-sm font-medium text-white bg-[#003D29] rounded-md hover:bg-[#00251C]"
+            class="mt-4 inline-block px-4 py-2 text-sm font-medium text-white bg-(--color-primary) rounded-md hover:bg-(--green-950)"
           >
             Back to Login
           </NuxtLink>

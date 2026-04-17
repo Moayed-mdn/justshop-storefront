@@ -2,24 +2,24 @@
 
 :root {
     /* ── Dropdown ─────────────────────────── */
-    --search-dropdown-bg: var(--white);
+    --search-dropdown-bg: var(--color-bg-elevated);
     --search-dropdown-shadow: var(--shadow-lg);
     --search-dropdown-border: var(--color-border-default);
     --search-dropdown-max-height: 26rem;
   
     /* ── Suggestion Items ─────────────────── */
-    --search-item-hover: var(--gray-100);
-    --search-item-active: var(--gray-200);
+    --search-item-hover: var(--color-bg-hover);
+    --search-item-active: var(--color-bg-card);
     --search-item-text: var(--color-text-primary);
     --search-item-secondary: var(--color-text-secondary);
   
     /* ── Type Badges ──────────────────────── */
-    --search-badge-product-bg: #DBEAFE;
-    --search-badge-product-text: #1E40AF;
-    --search-badge-category-bg: #D1FAE5;
-    --search-badge-category-text: #065F46;
-    --search-badge-brand-bg: #FEF3C7;
-    --search-badge-brand-text: #92400E;
+    --search-badge-product-bg: var(--blue-100);
+    --search-badge-product-text: var(--blue-800);
+    --search-badge-category-bg: var(--green-100);
+    --search-badge-category-text: var(--green-800);
+    --search-badge-brand-bg: var(--amber-100);
+    --search-badge-brand-text: var(--amber-800);
   
     /* ── Rating Stars ─────────────────────── */
     --search-star-filled: var(--orange-500);

@@ -28,12 +28,18 @@
         <span class="hidden sm:block group-hover:opacity-(--header-opacity)">{{ $t('header.cart') }}</span>
         <div
           v-if="cart.itemsCount.value > 0"
-          class="absolute -top-1 sm:-top-2 -right-1 sm:right-8 bg-(--color-accent) text-white rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center text-xs"
+          class="absolute -top-1 sm:-top-2 -right-1 sm:right-8 bg-(--color-accent) rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center text-xs"
+          :style="{ color: 'var(--color-text-inverse)' }"
         >
           {{ cart.itemsCount.value }}
         </div>
       </NuxtLinkLocale>
     </ClientOnly>
+
+    <ClientOnly>
+      <ThemeToggle />
+    </ClientOnly>
+
     <!-- ═══ BURGER MENU ═══ -->
     <button
       @click="emit('openMenu')"
@@ -50,6 +56,8 @@
 </template>
 
 <script setup lang="ts">
+import ThemeToggle from '~/components/ui/ThemeToggle.vue'
+
 const cart = useCart()
 const { isLoggedIn } = useAuth()
 

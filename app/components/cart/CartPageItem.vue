@@ -1,13 +1,13 @@
 <template>
     <div
-      class="flex gap-4 p-4 bg-white rounded-lg border border-gray-100
+      class="flex gap-4 p-4 bg-(--color-bg-elevated) rounded-lg border border-(--color-border-default)
              transition-all duration-200"
       :class="{ 'opacity-50 pointer-events-none': isRemoving }"
     >
       <!-- ── Image ── -->
       <NuxtLinkLocale
         :to="productLink"
-        class="flex-shrink-0 w-20 h-20 sm:w-28 sm:h-28 rounded-md overflow-hidden bg-gray-50"
+        class="flex-shrink-0 w-20 h-20 sm:w-28 sm:h-28 rounded-md overflow-hidden bg-(--color-bg-surface)"
       >
         <img
           v-if="item.image"
@@ -15,7 +15,7 @@
           :alt="item.name"
           class="w-full h-full object-contain hover:scale-105 transition-transform duration-200"
         >
-        <div v-else class="w-full h-full flex items-center justify-center text-gray-300">
+        <div v-else class="w-full h-full flex items-center justify-center text-(--color-text-muted)">
           <svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
               d="M4 16l4.586-4.586a2 2 0 012.828 0L16
@@ -32,7 +32,7 @@
         <div class="flex items-start justify-between gap-2">
           <NuxtLinkLocale
             :to="productLink"
-            class="text-sm sm:text-base font-semibold text-gray-900 hover:text-[#003D29]
+            class="text-sm sm:text-base font-semibold text-(--color-text-primary) hover:text-(--color-primary)
                    transition-colors line-clamp-2"
           >
             {{ item.name }}
@@ -41,7 +41,7 @@
           <button
             @click="handleRemove"
             :disabled="isRemoving"
-            class="flex-shrink-0 p-1 text-gray-400 hover:text-red-500
+            class="flex-shrink-0 p-1 text-(--color-text-muted) hover:text-red-500
                    transition-colors cursor-pointer disabled:opacity-50"
             :title="$t('cart.remove')"
           >
@@ -60,33 +60,33 @@
           <span
             v-for="attr in item.variant.attributes"
             :key="attr.name"
-            class="text-xs text-gray-500"
+            class="text-xs text-(--color-text-secondary)"
           >
             <span class="font-medium">{{ attr.name }}:</span> {{ attr.value }}
           </span>
         </div>
   
         <!-- SKU -->
-        <p v-if="item.variant?.sku" class="text-xs text-gray-400 mt-1">
+        <p v-if="item.variant?.sku" class="text-xs text-(--color-text-muted) mt-1">
           SKU: {{ item.variant.sku }}
         </p>
   
         <!-- Price + Quantity + Subtotal -->
         <div class="flex flex-wrap items-end justify-between gap-3 mt-3">
           <!-- Price per unit -->
-          <div class="text-sm text-gray-500">
+          <div class="text-sm text-(--color-text-secondary)">
             {{ formatPrice(item.price) }} × {{ item.quantity }}
           </div>
   
           <!-- Quantity Selector -->
           <div
-            class="flex items-center border border-gray-200 rounded-lg overflow-hidden"
+            class="flex items-center border border-(--color-border-default) rounded-lg overflow-hidden"
           >
             <button
               @click="handleDecrement"
               :disabled="isUpdating"
-              class="w-8 h-8 flex items-center justify-center text-gray-600
-                     hover:bg-gray-100 transition-colors disabled:opacity-40 cursor-pointer"
+              class="w-8 h-8 flex items-center justify-center text-(--color-text-secondary)
+                     hover:bg-(--color-bg-hover) transition-colors disabled:opacity-40 cursor-pointer"
             >
               <svg v-if="item.quantity === 1" class="w-4 h-4 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -104,7 +104,7 @@
               <span
                 :key="item.quantity"
                 class="w-10 h-8 flex items-center justify-center text-sm font-semibold
-                       border-x border-gray-200 bg-gray-50"
+                       border-x border-(--color-border-default) bg-(--color-bg-surface)"
               >
                 {{ item.quantity }}
               </span>

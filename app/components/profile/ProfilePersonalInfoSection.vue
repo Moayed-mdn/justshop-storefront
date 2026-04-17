@@ -1,7 +1,7 @@
 <template>
   <ProfileSectionCard>
     <div class="flex items-center justify-between mb-4">
-      <h2 class="text-lg font-semibold text-gray-900">{{ title }}</h2>
+      <h2 class="text-lg font-semibold" :style="{ color: 'var(--profile-title)' }">{{ title }}</h2>
       <ProfileGoogleLinkedBadge v-if="googleLinked" :text="googleLinkedText" />
     </div>
 
@@ -37,7 +37,7 @@
         <button
           type="submit"
           :disabled="loading"
-          class="px-6 py-2 text-sm font-medium text-white bg-[#003D29] rounded-md hover:bg-[#00251C] disabled:opacity-50 transition-colors"
+          class="px-6 py-2 text-sm font-medium text-white bg-(--color-primary) rounded-md hover:bg-(--green-950) disabled:opacity-50 transition-colors"
         >
           {{ loading ? savingButtonText : saveButtonText }}
         </button>

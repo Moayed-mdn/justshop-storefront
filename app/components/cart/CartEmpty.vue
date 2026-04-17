@@ -19,8 +19,8 @@
   
       <NuxtLinkLocale
         to="/"
-        class="px-6 py-3 bg-[#003D29] text-white font-medium rounded-md
-               hover:bg-[#00251C] transition-colors"
+        class="px-6 py-3 bg-(--color-primary) text-white font-medium rounded-md
+               hover:bg-(--green-950) transition-colors"
       >
         {{ $t('cart.continue_shopping') }}
       </NuxtLinkLocale>

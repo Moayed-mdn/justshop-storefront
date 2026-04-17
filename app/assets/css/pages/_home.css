@@ -1,7 +1,7 @@
 :root {
   /* Homepage Variables */
   --home-hero-height: 31.25rem; /* 500px using 16px base */
-  --home-hero-bg: var(--color-bg-section);
+  --home-hero-bg: var(--color-bg-surface);
   --home-section-spacing: var(--space-16);
   --home-featured-gap: var(--space-8);
   --home-category-grid-cols: 4;

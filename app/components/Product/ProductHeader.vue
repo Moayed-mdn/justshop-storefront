@@ -14,7 +14,7 @@
           <span class="text-gray-500">{{ $t('product.category') }}:</span>
           <NuxtLinkLocale
             :to="`/products/category/${product.category.slug}`"
-            class="font-medium text-[#003D29] hover:underline"
+            class="font-medium text-(--color-primary) hover:underline"
           >
             {{ product.category.name }}
           </NuxtLinkLocale>

@@ -20,8 +20,8 @@
         <button
           @click="$emit('checkout')"
           :disabled="loading"
-          class="w-full py-3 bg-[#003D29] text-white font-semibold rounded-md
-                 hover:bg-[#00251C] transition-colors cursor-pointer
+          class="w-full py-3 bg-(--color-primary) text-white font-semibold rounded-md
+                 hover:bg-(--green-950) transition-colors cursor-pointer
                  disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
           <svg

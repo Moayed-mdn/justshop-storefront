@@ -6,18 +6,31 @@
 
   /* Brand Base */
   --green-900: #003D29;
+  --green-950: #00251C;
   --orange-500: #FF7006;
   --orange-300: #FFB23C;
   --pink-500: #C34482;
+
+  /* Extended Palette (used by UI components) */
+  --blue-100: #DBEAFE;
+  --blue-800: #1E40AF;
+  --green-100: #D1FAE5;
+  --green-800: #065F46;
+  --amber-100: #FEF3C7;
+  --amber-800: #92400E;
 
   /* Neutral Scale */
   --gray-900: #231F1E;
   --gray-700: #333333;
   --gray-400: #D3D2D2;
+  --gray-300: #E5E7EB;
   --gray-200: #F5F6F6;
   --gray-100: #F3F4F6;
   --white: #FFFFFF;
   --black: #000000;
+  --black-40: rgba(0, 0, 0, 0.4);
+  --black-10: rgba(0, 0, 0, 0.1);
+  --black-15: rgba(0, 0, 0, 0.15);
   --transparent: transparent;
 
   /* State */
@@ -36,22 +49,84 @@
 
   /* Backgrounds */
   --color-bg-page: var(--white);
+  --color-bg-surface: var(--gray-100);
   --color-bg-card: var(--gray-200);
+  --color-bg-elevated: var(--white);
 
   /* Text */
   --color-text-primary: var(--gray-900);
   --color-text-secondary: var(--gray-700);
+  --color-text-muted: var(--gray-400);
   --color-text-inverse: var(--white);
   --color-text-black: var(--black);
 
   /* Borders */
-  --color-border-default: var(--gray-400);
+  --color-border-default: var(--gray-300);
+  --color-border-strong: var(--gray-400);
   --color-border-active: var(--color-primary);
 
-  /* Status */
+  /* States */
   --color-error: var(--red-error);
+  --color-success: var(--green-success);
 
+  /* Overlays */
+  --color-overlay-light: rgba(0, 0, 0, 0.1);
+  --color-overlay-medium: rgba(0, 0, 0, 0.4);
 
-  /* Interactive States */
+  --color-bg-disabled: var(--gray-200);
+  --color-text-disabled: var(--gray-400);
+  --color-border-disabled: var(--gray-300);
+
+  --color-bg-strong: var(--gray-900);
+
+  /* Inverse UI */
+  --color-bg-inverse: var(--gray-900);
+  --color-border-inverse: var(--gray-700);
+
+  --color-focus-ring: color-mix(in srgb, var(--color-primary) 40%, transparent);
+
+  /* Interaction */
   --color-bg-hover: var(--gray-200);
+}
+
+[data-theme="dark"] {
+  /* Backgrounds */
+  --color-bg-page: #0b0b0b;
+  --color-bg-surface: #121212;
+  --color-bg-card: #1a1a1a;
+  --color-bg-elevated: #222222;
+
+  /* Text */
+  --color-text-primary: #f5f5f5;
+  --color-text-secondary: #d1d5db;
+  --color-text-muted: #9ca3af;
+  --color-text-inverse: #0b0b0b;
+
+  /* Borders */
+  --color-border-default: #2a2a2a;
+  --color-border-strong: #3a3a3a;
+  --color-border-inverse: #e5e7eb;
+
+  /* Brand adjustments */
+  --color-primary: #22c55e;
+  --color-accent: #ff8a1f;
+  --color-accent-hover: #ffb347;
+
+  /* Overlays */
+  --color-overlay-light: rgba(255, 255, 255, 0.06);
+  --color-overlay-medium: rgba(255, 255, 255, 0.12);
+
+  --color-bg-disabled: #1a1a1a;
+  --color-text-disabled: #6b7280;
+  --color-border-disabled: #2a2a2a;
+
+  --color-bg-strong: #000000;
+
+  /* Inverse UI */
+  --color-bg-inverse: #ffffff;
+
+  --color-focus-ring: color-mix(in srgb, var(--color-primary) 60%, transparent);
+
+  /* Interaction */
+  --color-bg-hover: #1f1f1f;
 }

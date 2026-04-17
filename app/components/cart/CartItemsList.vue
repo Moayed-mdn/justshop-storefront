@@ -16,7 +16,7 @@
       <div class="pt-4">
         <NuxtLinkLocale
           to="/"
-          class="inline-flex items-center gap-2 text-sm font-medium text-[#003D29]
+          class="inline-flex items-center gap-2 text-sm font-medium text-(--color-primary)
                  hover:underline transition-colors"
         >
           <svg class="w-4 h-4 rtl:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">

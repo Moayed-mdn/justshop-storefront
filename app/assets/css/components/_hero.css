@@ -5,7 +5,7 @@
   --hero-h-desktop: 37.5rem; /* 600px using 16px base */
   
   /* Banner Visuals */
-  --hero-overlay-bg: rgba(0, 0, 0, 0.4);
+  --hero-overlay-bg: var(--black-40);
   /* --hero-overlay-opacity: 0.4; */
   --hero-text-shadow: var(--shadow-md);
   

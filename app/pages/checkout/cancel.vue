@@ -22,8 +22,8 @@
         <div class="flex flex-col sm:flex-row gap-3 pt-2 justify-center">
           <NuxtLinkLocale
             to="/cart"
-            class="py-3 px-6 text-sm font-semibold text-white bg-[#003D29]
-                   rounded-md hover:bg-[#00251C] transition-colors"
+            class="py-3 px-6 text-sm font-semibold text-white bg-(--color-primary)
+                   rounded-md hover:bg-(--green-950) transition-colors"
           >
             {{ $t('checkout.return_to_cart') }}
           </NuxtLinkLocale>

@@ -1,0 +1,7 @@
+:root {
+  --product-page-bg: var(--color-bg-page);
+  --product-desc-text: var(--color-text-secondary);
+  --product-divider: var(--color-border-default);
+  --product-warning: var(--color-text-secondary);
+  --product-notfound-title: var(--color-text-primary);
+}
