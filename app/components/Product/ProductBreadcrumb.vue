@@ -6,7 +6,7 @@
             {{ $t('product.breadcrumb_home') }}
           </NuxtLinkLocale>
           <span>/</span>
-          <NuxtLinkLocale to="/products" class="hover:text-(--color-primary)">
+          <NuxtLinkLocale :to="productRoutes.index()" class="hover:text-(--color-primary)">
             {{ $t('product.breadcrumb_shop') }}
           </NuxtLinkLocale>
           <span>/</span>
@@ -19,6 +19,7 @@
   </template>
   
   <script setup lang="ts">
+import { productRoutes } from '~~/shared/routes/products'
   defineProps<{
     productName: string
   }>()

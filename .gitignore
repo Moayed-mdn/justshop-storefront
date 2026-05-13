@@ -1,1 +1,1 @@
-Nothing should be ignored in this case, as only a markdown file (.md) was added and there are no build artifacts, dependencies, or temporary files in the changes.
+Nothing needs to be added to .gitignore since the changes only include Vue component files (.vue) which are source code files and should not be ignored.
