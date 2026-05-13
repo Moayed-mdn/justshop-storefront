@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-wrap items-start justify-between gap-4 mb-6">
     <div>
-      <NuxtLinkLocale to="/orders" class="text-sm text-(--color-primary) hover:underline mb-2 inline-block">
+      <NuxtLinkLocale :to="orderRoutes.index()" class="text-sm text-(--color-primary) hover:underline mb-2 inline-block">
         ← {{ $t('orders.back_to_orders') }}
       </NuxtLinkLocale>
       <h1 class="text-xl sm:text-2xl font-bold" :style="{ color: 'var(--color-text-primary)' }">
@@ -18,6 +18,8 @@
 </template>
 
 <script setup lang="ts">
+import { orderRoutes } from '~~/shared/routes/orders'
+
 defineProps<{
   orderNumber: string
   status: string

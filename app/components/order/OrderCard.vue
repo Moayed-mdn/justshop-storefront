@@ -91,7 +91,7 @@
           </button>
   
           <NuxtLinkLocale
-            :to="`/orders/${order.order_number}`"
+            :to="orderRoutes.show(order.order_number)"
             class="px-3 py-1.5 text-xs font-semibold text-white bg-(--color-primary)
                    rounded-md hover:bg-(--green-950) transition-colors"
           >
@@ -106,6 +106,7 @@
   import { formatPrice } from '../../utils/price'
   import { formatDate as formatDateUtil } from '../../utils/date'
   import type { Order } from '~~/types/order'
+  import { orderRoutes } from '~~/shared/routes/orders'
   
   const props = defineProps<{
     order: Order

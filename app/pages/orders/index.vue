@@ -56,6 +56,7 @@
 <script setup lang="ts">
 import type { PaginationMeta } from '~~/types/api'
 import type { Order, OrderStatusFilter } from '~~/types/order'
+import { checkoutRoutes } from '~~/shared/routes/checkout'
 
 // Composables
 const { fetchOrders, fetchFilters, cancelOrder, reorder, loading } = useOrders()
@@ -163,7 +164,7 @@ const handleReorder = async (orderNumber: string) => {
       })
     }
 
-    navigateTo(localePath('/cart'))
+    navigateTo(localePath(checkoutRoutes.cart()))
   } catch (err: any) {
     showErrorToast(err?.data?.message || t('orders.reorder_failed'))
   } finally {

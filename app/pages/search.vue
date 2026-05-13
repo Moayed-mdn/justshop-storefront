@@ -65,7 +65,7 @@
             <NuxtLinkLocale
               v-for="cat in results.categories"
               :key="cat.id"
-              :to="`/products/category/${cat.slug}`"
+              :to="productRoutes.category(cat.slug)"
               class="
                 inline-flex items-center gap-2 px-4 py-2 rounded-full
                 bg-(--search-badge-category-bg) text-(--search-badge-category-text)
@@ -124,6 +124,7 @@
 <script setup lang="ts">
 import { SEARCH_QUERY } from '~/graphql/queries/search'
 import type { SearchResult } from '~~/types/search'
+import { productRoutes } from '~~/shared/routes/products'
 
 const route = useRoute()
 const { locale, t } = useI18n()
