@@ -1,7 +1,10 @@
+// middleware/google-auth.ts
+import { authRoutes, commonRoutes } from '~/shared/routes';
+
 export default defineNuxtRouteMiddleware(async (to) => {
   const { handleGoogleCallback } = useAuth()
   const { showSuccessToast, showErrorToast } = useAppToast()
-  const localePath = useLocalePath()
+  const { goReplace } = useAppNavigation()
 
   const token = to.query.token
   const errorParam = to.query.error
@@ -9,24 +12,24 @@ export default defineNuxtRouteMiddleware(async (to) => {
   // Handle error from Laravel
   if (errorParam) {
     showErrorToast('Could not sign in with Google.')
-    return navigateTo(localePath('/login'), { replace: true })
+    return goReplace(authRoutes.login())
   }
 
   // Handle missing token
   if (!token || typeof token !== 'string') {
     showErrorToast('No authentication token received.')
-    return navigateTo(localePath('/login'), { replace: true })
+    return goReplace(authRoutes.login())
   }
 
   // Process the token
   try {
     await handleGoogleCallback(token)
     showSuccessToast('Signed in with Google successfully.')
-    return navigateTo(localePath('/'), { replace: true })
+    return goReplace(commonRoutes.home())
   }
   catch (err) {
     console.error('Google auth error:', err)
     showErrorToast('Could not complete Google sign-in.')
-    return navigateTo(localePath('/login'), { replace: true })
+    return goReplace(authRoutes.login())
   }
 })

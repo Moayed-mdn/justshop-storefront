@@ -1,5 +1,6 @@
 // composables/useAuth.ts
 import { useApi } from '~/composables/useApi';
+import { authRoutes, commonRoutes } from '~/shared/routes';
 import type { AuthResponse, UserResponse } from '~~/types/auth';
 import type { ApiSuccess } from '~~/types/api';
 
@@ -7,7 +8,7 @@ export const useAuth = () => {
   const authStore = useAuthStore();
   const { showSuccessToast } = useAppToast();
   const loading = useState('auth_loading', () => false);
-  const localePath = useLocalePath();
+  const { go } = useAppNavigation();
 
   const login = async (credentials: Record<string, string>) => {
     loading.value = true;
@@ -27,8 +28,8 @@ export const useAuth = () => {
       const cartStore = useCartStore();
       await cartStore.onLogin();
 
-      return navigateTo(localePath('/'));
-    }finally {
+      return go(commonRoutes.home());
+    } finally {
       loading.value = false;
     }
   };
@@ -82,7 +83,7 @@ export const useAuth = () => {
       authStore.clearAuth();
       useCartStore().onLogout();
       loading.value = false;
-      return navigateTo(localePath('/login'));
+      return go(authRoutes.login());
     }
   };
 
@@ -117,7 +118,7 @@ export const useAuth = () => {
       const cartStore = useCartStore();
       await cartStore.onLogin();
 
-      return navigateTo(localePath('/'));
+      return go(commonRoutes.home());
     } catch (err: any) {
       authStore.clearAuth();
       throw err;
