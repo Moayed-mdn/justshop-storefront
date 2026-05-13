@@ -4,7 +4,7 @@
       class="bg-(--card-bg-light) rounded-(--radius-md) flex items-center justify-center
              h-(--card-img-height-mobile) lg:h-(--card-img-height-desktop) overflow-hidden group"
     >
-      <NuxtLinkLocale :to="`/products/product/${product.slug}`" class="cursor-pointer">
+      <NuxtLinkLocale :to="productRoutes.show(product.slug)" class="cursor-pointer">
         <img
           class="max-h-full object-contain transition-transform duration-(--card-transition-speed) group-hover:scale-110"
           :src="product.primary_image"
@@ -51,6 +51,7 @@
 
 <script setup lang="ts">
 import type { ProductCard } from '~~/types/product'
+import { productRoutes } from '~~/shared/routes/products'
 
 
 defineProps<{ product: ProductCard }>()

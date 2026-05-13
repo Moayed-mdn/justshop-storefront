@@ -142,6 +142,7 @@
   <script setup lang="ts">
   import { formatPrice } from '../../utils/price'
   import type { CartItem } from '~~/types/cart'
+  import { productRoutes } from '~~/shared/routes/products'
   
   const props = defineProps<{
     item: CartItem
@@ -153,7 +154,7 @@
   // ── Product link ──
   const productLink = computed(() => {
     const slug = props.item.product?.slug
-    if (slug) return `/products/${slug}`
+    if (slug) return productRoutes.show(slug)
     return '#'
   })
   
