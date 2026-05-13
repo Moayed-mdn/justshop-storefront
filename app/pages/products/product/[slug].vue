@@ -80,7 +80,7 @@
       <h1 class="text-2xl font-bold" :style="{ color: 'var(--product-notfound-title)' }">
         {{ $t('product.not_found') }}
       </h1>
-      <NuxtLinkLocale to="/products" class="mt-4 inline-block text-(--color-primary) hover:underline">
+      <NuxtLinkLocale :to="productRoutes.index()" class="mt-4 inline-block text-(--color-primary) hover:underline">
         {{ $t('product.back_to_shop') }}
       </NuxtLinkLocale>
     </div>
@@ -90,6 +90,8 @@
 <script setup lang="ts">
 import type { ProductDetail, ProductVariant } from '~~/types/productDetail'
 import type { ProductRelated } from '~~/types/productRelated'
+import { checkoutRoutes } from '~~/shared/routes/checkout'
+import { productRoutes } from '~~/shared/routes/products'
 
 const route = useRoute()
 const { t } = useI18n()
@@ -175,7 +177,7 @@ const onVariantChange = (variant: ProductVariant) => {
 
 const handleAddToCart = async () => {
   if (isInCart.value) {
-    return navigateTo(localePath('/cart'))
+    return navigateTo(localePath(checkoutRoutes.cart()))
   }
 
   if (!canAddToCart.value || !product.value) return
@@ -205,7 +207,7 @@ const handleAddToCart = async () => {
 const handleBuyNow = async () => {
   await handleAddToCart()
   if (isInCart.value) {
-    navigateTo(localePath('/checkout'))
+    navigateTo(localePath(checkoutRoutes.checkout()))
   }
 }
 

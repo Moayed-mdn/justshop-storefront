@@ -14,7 +14,7 @@
   
           <span>/</span>
   
-          <NuxtLinkLocale to="/products" class="hover:text-(--color-primary) transition-colors">
+          <NuxtLinkLocale :to="productRoutes.index()" class="hover:text-(--color-primary) transition-colors">
             {{ $t('product.breadcrumb_shop') }}
           </NuxtLinkLocale>
   
@@ -22,7 +22,7 @@
             <span>/</span>
             <NuxtLinkLocale
               v-if="idx < breadcrumb.length - 1"
-              :to="`/products/category/${crumb.slug}`"
+              :to="productRoutes.category(crumb.slug)"
               class="hover:text-(--color-primary) transition-colors"
             >
               {{ crumb.name }}
@@ -48,6 +48,7 @@
   
   <script setup lang="ts">
 import type { BreadcrumbItem } from '~~/types/product';
+import { productRoutes } from '~~/shared/routes/products'
 
   defineProps<{
     name: string

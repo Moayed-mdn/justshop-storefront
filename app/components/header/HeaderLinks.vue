@@ -21,6 +21,7 @@
 
 <script setup lang="ts">
 const { t } = useI18n();
+import { productRoutes } from '~~/shared/routes/products'
 defineProps({
     mobile:{
         type:Boolean,
@@ -32,7 +33,7 @@ const closeMenu = inject('closeMenu')
 
 const navLinks = computed(() => [
 { name: t('header.links.home'), path: '/' },
-{ name: t('header.links.shop'), path: '/products' },
+{ name: t('header.links.shop'), path: productRoutes.index() },
 { name: t('header.links.contact'), path: '#' }
 ])
 </script>

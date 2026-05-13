@@ -1,7 +1,5 @@
-<!-- app/components/search/SearchProductCard.vue -->
-
 <template>
-    <NuxtLinkLocale :to="`/products/product/${product.slug}`" class="group w-full block">
+    <NuxtLinkLocale :to="productRoutes.show(product.slug)" class="group w-full block">
       <!-- Image -->
       <div class="
         bg-(--card-bg-light) rounded-(--radius-md) flex items-center justify-center
@@ -76,6 +74,7 @@
   
   <script setup lang="ts">
   import type { ProductSearchResult } from '~~/types/search'
+  import { productRoutes } from '~~/shared/routes/products'
   
   defineProps<{
     product: ProductSearchResult

@@ -13,7 +13,7 @@
         <div v-if="product.category" class="flex items-center gap-1">
           <span class="text-gray-500">{{ $t('product.category') }}:</span>
           <NuxtLinkLocale
-            :to="`/products/category/${product.category.slug}`"
+            :to="productRoutes.category(product.category.slug)"
             class="font-medium text-(--color-primary) hover:underline"
           >
             {{ product.category.name }}
@@ -25,6 +25,7 @@
   
   <script setup lang="ts">
   import type { ProductDetail } from '~~/types/productDetail'
+  import { productRoutes } from '~~/shared/routes/products'
   
   defineProps<{
     product: ProductDetail

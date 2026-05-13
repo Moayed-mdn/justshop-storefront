@@ -82,6 +82,8 @@
 <script setup lang="ts">
 import { AUTOCOMPLETE_QUERY } from '~/graphql/queries/search'
 import type { Suggestion, AutocompleteResult } from '~~/types/search'
+import { productRoutes } from '~~/shared/routes/products'
+import { commonRoutes } from '~~/shared/routes/common'
 
 const { locale } = useI18n()
 const localePath = useLocalePath()
@@ -191,10 +193,10 @@ function onSelectSuggestion(item: Suggestion) {
 
   switch (item.type) {
     case 'PRODUCT':
-      router.push(localePath(`/products/product/${item.slug}`))
+      router.push(localePath(productRoutes.show(item.slug)))
       break
     case 'CATEGORY':
-      router.push(localePath(`/products/category/${item.slug}`))
+      router.push(localePath(productRoutes.category(item.slug)))
       break
     case 'BRAND':
       navigateToSearch(item.text)
@@ -211,7 +213,7 @@ function onSeeAll() {
 function navigateToSearch(query: string) {
   isDropdownOpen.value = false
   highlightedIndex.value = -1
-  router.push({ path: localePath('/search'), query: { q: query } })
+  router.push({ path: localePath(commonRoutes.search()), query: { q: query } })
 }
 
 function clearSearch() {

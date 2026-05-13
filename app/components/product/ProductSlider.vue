@@ -4,8 +4,8 @@
     <NuxtLinkLocale
       class="group   items-center gap-2 "
       v-if="categoryName" 
-      :to="`/products/category/${categorySlug}`"
-      > 
+      :to="productRoutes.category(categorySlug)"
+      >
       <h2 class="my-8 max-w-[80%] capitalize text-2xl font-semibold text-(--slider-title-color) whitespace-pre-wrap wrap-break-word">
          {{ $t('best-seller.title') }}  {{ categoryName }}
             <!-- Inline SVG Icon -->
@@ -47,6 +47,7 @@ import type { ProductCard } from '~~/types/product'
 
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { productRoutes } from '~~/shared/routes/products'
 
 const scrollRef = ref<HTMLElement | null>(null)
 const scrollStep = 350

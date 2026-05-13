@@ -60,7 +60,7 @@
 
         <!-- Menu Items -->
         <NuxtLinkLocale
-          to="/profile"
+          :to="accountRoutes.profile()"
           @click="closeDropdown"
           class="header-profile-item flex items-center gap-3 px-4 py-2.5 text-sm transition-colors"
           :style="{ color: 'var(--color-text-secondary)' }"
@@ -72,7 +72,7 @@
         </NuxtLinkLocale>
 
         <NuxtLinkLocale
-          to="/orders"
+          :to="orderRoutes.index()"
           @click="closeDropdown"
           class="header-profile-item flex items-center gap-3 px-4 py-2.5 text-sm transition-colors"
           :style="{ color: 'var(--color-text-secondary)' }"
@@ -102,6 +102,9 @@
 </template>
 
 <script setup lang="ts">
+import { orderRoutes } from '~~/shared/routes/orders'
+import { accountRoutes } from '~~/shared/routes/account'
+
 const { user, logout } = useAuth()
 const { getAvatarUrl, getInitials } = useAvatar()
 
