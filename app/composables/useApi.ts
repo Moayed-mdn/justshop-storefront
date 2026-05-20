@@ -39,6 +39,9 @@ import type { ApiError } from '~~/types/api'
           },
           onResponseError(ctx: any) {
             const response = ctx.response as any
+            if(response.status==500)
+              return
+            
             const { showErrorToast } = useAppToast()
             const payload = response?._data?.data as ApiError
             const message = payload?.message ||'Something went wrong'

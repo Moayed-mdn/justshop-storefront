@@ -153,7 +153,7 @@
   // ── Product link ──
   const productLink = computed(() => {
     const slug = props.item.product?.slug
-    if (slug) return `/products/${slug}`
+    if (slug) return `/products/product/${slug}`
     return '#'
   })
   

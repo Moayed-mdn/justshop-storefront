@@ -2,7 +2,7 @@
   <div class="flex gap-4 p-4 sm:p-6">
     <!-- Image -->
     <NuxtLinkLocale
-      :to="item.product_slug ? `/products/${item.product_slug}` : '#'"
+      :to="item.product_slug ? `/products/product/${item.product_slug}` : '#'"
       class="shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-md overflow-hidden bg-gray-100"
     >
       <img
@@ -18,7 +18,7 @@
       <div class="flex items-start justify-between gap-2">
         <div>
           <NuxtLinkLocale
-            :to="item.product_slug ? `/products/${item.product_slug}` : '#'"
+            :to="item.product_slug ? `/products/product/${item.product_slug}` : '#'"
             class="text-sm font-semibold text-gray-900 hover:text-(--color-primary) transition-colors"
           >
             {{ item.product_name }}

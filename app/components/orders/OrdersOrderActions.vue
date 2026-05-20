@@ -8,7 +8,7 @@
              rounded-md hover:bg-(--color-primary)/5 transition-colors disabled:opacity-50 cursor-pointer
              flex items-center justify-center gap-2"
     >
-      <LoadingSpinner v-if="reordering" size="sm" />
+      <UiLoadingSpinner v-if="reordering" size="sm" />
       {{ $t('orders.buy_again') }}
     </button>
 

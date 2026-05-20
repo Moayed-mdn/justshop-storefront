@@ -90,6 +90,8 @@
 <script setup lang="ts">
 import type { ProductDetail, ProductVariant } from '~~/types/productDetail'
 import type { ProductRelated } from '~~/types/productRelated'
+const { startCheckout, loading: checkoutLoading } = useCheckout()
+
 
 const route = useRoute()
 const { t } = useI18n()
@@ -204,9 +206,7 @@ const handleAddToCart = async () => {
 
 const handleBuyNow = async () => {
   await handleAddToCart()
-  if (isInCart.value) {
-    navigateTo(localePath('/checkout'))
-  }
+  await startCheckout()
 }
 
 // ── Load Data ──

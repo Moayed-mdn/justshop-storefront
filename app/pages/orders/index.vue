@@ -45,7 +45,7 @@
       <!-- Cancel Confirmation Modal -->
       <OrdersCancelModal
         :show="!!cancelTarget"
-        :loading="cancelling"
+        :cancelling="cancelling"
         @cancel="cancelTarget = null"
         @confirm="confirmCancel"
       />

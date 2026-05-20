@@ -1,13 +1,13 @@
 <!-- pages/orders/[orderNumber].vue -->
 <template>
   <div class="min-h-[60vh]" :style="{ backgroundColor: 'var(--orders-page-bg)' }">
-    <OrderBreadcrumb :order-number="orderNumber" />
+    <OrdersOrderBreadcrumb :order-number="orderNumber" />
 
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-      <OrderLoading v-if="loading" />
+      <OrdersOrderLoading v-if="loading" />
 
       <div v-else-if="order">
-        <OrderHeader
+        <OrdersOrderHeader
           :order-number="order.order_number"
           :status="order.status"
           :payment-status="order.payment_status"
@@ -16,9 +16,9 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <!-- ═══ Left: Items ═══ -->
           <div class="lg:col-span-2 space-y-4">
-            <OrderItemList :items="order.items" :format-price="formatPrice" />
+            <OrdersOrderItemList :items="order.items" :format-price="formatPrice" />
 
-            <OrderTracking
+            <OrdersOrderTracking
               :tracking-number="order.tracking_number"
               :shipped-at="order.shipped_at"
               :delivered-at="order.delivered_at"
@@ -28,7 +28,7 @@
 
           <!-- ═══ Right: Summary ═══ -->
           <div class="space-y-4">
-            <OrderSummary
+            <OrdersOrderSummary
               :subtotal="order.subtotal"
               :shipping-amount="order.shipping_amount"
               :tax-amount="order.tax_amount"
@@ -37,9 +37,9 @@
               :format-price="formatPrice"
             />
 
-            <OrderShippingAddress :address-data="order.shipping_address_data" />
+            <OrdersOrderShippingAddress :address-data="order.shipping_address_data" />
 
-            <OrderActions
+            <OrdersOrderActions
               :status="order.status"
               :can-cancel="order.can_cancel"
               :reordering="reordering"
@@ -51,7 +51,7 @@
       </div>
     </div>
 
-    <CancelOrderModal
+    <OrdersCancelModal
       :show="showCancelModal"
       :cancelling="cancelling"
       @close="showCancelModal = false"
