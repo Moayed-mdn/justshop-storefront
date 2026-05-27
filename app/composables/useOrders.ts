@@ -120,7 +120,7 @@ export const useOrders = () => {
   };
 
   // ── Guest Lookup ──
-  const guestLookup = async (email: string, orderNumber: string) => {
+  const guestLookup = async (orderNumber: string, email: string) => {
     loading.value = true;
     error.value = null;
 

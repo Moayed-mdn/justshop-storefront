@@ -2,7 +2,7 @@ import type { BestSellerResponse, BestSellerCategory } from '~~/types/homepage';
 import { useApi } from '~/composables/useApi';
 import { API_ROUTES } from '~~/shared/utils/routes';
 
-export const useUseBestSellers = () => {
+export const useBestSellers = () => {
   const { locale } = useI18n();
   const key = computed(() => `best-seller-${locale.value}`)
   const {

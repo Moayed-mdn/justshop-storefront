@@ -20,6 +20,6 @@ u<template>
 
 <script setup lang="ts">
 
-const { categories, pending, error } = useUseBestSellers()
+const { categories, pending, error } = useBestSellers()
 </script>
 

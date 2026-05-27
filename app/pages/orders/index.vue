@@ -92,8 +92,10 @@ const loadOrders = async () => {
     page: currentPage.value,
     per_page: 10,
   })
-  orders.value = result.data
-  pagination.value = result.meta.pagination
+  if (result) {
+    orders.value = result.data
+    pagination.value = result.meta.pagination
+  }
 }
 
 const loadFilters = async () => {
@@ -133,37 +135,39 @@ const handleReorder = async (orderNumber: string) => {
   try {
     const result = await reorder(orderNumber)
 
-    const addedCount = result.added?.length ?? 0
-    const failedCount = result.data?.failed?.length ?? 0
-    const hasPriceChanges = result.data?.added?.some((i) => i.price_changed)
+    if (result?.data) {
+      const addedCount = result.data.added?.length ?? 0
+      const failedCount = result.data.failed?.length ?? 0
+      const hasPriceChanges = result.data.added?.some((i) => i.price_changed)
 
-    // Refresh cart
-    await cartStore.fetchCart()
+      // Refresh cart
+      await cartStore.fetchCart()
 
-    if (failedCount === 0) {
-      showSuccessToast(t('orders.reorder_success', { count: addedCount }))
-    } else {
-      toast.add({
-        title: '',
-        description: t('orders.reorder_partial', {
-          added: addedCount,
-          failed: failedCount,
-        }),
-        color: 'warning',
-        icon: 'i-heroicons-exclamation-triangle',
-      })
+      if (failedCount === 0) {
+        showSuccessToast(t('orders.reorder_success', { count: addedCount }))
+      } else {
+        toast.add({
+          title: '',
+          description: t('orders.reorder_partial', {
+            added: addedCount,
+            failed: failedCount,
+          }),
+          color: 'warning',
+          icon: 'i-heroicons-exclamation-triangle',
+        })
+      }
+
+      if (hasPriceChanges) {
+        toast.add({
+          title: '',
+          description: t('orders.reorder_price_changed'),
+          color: 'info',
+          icon: 'i-heroicons-information-circle',
+        })
+      }
+
+      navigateTo(localePath('/cart'))
     }
-
-    if (hasPriceChanges) {
-      toast.add({
-        title: '',
-        description: t('orders.reorder_price_changed'),
-        color: 'info',
-        icon: 'i-heroicons-information-circle',
-      })
-    }
-
-    navigateTo(localePath('/cart'))
   } catch (err: any) {
     showErrorToast(err?.data?.message || t('orders.reorder_failed'))
   } finally {
@@ -189,7 +193,7 @@ onMounted(async () => {
 
 // Meta
 definePageMeta({
-  // middleware: 'auth',
+  middleware: 'auth',
 })
 
 useHead({

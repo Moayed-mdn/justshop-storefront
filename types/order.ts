@@ -96,7 +96,7 @@ export interface Order {
 /**
  * Response type for the order list endpoint, using a global ApiPaginated<T> type.
  */
-export type OrderListResponse = ApiPaginated<Order>;
+export type OrderListResponse = ApiPaginated<Order[]>;
 
 /**
  * Response type for single order API calls, using a global ApiSuccess<T> type.

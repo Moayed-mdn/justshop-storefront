@@ -2,7 +2,7 @@ import { useApi } from '~/composables/useApi';
 import { API_ROUTES } from '~~/shared/utils/routes';
 import type { ProductListResponse } from '~~/types/product';
 
-export const useUseProduct = () => {
+export const useProduct = () => {
   const { locale } = useI18n();
   const route = useRoute();
   const { filters, syncFromUrl, syncToUrl, apiQuery } = useProductFilters();

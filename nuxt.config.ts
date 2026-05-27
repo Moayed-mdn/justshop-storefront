@@ -1,7 +1,5 @@
 import tailwindcss from '@tailwindcss/vite'
 
-const API_BASE_URL = process.env.NUXT_PUBLIC_API_BASE ;
-
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: {
@@ -20,17 +18,18 @@ export default defineNuxtConfig({
       include: ['@apollo/client/core', 'graphql-tag'],
     },
   },
-  runtimeConfig:{
-    apiBase: API_BASE_URL,
-    public:{
-      apiBase: API_BASE_URL,
+  runtimeConfig: {
+    // Server-side API base (defaults to public if NUXT_API_BASE is not set)
+    apiBase: process.env.NUXT_API_BASE || process.env.NUXT_PUBLIC_API_BASE,
+    public: {
+      // Client-side API base
+      apiBase: process.env.NUXT_PUBLIC_API_BASE,
       graphqlUrl: process.env.NUXT_PUBLIC_GRAPHQL_URL,
     },
-    
   },
   modules: ['@vueuse/nuxt', '@nuxtjs/i18n', 'nuxt-ssr-api-logger',
      '@pinia/nuxt','@nuxt/ui','pinia-plugin-persistedstate/nuxt', 
-    //  '@nuxt/icon',
+     '@nuxt/icon',
      
     ],
 

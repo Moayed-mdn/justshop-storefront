@@ -23,7 +23,7 @@
         />
       </div>
 
-      <p class="text-sm text-gray-500 line-clamp-2 first-letter:uppercase lowercase">
+      <p class="text-sm text-(--color-text-secondary) line-clamp-2 first-letter:uppercase lowercase">
         {{ product.description }}
       </p>
 

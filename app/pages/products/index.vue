@@ -7,7 +7,7 @@
 
 <script setup lang="ts">
 
-const { data, pending } =  useUseProduct()
+const { data, pending } =  useProduct()
 
 
 provide('pending', pending)

@@ -9,6 +9,7 @@ export interface ProductCard {
   alt_text: string | null;
   product_name: string;
   price: number;
+  currency?: string;
   description: string;
   total_sold: number | null; // This field may not always be present
 }

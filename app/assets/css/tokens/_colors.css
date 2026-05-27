@@ -90,43 +90,37 @@
 }
 
 [data-theme="dark"] {
+  /* Brand Overrides (if any) */
+  --color-primary: #00A670; /* Slightly brighter green for dark mode contrast */
+
   /* Backgrounds */
   --color-bg-page: #0b0b0b;
   --color-bg-surface: #121212;
   --color-bg-card: #1a1a1a;
   --color-bg-elevated: #222222;
+  --color-bg-hover: #2a2a2a;
+  --color-bg-strong: var(--white);
+  --color-bg-disabled: #222222;
 
   /* Text */
   --color-text-primary: #f5f5f5;
-  --color-text-secondary: #d1d5db;
-  --color-text-muted: #9ca3af;
-  --color-text-inverse: #0b0b0b;
+  --color-text-secondary: #d1d1d1;
+  --color-text-muted: #888888;
+  --color-text-inverse: var(--gray-900);
+  --color-text-black: var(--white);
+  --color-text-disabled: #666666;
 
   /* Borders */
-  --color-border-default: #2a2a2a;
-  --color-border-strong: #3a3a3a;
-  --color-border-inverse: #e5e7eb;
-
-  /* Brand adjustments */
-  --color-primary: #22c55e;
-  --color-accent: #ff8a1f;
-  --color-accent-hover: #ffb347;
-
-  /* Overlays */
-  --color-overlay-light: rgba(255, 255, 255, 0.06);
-  --color-overlay-medium: rgba(255, 255, 255, 0.12);
-
-  --color-bg-disabled: #1a1a1a;
-  --color-text-disabled: #6b7280;
+  --color-border-default: #333333;
+  --color-border-strong: #444444;
+  --color-border-active: var(--color-primary);
   --color-border-disabled: #2a2a2a;
 
-  --color-bg-strong: #000000;
+  /* Overlays */
+  --color-overlay-light: rgba(255, 255, 255, 0.05);
+  --color-overlay-medium: rgba(0, 0, 0, 0.6);
 
   /* Inverse UI */
-  --color-bg-inverse: #ffffff;
-
-  --color-focus-ring: color-mix(in srgb, var(--color-primary) 60%, transparent);
-
-  /* Interaction */
-  --color-bg-hover: #1f1f1f;
+  --color-bg-inverse: var(--white);
+  --color-border-inverse: var(--gray-300);
 }
