@@ -1,3 +1,4 @@
+import { API_ROUTES } from '~~/shared/utils/routes'
 import type { ProductDetailResponse } from '~~/types/productDetail'
 import type { ProductRelatedResponse } from '~~/types/productRelated'
 
@@ -6,7 +7,7 @@ export const useProductDetail = () => {
 
   const fetchProduct = async (slug: string) => {
     try {
-      const response = await useApi<ProductDetailResponse>(`${baseURL}/products/${slug}`)
+      const response = await useApi<ProductDetailResponse>(API_ROUTES.products.detail(slug))
       return response.data
     } catch (err) {
       console.error('Failed to fetch product:', err)
@@ -16,7 +17,7 @@ export const useProductDetail = () => {
 
   const fetchRelatedProducts = async (slug: string) => {
     try {
-      const response = await useApi<ProductRelatedResponse>(`${baseURL}/products/${slug}/related`)
+      const response = await useApi<ProductRelatedResponse>(API_ROUTES.products.related(slug))
       return response.data
     } catch (err) {
         console.error('Failed to fetch related products:', err)

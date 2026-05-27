@@ -7,10 +7,14 @@
   
       <!-- Guest lookup link -->
       <NuxtLinkLocale
-        to="/orders/track"
+        :to="APP_ROUTES.orders.track"
         class="text-sm text-(--color-primary) hover:underline font-medium"
       >
         {{ $t('orders.guest_title') }}
       </NuxtLinkLocale>
     </div>
   </template>
+
+<script setup lang="ts">
+import { APP_ROUTES } from '~~/shared/utils/routes'
+</script>

@@ -34,6 +34,16 @@ export default defineNuxtConfig({
      
     ],
 
+  imports: {
+    dirs: ['shared/utils'],
+  },
+
+  nitro: {
+    imports: {
+      dirs: ['shared/utils'],
+    },
+  },
+
   i18n: {
     defaultLocale: 'en',
     strategy: 'prefix_except_default',

@@ -1,5 +1,6 @@
 import type { BestSellerResponse, BestSellerCategory } from '~~/types/homepage';
 import { useApi } from '~/composables/useApi';
+import { API_ROUTES } from '~~/shared/utils/routes';
 
 export const useUseBestSellers = () => {
   const { locale } = useI18n();
@@ -11,7 +12,7 @@ export const useUseBestSellers = () => {
   } = useAsyncData<BestSellerCategory[]>(
     key,
     async () => {
-      const { data } = await useApi<BestSellerResponse>('/api/best_seller');
+      const { data } = await useApi<BestSellerResponse>(API_ROUTES.products.bestSeller);
       return data?.data ?? [];
     },
     {

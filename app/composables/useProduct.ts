@@ -1,4 +1,5 @@
 import { useApi } from '~/composables/useApi';
+import { API_ROUTES } from '~~/shared/utils/routes';
 import type { ProductListResponse } from '~~/types/product';
 
 export const useUseProduct = () => {
@@ -31,7 +32,7 @@ export const useUseProduct = () => {
         page,
       };
       const { data: shopLayout, error: apiError } = await useApi<ProductListResponse>(
-        '/api/products',
+        API_ROUTES.products.list,
         {
           query: finalQuery,
           headers: useRequestHeaders(['cookie']),

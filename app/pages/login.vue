@@ -59,13 +59,14 @@
       <AuthFooterLink
         :text="$t('login.no_account')"
         :link-text="$t('login.sign_up')"
-        to="/register"
+        :to="APP_ROUTES.register"
       />
     </template>
   </AuthCard>
 </template>
 
 <script setup lang='ts'>
+import { APP_ROUTES } from '~~/shared/utils/routes'
 import type { ApiError } from '~~/types/api'
 
 definePageMeta({

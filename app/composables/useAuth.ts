@@ -1,5 +1,6 @@
 // composables/useAuth.ts
 import { useApi } from '~/composables/useApi';
+import { API_ROUTES, APP_ROUTES } from '~~/shared/utils/routes';
 import type { AuthResponse, UserResponse } from '~~/types/auth';
 import type { ApiSuccess } from '~~/types/api';
 
@@ -12,7 +13,7 @@ export const useAuth = () => {
   const login = async (credentials: Record<string, string>) => {
     loading.value = true;
     try {
-      const { data, error } = await useApi<AuthResponse>('/api/auth/login', {
+      const { data, error } = await useApi<AuthResponse>(API_ROUTES.auth.login, {
         method: 'POST',
         body: credentials,
       });
@@ -27,7 +28,7 @@ export const useAuth = () => {
       const cartStore = useCartStore();
       await cartStore.onLogin();
 
-      return navigateTo(localePath('/'));
+      return navigateTo(localePath(APP_ROUTES.home));
     }finally {
       loading.value = false;
     }
@@ -37,7 +38,7 @@ export const useAuth = () => {
     loading.value = true;
     try {
       const { data, error } = await useApi<ApiSuccess<{}>>(
-        '/api/auth/register',
+        API_ROUTES.auth.register,
         {
           method: 'POST',
           body: form,
@@ -56,7 +57,7 @@ export const useAuth = () => {
     loading.value = true;
     try {
       const { data, error } = await useApi<ApiSuccess<{}>>(
-        '/api/auth/email/resend',
+        API_ROUTES.auth.emailResend,
         {
           method: 'POST',
           body: { email },
@@ -75,21 +76,21 @@ export const useAuth = () => {
   const logout = async () => {
     loading.value = true;
     try {
-      await useApi('/api/auth/logout', { method: 'POST' });
+      await useApi(API_ROUTES.auth.logout, { method: 'POST' });
     } catch {
       // Still catch here if you want to ignore silent failures
     } finally {
       authStore.clearAuth();
       useCartStore().onLogout();
       loading.value = false;
-      return navigateTo(localePath('/login'));
+      return navigateTo(localePath(APP_ROUTES.login));
     }
   };
 
   const fetchUser = async () => {
     if (!authStore.isLoggedIn) return null;
     try {
-      const { data, error } = await useApi<UserResponse>('/api/auth/me');
+      const { data, error } = await useApi<UserResponse>(API_ROUTES.auth.me);
       if (error) throw error;
       authStore.setUser(data?.data);
       return authStore.user;

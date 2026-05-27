@@ -1,6 +1,7 @@
 // composables/useHero.ts
 import type { HeroBanner, HeroBannerResponse } from '~~/types/homepage';
 import { useApi } from '~/composables/useApi';
+import { API_ROUTES } from '~~/shared/utils/routes';
 
 export const useHero = () => {
   const { locale } = useI18n();
@@ -9,7 +10,7 @@ export const useHero = () => {
   const { data, pending, error } = useAsyncData<HeroBanner[]>(
     key,
     async () => {
-      const { data } = await useApi<HeroBannerResponse>('/api/hero');
+      const { data } = await useApi<HeroBannerResponse>(API_ROUTES.products.hero);
       return data?.data ?? [];
     },
     {

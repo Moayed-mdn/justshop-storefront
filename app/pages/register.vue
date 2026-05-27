@@ -21,7 +21,7 @@
       <template #footer>
         <div class="pt-2 border-t border-gray-200">
           <NuxtLink
-            to="/login"
+            :to="APP_ROUTES.login"
             class="text-sm font-medium text-(--color-primary) hover:text-(--green-950) inline-flex items-center gap-1"
           >
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -90,13 +90,14 @@
       <AuthFooterLink
         :text="$t('register.already_have_account')"
         :link-text="$t('register.log_in')"
-        to="/login"
+        :to="APP_ROUTES.login"
       />
     </template>
   </AuthCard>
 </template>
 
 <script setup lang='ts'>
+import { APP_ROUTES } from '~~/shared/utils/routes'
 import type { ApiError } from '~~/types/api'
 
 definePageMeta({

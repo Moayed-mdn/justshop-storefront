@@ -1,4 +1,5 @@
 import { useServerApi } from '../utils/api'
+import { EXTERNAL_API_ROUTES } from '../../shared/utils/routes'
 import type { ProductApiFilters } from '../../types/api/product'
 
 export default defineEventHandler(async (event) => {
@@ -22,7 +23,7 @@ export default defineEventHandler(async (event) => {
 
   const api = useServerApi(event)
 
-  const response = await api('products', {
+  const response = await api(EXTERNAL_API_ROUTES.products.list, {
     query: apiFilters,
   })
 
