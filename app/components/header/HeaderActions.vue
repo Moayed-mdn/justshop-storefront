@@ -36,9 +36,9 @@
       </NuxtLinkLocale>
     </ClientOnly>
     
-    <ClientOnly>
+    <!-- <ClientOnly>
       <ThemeToggle />
-    </ClientOnly>
+    </ClientOnly> -->
 
     <!-- ═══ BURGER MENU ═══ -->
     <button

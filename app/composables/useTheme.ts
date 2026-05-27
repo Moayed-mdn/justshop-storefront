@@ -7,47 +7,52 @@ export const useTheme = () => {
     theme.value = value
 
     if (process.client) {
-      document.documentElement.setAttribute('data-theme', value)
-      localStorage.setItem('theme', value)
+      // document.documentElement.setAttribute('data-theme', value)
+      // localStorage.setItem('theme', value)
+      document.documentElement.setAttribute('data-theme', 'light')
+      localStorage.setItem('theme', 'light')
     }
   }
 
   const initTheme = () => {
-    if (!process.client) return
+    // if (!process.client) return
 
-    const saved = localStorage.getItem('theme') as 'light' | 'dark' | null
+    // const saved = localStorage.getItem('theme') as 'light' | 'dark' | null
 
-    if (!media) {
-      media = window.matchMedia('(prefers-color-scheme: dark)')
+    // if (!media) {
+    //   media = window.matchMedia('(prefers-color-scheme: dark)')
 
-      const handler = (e: MediaQueryListEvent) => {
-        const newTheme = e.matches ? 'dark' : 'light'
-        const saved = localStorage.getItem('theme')
+    //   const handler = (e: MediaQueryListEvent) => {
+    //     const newTheme = e.matches ? 'dark' : 'light'
+    //     const saved = localStorage.getItem('theme')
 
-        if (!saved) {
-          theme.value = newTheme
-          document.documentElement.setAttribute('data-theme', newTheme)
-        }
-      }
+    //     if (!saved) {
+    //       theme.value = newTheme
+    //       document.documentElement.setAttribute('data-theme', newTheme)
+    //     }
+    //   }
 
-      media.addEventListener('change', handler)
-    }
+    //   media.addEventListener('change', handler)
+    // }
 
-    const preferred = media.matches ? 'dark' : 'light'
+    // const preferred = media.matches ? 'dark' : 'light'
 
-    const value = saved || preferred
+    // const value = saved || preferred
 
-    theme.value = value
+    // theme.value = value
 
-    document.documentElement.setAttribute('data-theme', value)
+    // document.documentElement.setAttribute('data-theme', value)
 
-    if (saved) {
-      localStorage.setItem('theme', value)
-    }
+    // if (saved) {
+    //   localStorage.setItem('theme', value)
+    // }
+    setTheme('light')
+
   }
 
   const toggleTheme = () => {
-    setTheme(theme.value === 'dark' ? 'light' : 'dark')
+    // setTheme(theme.value === 'dark' ? 'light' : 'dark')
+    setTheme('light')
   }
 
   return { theme, setTheme, initTheme, toggleTheme }
