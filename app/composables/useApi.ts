@@ -1,7 +1,7 @@
 import type { FetchOptions } from 'ofetch'
 import type { ApiError } from '~~/types/api'
 
-  export const useApi = async <T>(url: string, options?: FetchOptions) => {
+  export const useApi = async <T>(url: string, options?: any) => {
     // $fetch is a powerful tool from Nuxt/ofetch that can be configured globally.
     // For example, a `baseURL` can be set in your `nuxt.config.ts` file.
     // This makes calling API endpoints simpler as you only need to provide the path.

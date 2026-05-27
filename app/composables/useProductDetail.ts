@@ -3,8 +3,6 @@ import type { ProductDetailResponse } from '~~/types/productDetail'
 import type { ProductRelatedResponse } from '~~/types/productRelated'
 
 export const useProductDetail = () => {
-  const baseURL = useRuntimeConfig().public.apiBase
-
   const fetchProduct = async (slug: string) => {
     try {
       const response = await useApi<ProductDetailResponse>(API_ROUTES.products.detail(slug))

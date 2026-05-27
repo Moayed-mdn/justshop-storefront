@@ -1,6 +1,5 @@
 // composables/useClientApi.ts
 export const useClientApi = () => {
-  const config = useRuntimeConfig()
   const authStore = useAuthStore()
   const { showErrorToast, showSuccessToast } = useAppToast()
 
@@ -11,9 +10,8 @@ export const useClientApi = () => {
   const locale = i18n.locale // This is a Ref, so use locale.value
 
   return $fetch.create({
-    baseURL: config.public.apiBase,
-
-    onRequest({ options }) {
+    onRequest(ctx: any) {
+      const { options } = ctx
       if (authStore.token) {
         options.headers.set('Authorization', `Bearer ${authStore.token}`)
       }
@@ -21,7 +19,8 @@ export const useClientApi = () => {
       options.headers.set('Accept-Language', locale.value)   // ← ADDED
     },
 
-    onResponse({ options, response }) {
+    onResponse(ctx: any) {
+      const { options, response } = ctx
       if (options.successMessage) {
         const message =
           typeof options.successMessage === 'string'
@@ -30,7 +29,8 @@ export const useClientApi = () => {
         showSuccessToast(message)
       }
     },
-    onResponseError({ response, options }) {
+    onResponseError(ctx: any) {
+      const { response, options } = ctx
       if (options.showError !== false) {
         const message = response._data?.message ?? 'An unexpected error occurred'
         showErrorToast(message)
@@ -40,5 +40,5 @@ export const useClientApi = () => {
         authStore.clearAuth()
       }
     },
-  })
+  } as any)
 }

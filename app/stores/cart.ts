@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { API_ROUTES } from '~~/shared/utils/routes';
 import type {
   AddToCartPayload,
   Cart,
@@ -60,8 +61,6 @@ const cartHelpers = {
 
 // ─── Store ───────────────────────────────────────────────────
 export const useCartStore = defineStore('cart', () => {
-  const config = useRuntimeConfig();
-  const baseURL = config.public.apiBase;
   const authStore = useAuthStore();
 
   // ── State ────────────────────────────────────────────────
@@ -134,7 +133,13 @@ export const useCartStore = defineStore('cart', () => {
 
     try {
       if (authStore.isLoggedIn) {
-        const { data, error: apiError } = await useApi<CartResponse>(`${baseURL}/cart`);
+        // Automatically merge guest cart if it exists before fetching
+        const guestCart = cartHelpers.loadGuestCart();
+        if (guestCart.items.length > 0) {
+          await mergeGuestCartToServer();
+        }
+
+        const { data, error: apiError } = await useApi<CartResponse>(API_ROUTES.cart.index);
         if (apiError) throw apiError;
         if (data) setCart(data.data);
       } else {
@@ -159,7 +164,7 @@ export const useCartStore = defineStore('cart', () => {
 
       try {
         const { data, error: apiError } = await useApi<CartResponse>(
-          `${baseURL}/cart/items`,
+          API_ROUTES.cart.items,
           {
             method: 'POST',
             body: {
@@ -214,7 +219,7 @@ export const useCartStore = defineStore('cart', () => {
     try {
       if (authStore.isLoggedIn) {
         const { data, error: apiError } = await useApi<CartResponse>(
-          `${baseURL}/cart/items/${itemId}`,
+          API_ROUTES.cart.item(itemId),
           { method: 'PATCH', body: { quantity } }
         );
         if (apiError) throw apiError;
@@ -249,7 +254,7 @@ export const useCartStore = defineStore('cart', () => {
     try {
       if (authStore.isLoggedIn) {
         const { data, error: apiError } = await useApi<CartResponse>(
-          `${baseURL}/cart/items/${itemId}`,
+          API_ROUTES.cart.item(itemId),
           { method: 'DELETE' }
         );
         if (apiError) throw apiError;
@@ -272,7 +277,7 @@ export const useCartStore = defineStore('cart', () => {
 
     try {
       if (authStore.isLoggedIn) {
-        await useApi(`${baseURL}/cart/clear`, { method: 'DELETE' });
+        await useApi(API_ROUTES.cart.clear, { method: 'DELETE' });
       } else {
         cartHelpers.clearGuestCart();
       }
@@ -291,7 +296,7 @@ export const useCartStore = defineStore('cart', () => {
 
     for (const item of guestCart.items) {
       try {
-        await useApi(`${baseURL}/cart/items`, {
+        await useApi(API_ROUTES.cart.items, {
           method: 'POST',
           body: {
             product_variant_id: item.variant.id,

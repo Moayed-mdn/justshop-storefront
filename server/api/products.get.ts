@@ -23,7 +23,7 @@ export default defineEventHandler(async (event) => {
 
   const api = useServerApi(event)
 
-  const response = await api(EXTERNAL_API_ROUTES.products.list, {
+  const response = await api(EXTERNAL_API_ROUTES.products.index, {
     query: apiFilters,
   })
 

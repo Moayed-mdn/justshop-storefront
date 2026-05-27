@@ -18,6 +18,7 @@
     </AuthEmailVerificationNotice>
 
     <AuthAlert type="error" :message="errors?.message && !errors?.errors ? errors.message : undefined" />
+    <AuthAlert type="success" :message="successMessage" />
 
     <form v-if="!isEmailNotVerified" class="space-y-6" @submit.prevent="handleLogin">
       <AuthFormInput
@@ -76,10 +77,19 @@ definePageMeta({
 
 const { login, loading, loginWithGoogle, resendVerificationEmail } = useAuth()
 const errors = ref<ApiError | null>(null)
+const successMessage = ref<string | undefined>(undefined)
+const route = useRoute()
+const { t } = useI18n()
 
 // ✨ New state for email verification flow
 const isEmailNotVerified = ref(false)
 const pendingEmail = ref('')
+
+onMounted(() => {
+  if (route.query.registered === 'true') {
+    successMessage.value = t('login.registered_successfully')
+  }
+})
 
 const form = reactive({
   email: '',
@@ -93,18 +103,28 @@ const handleLogin = async () => {
   
   try {
     await login(form)
-  } catch (err) {
-    const error = err as Error & { data: ApiError }
+  } catch (err: any) {
+    const errorData = err?.data?.data || err?.data
     
-    // if (error.data?.isEmailNotVerified || error.data?.message?.toLowerCase()?.includes('email not verified')) {
-    //   isEmailNotVerified.value = true
-    //   pendingEmail.value = error.data.email || form.email
-    //   errors.value = { message: t('login.verify_email_before_login') }
+    // ✨ Handle email not verified error (AUTH_002)
+    if (errorData?.error_code === 'AUTH_002' || err?.statusCode === 403 && errorData?.message === 'auth.verify_email_before_login') {
+      isEmailNotVerified.value = true
+      pendingEmail.value = form.email
+      errors.value = { 
+        status: false,
+        message: t('login.verify_email_before_login'),
+        error_code: 'AUTH_002',
+        errors: null
+      }
+      return
+    }
     
     // General errors are now handled by the useAuth composable.
     // Handle Field-Specific Validation Errors (Laravel style)
-    if (error.data.errors) {
-      errors.value = error.data
+    if (errorData?.errors) {
+      errors.value = errorData
+    } else if (errorData) {
+      errors.value = errorData
     }
   }
 }

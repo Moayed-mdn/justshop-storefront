@@ -32,7 +32,7 @@ export const useUseProduct = () => {
         page,
       };
       const { data: shopLayout, error: apiError } = await useApi<ProductListResponse>(
-        API_ROUTES.products.list,
+        API_ROUTES.products.index,
         {
           query: finalQuery,
           headers: useRequestHeaders(['cookie']),

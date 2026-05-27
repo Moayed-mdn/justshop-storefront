@@ -1,5 +1,6 @@
 // composables/useOrders.ts
 import { useApi } from '~/composables/useApi';
+import { API_ROUTES } from '~~/shared/utils/routes';
 import type {
   OrderListResponse,
   OrderResponse,
@@ -18,7 +19,6 @@ interface OrderFiltersParams {
 }
 
 export const useOrders = () => {
-  const baseURL = useRuntimeConfig().public.apiBase;
   const loading = ref(false);
   const error = ref<string | null>(null);
 
@@ -28,7 +28,7 @@ export const useOrders = () => {
     error.value = null;
 
     try {
-      const { data, error: apiError } = await useApi<OrderListResponse>(`${baseURL}/orders`, {
+      const { data, error: apiError } = await useApi<OrderListResponse>(API_ROUTES.orders.index, {
         query: filters,
       });
 
@@ -47,7 +47,7 @@ export const useOrders = () => {
   const fetchFilters = async (): Promise<OrderStatusFilter[]> => {
     try {
       const { data, error: apiError } = await useApi<OrderFiltersResponse>(
-        `${baseURL}/orders/filters`,
+        API_ROUTES.orders.filters,
       );
       if (apiError) throw apiError;
       return data?.data.statuses ?? [];
@@ -63,7 +63,7 @@ export const useOrders = () => {
 
     try {
       const { data, error: apiError } = await useApi<OrderResponse>(
-        `${baseURL}/orders/${orderNumber}`,
+        API_ROUTES.orders.detail(orderNumber),
       );
       if (apiError) throw apiError;
       return data?.data;
@@ -82,7 +82,7 @@ export const useOrders = () => {
 
     try {
       const { data, error: apiError } = await useApi<OrderResponse>(
-        `${baseURL}/orders/${orderNumber}/cancel`,
+        API_ROUTES.orders.cancel(orderNumber),
         {
           method: 'POST',
         },
@@ -104,7 +104,7 @@ export const useOrders = () => {
 
     try {
       const { data, error: apiError } = await useApi<ReorderResponse>(
-        `${baseURL}/orders/${orderNumber}/reorder`,
+        API_ROUTES.orders.reorder(orderNumber),
         {
           method: 'POST',
         },
@@ -119,17 +119,17 @@ export const useOrders = () => {
     }
   };
 
-  // ── Guest lookup ──
-  const guestLookup = async (orderNumber: string, email: string) => {
+  // ── Guest Lookup ──
+  const guestLookup = async (email: string, orderNumber: string) => {
     loading.value = true;
     error.value = null;
 
     try {
       const { data, error: apiError } = await useApi<OrderResponse>(
-        `${baseURL}/orders/guest/lookup`,
+        API_ROUTES.orders.guestLookup,
         {
           method: 'POST',
-          body: { order_number: orderNumber, email },
+          body: { email, order_number: orderNumber },
         },
       );
       if (apiError) throw apiError;

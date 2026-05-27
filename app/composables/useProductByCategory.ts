@@ -1,13 +1,13 @@
 // composables/useProductByCategory.ts
 import type { ProductListResponse } from '~~/types/product';
 import { useApi } from '~/composables/useApi';
+import { API_ROUTES } from '~~/shared/utils/routes';
 
 export const useProductByCategory = async (categorySlug: string) => {
   const { locale } = useI18n();
   const route = useRoute();
   const { filters, syncFromUrl, syncToUrl, apiQuery } = useProductFilters();
-  const config = useRuntimeConfig()
-  const baseURL = config.public.apiBase
+  
   onMounted(syncFromUrl);
   watch(filters, syncToUrl, { deep: true });
 
@@ -36,7 +36,7 @@ export const useProductByCategory = async (categorySlug: string) => {
       };
 
       const { data } = await useApi<ProductListResponse>(
-        `${baseURL}/products/category/${categorySlug}`,
+        API_ROUTES.products.category(categorySlug),
         {
           query: finalQuery,
         },

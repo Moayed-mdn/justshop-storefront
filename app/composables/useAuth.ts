@@ -102,11 +102,7 @@ export const useAuth = () => {
 
   // ── Google OAuth ───────────────────────────────────────────
   const loginWithGoogle = () => {
-    // ⚠️ This still needs the external API base for redirect
-    // Keep runtime config just for this
-    const config = useRuntimeConfig();
-    const apiBase = config.public.apiBase as string;
-    window.location.href = `${apiBase}/auth/google/redirect`;
+    window.location.href = API_ROUTES.auth.googleRedirect;
   };
 
   const handleGoogleCallback = async (token: string) => {

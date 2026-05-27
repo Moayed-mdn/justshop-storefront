@@ -15,6 +15,7 @@
     "no_account": "Don't have an account?",
     "sign_up": "Sign Up",
     "verify_email_before_login": "Please verify your email before logging in.",
+    "registered_successfully": "Registration successful! Please verify your email and log in to continue.",
     "resend_failed": "Failed to send verification email. Please try again."
   }
 }

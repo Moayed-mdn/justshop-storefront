@@ -1,19 +1,16 @@
 //plugins/api.ts
 export default defineNuxtPlugin((nuxtApp) => {
-    const config = useRuntimeConfig()
-  
     const api = $fetch.create({
-      baseURL: config.public.apiBase,
-  
       credentials: 'include',
   
-      async onRequest({ options }) {
+      async onRequest(ctx: any) {
+        const { options } = ctx
         options.headers.set('Accept', 'application/json')
   
         // 🌍 Locale (works both sides)
         let locale: string | undefined
   
-        if (process.server) {
+        if (import.meta.server) {
           const event = nuxtApp.ssrContext?.event
           locale = getCookie(event!, 'i18n_redirected')
         } else {
@@ -27,7 +24,7 @@ export default defineNuxtPlugin((nuxtApp) => {
         // 🔐 Token handling
         let token: string | null = null
   
-        if (process.server) {
+        if (import.meta.server) {
           const event = nuxtApp.ssrContext?.event
           try {
             const authCookie = getCookie(event!, 'auth')
@@ -47,7 +44,8 @@ export default defineNuxtPlugin((nuxtApp) => {
       },
   
       // ✅ Client-only UI handling
-      onResponse({ options, response }) {
+      onResponse(ctx: any) {
+        const { options, response } = ctx
         if (import.meta.client && options.successMessage) {
           const { showSuccessToast } = useAppToast()
   
@@ -60,7 +58,8 @@ export default defineNuxtPlugin((nuxtApp) => {
         }
       },
   
-      onResponseError({ response, options }) {
+      onResponseError(ctx: any) {
+        const { response, options } = ctx
         if (import.meta.client) {
           const { showErrorToast } = useAppToast()
   
@@ -76,7 +75,7 @@ export default defineNuxtPlugin((nuxtApp) => {
           }
         }
       },
-    })
+    } as any)
   
     return {
       provide: {

@@ -5,7 +5,6 @@ export const useServerApi = (event: H3Event) => {
   const config = useRuntimeConfig(event)
 
   // Locale from cookie
-  // server/utils/api.ts
   const locale = getCookie(event, 'i18n_redirected') || getHeader(event, 'accept-language')
 
   // Token from auth cookie
@@ -33,4 +32,12 @@ export const useServerApi = (event: H3Event) => {
       }
     },
   })
+}
+
+export const buildExternalApiUrl = (event: H3Event, path: string) => {
+  const config = useRuntimeConfig(event)
+  const base = String(config.apiBase || '').replace(/\/+$/, '')
+  const normalizedPath = path.replace(/^\/+/, '')
+
+  return `${base}/${normalizedPath}`
 }

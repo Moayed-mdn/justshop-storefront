@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
+import { API_ROUTES, APP_ROUTES } from '~~/shared/utils/routes'
 
 const route = useRoute()
 const loading = ref(true)
@@ -24,11 +25,8 @@ onMounted(async () => {
   }
 
   try {
-   
-    await $fetch(`/email/verify/${id}/${hash}`, {
-      method: 'GET',
-      baseURL: 'http://localhost:8000/api/v1/users/auth',
-      params: {
+    await useApi(API_ROUTES.auth.emailVerify(id as string, hash as string), {
+      query: {
         expires,
         signature,
       },
@@ -65,14 +63,14 @@ onMounted(async () => {
      
       <div v-else-if="error" class="text-red-500">
         <p class="mb-4">{{ error }}</p>
-        <NuxtLink to="/resend-verification" class="text-blue-500 underline">
+        <NuxtLink :to="APP_ROUTES.register" class="text-blue-500 underline">
           Resend Verification Email
         </NuxtLink>
       </div>
 
       <div v-else-if="success" class="text-green-500">
         <p class="mb-4">Your email has been successfully verified!</p>
-        <NuxtLink to="/login" class="bg-blue-600 text-white px-4 py-2 rounded inline-block">
+        <NuxtLink :to="APP_ROUTES.login" class="bg-blue-600 text-white px-4 py-2 rounded inline-block">
           Go to Login
         </NuxtLink>
       </div>

@@ -4,7 +4,8 @@
  */
 
 /**
- * App-facing API routes (Nitro handlers)
+ * App-facing API routes (Nuxt/Nitro internal handlers)
+ * These are the endpoints the frontend calls (via useApi)
  */
 export const API_ROUTES = {
   auth: {
@@ -12,20 +13,52 @@ export const API_ROUTES = {
     register: '/api/auth/register',
     logout: '/api/auth/logout',
     me: '/api/auth/me',
-    emailResend: '/api/email/resend',
+    emailResend: '/api/auth/email/resend',
+    emailVerify: (id: string | number, hash: string) => `/api/auth/email/verify/${id}/${hash}`,
     googleCallback: '/api/auth/google/callback',
+    googleRedirect: '/api/auth/google/redirect',
+    passwordForgot: '/api/auth/password/forgot',
+  },
+  cart: {
+    index: '/api/cart',
+    clear: '/api/cart/clear',
+    items: '/api/cart/items',
+    item: (itemId: string | number) => `/api/cart/items/${itemId}`,
   },
   products: {
-    list: '/api/products',
+    index: '/api/products',
+    category: (slug: string) => `/api/products/category/${slug}`,
     detail: (slug: string) => `/api/products/${slug}`,
     related: (slug: string) => `/api/products/${slug}/related`,
     bestSeller: '/api/best_seller',
     hero: '/api/hero',
   },
+  orders: {
+    index: '/api/orders',
+    filters: '/api/orders/filters',
+    guestLookup: '/api/orders/guest/lookup',
+    detail: (orderNumber: string | number) => `/api/orders/${orderNumber}`,
+    cancel: (orderNumber: string | number) => `/api/orders/${orderNumber}/cancel`,
+    reorder: (orderNumber: string | number) => `/api/orders/${orderNumber}/reorder`,
+  },
+  profile: {
+    index: '/api/profile',
+    avatar: '/api/profile/avatar',
+    info: '/api/profile/info',
+    password: '/api/profile/password',
+  },
+  search: '/api/search',
+  checkout: {
+    session: '/api/checkout/session',
+    sessionAuth: '/api/checkout/session/auth',
+    status: (sessionId: string) => `/api/checkout/status/${sessionId}`,
+  }
 } as const;
 
 /**
- * External Backend API routes (called by Nitro server)
+ * External Backend API routes (Laravel/JustShop Backend)
+ * These are the routes defined in the backend `php artisan route:list`
+ * Used by Nitro server to proxy requests.
  */
 export const EXTERNAL_API_ROUTES = {
   auth: {
@@ -34,16 +67,54 @@ export const EXTERNAL_API_ROUTES = {
     logout: 'auth/logout',
     me: 'auth/me',
     emailResend: 'auth/email/resend',
+    emailVerify: (id: string | number, hash: string) => `auth/email/verify/${id}/${hash}`,
+    googleCallback: 'auth/google/callback',
+    googleRedirect: 'auth/google/redirect',
+    passwordForgot: 'auth/password/forgot',
   },
-  products: {
-    list: 'products',
-    detail: (slug: string) => `products/${slug}`,
-    related: (slug: string) => `products/${slug}/related`,
+  cart: {
+    show: 'cart',
+    clear: 'cart/clear',
+    addItem: 'cart/items',
+    updateItem: (itemId: string | number) => `cart/items/${itemId}`,
+    removeItem: (itemId: string | number) => `cart/items/${itemId}`,
+  },
+  categories: {
+    breadcrumb: (category: string) => `categories/${category}/breadcrumb`,
+  },
+  checkout: {
+    session: 'checkout/session',
+    sessionAuth: 'checkout/session/auth',
+    status: (sessionId: string) => `checkout/status/${sessionId}`,
   },
   homepage: {
     bestSeller: 'homepage/best-seller',
     hero: 'homepage/hero',
-  }
+  },
+  orders: {
+    index: 'orders',
+    filters: 'orders/filters',
+    guestLookup: 'orders/guest/lookup',
+    show: (orderNumber: string | number) => `orders/${orderNumber}`,
+    cancel: (orderNumber: string | number) => `orders/${orderNumber}/cancel`,
+    reorder: (orderNumber: string | number) => `orders/${orderNumber}/reorder`,
+  },
+  products: {
+    index: 'products',
+    category: (slug: string) => `products/category/${slug}`,
+    show: (slug: string) => `products/${slug}`,
+    related: (slug: string) => `products/${slug}/related`,
+  },
+  profile: {
+    show: 'profile',
+    destroy: 'profile',
+    updateAvatar: 'profile/avatar',
+    updateInfo: 'profile/info',
+    updatePassword: 'profile/password',
+  },
+  search: {
+    index: 'search',
+  },
 } as const;
 
 /**
