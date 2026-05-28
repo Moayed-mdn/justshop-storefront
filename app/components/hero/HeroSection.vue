@@ -1,32 +1,19 @@
 <template>
   <section class="w-full overflow-hidden">
-    
-    <HeroSkeleton v-if="pending && isClientNavigation" />
-
     <HeroBanner
-      v-else-if="bannerData"
-      :banner-data="bannerData"
+      v-if="banner"
+      :banner="banner"
     />
-
     <div v-else class="text-center py-10">
       No hero available
     </div>
- 
-   
   </section>
 </template>
 
 <script setup lang="ts">
-const isClientNavigation = ref(false)
+import type { HeroBannerDto } from '~/../src/core/api/dto/storefront'
 
-const {data, pending, error } = useHero()
-
-onMounted(() => {
-  isClientNavigation.value = true
-})
-
-const bannerData = computed(() => {
-  return data.value?.[0]
-})
-
+defineProps<{
+  banner: HeroBannerDto
+}>()
 </script>

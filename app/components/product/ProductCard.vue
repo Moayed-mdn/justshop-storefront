@@ -7,15 +7,15 @@
       <NuxtLinkLocale :to="`/products/product/${product.slug}`" class="cursor-pointer">
         <img
           class="max-h-full object-contain transition-transform duration-(--card-transition-speed) group-hover:scale-110"
-          :src="product.primary_image"
-          :alt="product.alt_text || product.product_name"
+          :src="product.image"
+          :alt="product.name"
         />
       </NuxtLinkLocale>
     </div>
 
     <div class="flex flex-col px-2 mt-3">
       <div class="flex justify-between w-full mb-1 font-bold">
-        <h3 class="line-clamp-1">{{ product.product_name }}</h3>
+        <h3 class="line-clamp-1">{{ product.name }}</h3>
         <UiPrice
           :price="product.price"
           :currency="product.currency || 'USD'"
@@ -31,11 +31,11 @@
         <ClientOnly>
           <UiCartButton
             class="cart-fade-in"
-            :product-id="product.product_id"
-            :product-variant-id="product.product_variant_id"
-            :name="product.product_name"
+            :product-id="Number(product.id)"
+            :product-variant-id="Number(product.variantId)"
+            :name="product.name"
             :price="String(product.price)"
-            :image="product.primary_image"
+            :image="product.image"
           />
           <template #fallback>
             <div class="py-2 px-4 mt-2 rounded-full border
@@ -50,10 +50,9 @@
 </template>
 
 <script setup lang="ts">
-import type { ProductCard } from '~~/types/product'
+import type { ProductDto } from '~/../src/core/api/dto/storefront'
 
-
-defineProps<{ product: ProductCard }>()
+defineProps<{ product: ProductDto }>()
 </script>
 
 <style scoped>

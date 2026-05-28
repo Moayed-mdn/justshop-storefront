@@ -33,13 +33,29 @@ export default defineNuxtConfig({
      
     ],
 
+  components: [
+    { path: '~/components' },
+    { path: 'src/core/rendering', prefix: 'Runtime' },
+  ],
+
   imports: {
-    dirs: ['shared/utils'],
+    dirs: [
+      'shared/utils',
+      'src/core/**',
+      'src/domains/**',
+      'src/platform/**',
+      'src/core/rendering/sections',
+    ],
   },
 
   nitro: {
     imports: {
-      dirs: ['shared/utils'],
+      dirs: [
+        'shared/utils',
+        'src/core/tenant',
+        'src/core/api',
+        'src/core/cache',
+      ],
     },
   },
 
@@ -79,9 +95,8 @@ export default defineNuxtConfig({
     ]
   },
   typescript: {
-    // This adds your custom types to the generated .nuxt/tsconfig.json
     tsConfig: {
-      include: ['../types/**/*.d.ts'] 
+      include: ['../src/**/*', '../types/**/*.d.ts']
     }
   }
 })

@@ -1,16 +1,9 @@
-u<template>
+<template>
     <AppContainer>
         <div class="bg-inherit">
-            <div v-if="pending">
-                <ProductSliderSkeleton />
-            </div>
-            <div v-else-if="error">
-                    {{ error }}
-            </div>
-            <div v-else v-for="category in categories" :key="category.category_id">
+            <div v-for="category in categories" :key="category.id">
                 <ProductSlider 
-                    :categoryName="category.category_name"  
-                    :categorySlug="category.category_slug"
+                    :categoryName="category.name"  
                     :products="category.products" 
                 />
             </div>
@@ -19,7 +12,10 @@ u<template>
 </template>
 
 <script setup lang="ts">
+import type { BestSellerCategoryDto } from '~/../src/core/api/dto/storefront'
 
-const { categories, pending, error } = useBestSellers()
+defineProps<{
+  categories: BestSellerCategoryDto[]
+}>()
 </script>
 

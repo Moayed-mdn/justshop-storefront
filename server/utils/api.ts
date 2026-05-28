@@ -5,7 +5,10 @@ export const useServerApi = (event: H3Event) => {
   const config = useRuntimeConfig(event)
 
   // Locale from cookie
-  const locale = getCookie(event, 'i18n_redirected') || getHeader(event, 'accept-language')
+  const locale = getCookie(event, 'i18n_redirected') || getHeader(event, 'accept-language') || 'en'
+
+  // Tenant from event context
+  const tenantId = event.context.tenantId || ''
 
   // Token from auth cookie
   let token: string | null = null
@@ -22,6 +25,9 @@ export const useServerApi = (event: H3Event) => {
 
     onRequest({ options }) {
       options.headers.set('Accept', 'application/json')
+      options.headers.set('X-Tenant-Id', String(tenantId))
+      options.headers.set('X-Storefront-Locale', locale)
+      options.headers.set('X-Storefront-Version', '1.0.0')
 
       if (locale) {
         options.headers.set('Accept-Language', locale)

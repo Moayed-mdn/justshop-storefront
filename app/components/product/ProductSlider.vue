@@ -1,14 +1,12 @@
 <template>
   <div class="py-2 my-4 relative ">
-    <!-- :to="`/products/${categorySlug}`" -->
     <NuxtLinkLocale
-      class="group   items-center gap-2 "
+      class="group items-center gap-2"
       v-if="categoryName" 
-      :to="`/products/category/${categorySlug}`"
+      :to="categorySlug ? `/products/category/${categorySlug}` : '#'"
       > 
       <h2 class="my-8 max-w-[80%] capitalize text-2xl font-semibold text-(--slider-title-color) whitespace-pre-wrap wrap-break-word">
          {{ $t('best-seller.title') }}  {{ categoryName }}
-            <!-- Inline SVG Icon -->
          <svg 
            xmlns="http://w3.org" 
            fill="none" 
@@ -29,11 +27,10 @@
       ref="scrollRef"
       class="flex overflow-x-auto no-scrollbar scroll-smooth transition-all duration-500
              gap-(--slider-gap)"
-             :class="/* {'translate-x-10':isBoundFromLeft,'translate-x-[-40px]':isBoundFromRight} */ {}"
     >
       <div
         v-for="product in products"
-        :key="product.product_id"
+        :key="product.id"
         class="flex-none w-[220px] sm:w-1/2 lg:w-1/3 mb-10 "
       >
         <ProductCard :product="product" />
@@ -43,7 +40,7 @@
 </template>
 
 <script setup lang="ts">
-import type { ProductCard } from '~~/types/product'
+import type { ProductDto } from '~/../src/core/api/dto/storefront'
 
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -58,8 +55,8 @@ const isRtl = computed(() => locale.value === 'ar')
 
 const props = defineProps<{
   categoryName: string
-  categorySlug: string
-  products: ProductCard[]
+  categorySlug?: string
+  products: ProductDto[]
 }>()
 
 const showBounceFromLeft = () => {

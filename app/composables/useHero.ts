@@ -2,10 +2,10 @@
 import type { HeroBanner, HeroBannerResponse } from '~~/types/homepage';
 import { useApi } from '~/composables/useApi';
 import { API_ROUTES } from '~~/shared/utils/routes';
+import { createTenantCacheKey } from '~/../src/core/cache/createTenantCacheKey';
 
 export const useHero = () => {
-  const { locale } = useI18n();
-  const key = computed(() => `hero-banners-${locale.value}`)
+  const key = computed(() => createTenantCacheKey('hero-banners'))
 
   const { data, pending, error } = useAsyncData<HeroBanner[]>(
     key,

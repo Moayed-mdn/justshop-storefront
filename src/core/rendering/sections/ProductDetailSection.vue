@@ -56,7 +56,7 @@
 
             <!-- Error Message -->
             <div v-if="!selectedVariant && hasVariants" class="text-sm" :style="{ color: 'var(--product-warning)' }">
-              {{ $t('product.select_options') }}
+              {{ t('product.select_options') }}
             </div>
           </div>
 
@@ -74,61 +74,53 @@
       <!-- Related Products -->
       <ProductRelatedProducts :products="relatedProducts" />
     </div>
-
-    <!-- Error State -->
-    <div v-else class="max-w-7xl mx-auto px-4 py-16 text-center">
-      <h1 class="text-2xl font-bold" :style="{ color: 'var(--product-notfound-title)' }">
-        {{ $t('product.not_found') }}
-      </h1>
-      <NuxtLinkLocale to="/products" class="mt-4 inline-block text-(--color-primary) hover:underline">
-        {{ $t('product.back_to_shop') }}
-      </NuxtLinkLocale>
-    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import type { ProductDetail, ProductVariant } from '~~/types/productDetail'
-import type { ProductRelated } from '~~/types/productRelated'
-const { startCheckout, loading: checkoutLoading } = useCheckout()
+import { ref, computed, watch } from 'vue'
+import type { ProductDetail, ProductVariant } from '~/../types/productDetail'
+import type { ProductRelated } from '~/../types/productRelated'
+import { useCheckout } from '~/composables/useCheckout'
+import { useCart } from '~/composables/useCart'
+import { useI18n, useLocalePath, navigateTo } from '#imports'
 
+const props = defineProps<{
+  product: ProductDetail | null
+  relatedProducts: ProductRelated[]
+  pending?: boolean
+}>()
 
-const route = useRoute()
 const { t } = useI18n()
+const { startCheckout } = useCheckout()
 const localePath = useLocalePath()
-const { fetchProduct, fetchRelatedProducts } = useProductDetail()
 const cart = useCart()
 
 // ── State ──
-const slug = route.params.slug as string
-const product = ref<ProductDetail | null>(null)
-const relatedProducts = ref<ProductRelated[]>([])
-const pending = ref(true)
 const selectedVariant = ref<ProductVariant | null | undefined>(null)
 const quantity = ref(1)
 const addingToCart = ref(false)
 
 // ── Computed ──
 const hasVariants = computed(() => {
-  return (product.value?.variants?.length ?? 0) > 0
+  return (props.product?.variants?.length ?? 0) > 0
 })
 
 const currentPrice = computed(() => {
   if (selectedVariant.value) {
     return selectedVariant.value.price
   }
-  if (product?.value?.variants[0]) {
-    return product.value.variants[0].price
+  if (props.product?.variants?.[0]) {
+    return props.product.variants[0].price
   }
-
   return 0
 })
 
 const priceRange = computed(() => {
-  if (!product.value?.variants?.length) {
+  if (!props.product?.variants?.length) {
     return { min: 0, max: 0 }
   }
-  const prices = product.value.variants.map((v) => v.price)
+  const prices = props.product.variants.map((v: any) => v.price)
   return {
     min: Math.min(...prices),
     max: Math.max(...prices),
@@ -139,8 +131,8 @@ const currentImages = computed(() => {
   if (selectedVariant.value?.images?.length) {
     return selectedVariant.value.images
   }
-  if (product.value?.variants?.[0]?.images?.length) {
-    return product.value.variants[0].images
+  if (props.product?.variants?.[0]?.images?.length) {
+    return props.product.variants[0].images
   }
   return []
 })
@@ -160,12 +152,10 @@ const canAddToCart = computed(() => {
 })
 
 const isInCart = computed(() => {
-  if (!product.value) return false
-  
+  if (!props.product) return false
   if (selectedVariant.value) {
-    return cart.isInCart(product.value.id, selectedVariant.value.id)
+    return cart.isInCart(props.product.id, selectedVariant.value.id)
   }
-  
   return false
 })
 
@@ -179,28 +169,22 @@ const handleAddToCart = async () => {
   if (isInCart.value) {
     return navigateTo(localePath('/cart'))
   }
-
-  if (!canAddToCart.value || !product.value) return
-
+  if (!canAddToCart.value || !props.product) return
   addingToCart.value = true
-
-  const variantToAdd = selectedVariant.value || product.value.variants?.[0]
-
+  const variantToAdd = selectedVariant.value || props.product.variants?.[0]
   if (!variantToAdd) {
     addingToCart.value = false
     return
   }
-
   await cart.addToCart({
-    product_id: product.value.id,
+    product_id: props.product.id,
     product_variant_id: variantToAdd.id,
-    name: product.value.name,
-    image: variantToAdd.primary_image?.url || currentImages.value[0]?.url || '',
+    name: props.product.name,
+    image: (variantToAdd as any).primary_image?.url || currentImages.value[0]?.url || '',
     price: variantToAdd.price,
     quantity: quantity.value,
     max_quantity: variantToAdd.stock,
   })
-
   addingToCart.value = false
 }
 
@@ -209,30 +193,15 @@ const handleBuyNow = async () => {
   await startCheckout()
 }
 
-// ── Load Data ──
-onMounted(async () => {
-  try {
-    const [productData, relatedData] = await Promise.all([
-      fetchProduct(slug),
-      fetchRelatedProducts(slug),
-    ])
-
-    product.value = productData?.data ?? null
-    relatedProducts.value = relatedData?.data ?? []
-
-    // Pre-select default variant
-    if (product.value?.default_variant_id && product.value.variants?.length) {
-      const defaultVar = product.value.variants.find(
-        (v) => v.id === product.value?.default_variant_id
-      )
-      if (defaultVar) {
-        selectedVariant.value = defaultVar
-      }
+// Pre-select default variant
+watch(() => props.product, (newProduct) => {
+  if (newProduct?.default_variant_id && newProduct.variants?.length) {
+    const defaultVar = newProduct.variants.find(
+      (v: any) => v.id === newProduct?.default_variant_id
+    )
+    if (defaultVar) {
+      selectedVariant.value = defaultVar
     }
-  } catch (err) {
-    console.error('Failed to load product:', err)
-  } finally {
-    pending.value = false
   }
-})
+}, { immediate: true })
 </script>
