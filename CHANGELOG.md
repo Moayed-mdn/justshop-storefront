@@ -8,6 +8,7 @@ This changelog was initialized during the documentation architecture project. Ea
 
 ### Added
 
+- Storefront runtime Phase 8 closeout package: legacy retirement log, decommission backlog, support handover, and steady-state operating guide under `docs/refactoring-plan/storefront-runtime-phase-8-*.md`.
 - Added the repository documentation architecture across the root docs and `docs/` owner files, covering onboarding, configuration, architecture, development, operations, templates, glossary, and FAQ content.
 - Added release and operations runbooks for build, deployment, environments, monitoring and logging, performance, SEO, and incident response based on the current repo surfaces.
 - Added proposed ADRs for architectural cleanup backlog including request-helper consolidation, API base separation, Google callback ownership, orders protection policy, theme restoration, and naming normalization.
@@ -32,5 +33,6 @@ This changelog was initialized during the documentation architecture project. Ea
 
 ### Removed
 
+- Retired unused storefront migration composables `useHero.ts`, `useBestSellers.ts`, and `src/core/rendering/useSectionData.ts` after Phase 8 legacy audit (runtime page payloads own section data).
 - Deleted the confirmed-removable debug artifacts, IDE metadata files, snapshot and helper artifacts, orphaned icon placeholders, unreferenced logo variants, and the unused experimental `app/composables/test.ts` helper after creating backup branch and archive safeguards.
 - Removed the duplicate `app/types/ofetch.d.ts` declaration plus the unreferenced `types/filters.d.ts` and `types/generated.d.ts` files after validating the canonical root type owner and running cleanup verification.

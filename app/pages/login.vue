@@ -42,9 +42,9 @@
       />
 
       <div class="flex items-center justify-between">
-        <NuxtLink to="/forgot-password" class="text-sm font-medium text-(--color-primary) hover:text-(--green-950)">
+        <NuxtLinkLocale :to="routes.forgotPassword()" class="text-sm font-medium text-(--color-primary) hover:text-(--green-950)">
           {{ $t('login.forgot_password') }}
-        </NuxtLink>
+        </NuxtLinkLocale>
       </div>
 
       <AuthSubmitButton
@@ -60,14 +60,13 @@
       <AuthFooterLink
         :text="$t('login.no_account')"
         :link-text="$t('login.sign_up')"
-        :to="APP_ROUTES.register"
+        :to="routes.register()"
       />
     </template>
   </AuthCard>
 </template>
 
 <script setup lang='ts'>
-import { APP_ROUTES } from '~~/shared/utils/routes'
 import type { ApiError } from '~~/types/api'
 
 definePageMeta({
@@ -75,6 +74,7 @@ definePageMeta({
   middleware: 'guest',  
 })
 
+const routes = useStorefrontRoutes()
 const { login, loading, loginWithGoogle, resendVerificationEmail } = useAuth()
 const errors = ref<ApiError | null>(null)
 const successMessage = ref<string | undefined>(undefined)

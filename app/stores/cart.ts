@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { API_ROUTES } from '~~/shared/utils/routes';
+import { useTenant } from '~~/src/core/tenant/composables';
 import type {
   AddToCartPayload,
   Cart,
@@ -10,20 +11,25 @@ import type {
 } from '~~/types/cart';
 
 // ─── Constants ───────────────────────────────────────────────
-const STORAGE_KEY = 'guest_cart';
+const BASE_STORAGE_KEY = 'js_cart';
 let localIdCounter = Date.now();
 
 // ─── Helper Functions ────────────────────────────────────────
 const cartHelpers = {
   generateLocalId: (): string => `local_${++localIdCounter}`,
 
-  loadGuestCart(): GuestCart {
+  getStorageKey(tenantId?: string | number): string {
+    return tenantId ? `${BASE_STORAGE_KEY}_${tenantId}` : BASE_STORAGE_KEY;
+  },
+
+  loadGuestCart(tenantId?: string | number): GuestCart {
     if (import.meta.server) {
       return { items: [], total_price: 0, total_items: 0 };
     }
 
     try {
-      const raw = localStorage.getItem(STORAGE_KEY);
+      const key = this.getStorageKey(tenantId);
+      const raw = localStorage.getItem(key) || localStorage.getItem('guest_cart');
       if (raw) {
         const parsed = JSON.parse(raw);
         return {
@@ -33,20 +39,20 @@ const cartHelpers = {
         };
       }
     } catch {
-      localStorage.removeItem(STORAGE_KEY);
+      // Ignore errors
     }
 
     return { items: [], total_price: 0, total_items: 0 };
   },
 
-  saveGuestCart(cart: GuestCart): void {
+  saveGuestCart(cart: GuestCart, tenantId?: string | number): void {
     if (import.meta.server) return;
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(cart));
+    localStorage.setItem(this.getStorageKey(tenantId), JSON.stringify(cart));
   },
 
-  clearGuestCart(): void {
+  clearGuestCart(tenantId?: string | number): void {
     if (import.meta.server) return;
-    localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(this.getStorageKey(tenantId));
   },
 
   recalculateGuestCart(items: GuestCartItem[]): GuestCart {
@@ -62,6 +68,7 @@ const cartHelpers = {
 // ─── Store ───────────────────────────────────────────────────
 export const useCartStore = defineStore('cart', () => {
   const authStore = useAuthStore();
+  const { tenantId } = useTenant();
 
   // ── State ────────────────────────────────────────────────
   const items = ref<(CartItem | GuestCartItem)[]>([]);
@@ -99,7 +106,7 @@ export const useCartStore = defineStore('cart', () => {
   function syncGuestCart(itemsList: GuestCartItem[]) {
     const cart = cartHelpers.recalculateGuestCart(itemsList);
     setCart(cart);
-    cartHelpers.saveGuestCart(cart);
+    cartHelpers.saveGuestCart(cart, tenantId.value);
   }
 
   function findGuestItem(productId: number, variantId?: number | null) {
@@ -134,7 +141,7 @@ export const useCartStore = defineStore('cart', () => {
     try {
       if (authStore.isLoggedIn) {
         // Automatically merge guest cart if it exists before fetching
-        const guestCart = cartHelpers.loadGuestCart();
+        const guestCart = cartHelpers.loadGuestCart(tenantId.value);
         if (guestCart.items.length > 0) {
           await mergeGuestCartToServer();
         }
@@ -143,7 +150,7 @@ export const useCartStore = defineStore('cart', () => {
         if (apiError) throw apiError;
         if (data) setCart(data.data);
       } else {
-        const guestCart = cartHelpers.loadGuestCart();
+        const guestCart = cartHelpers.loadGuestCart(tenantId.value);
         setCart(guestCart);
       }
     } catch (err) {
@@ -279,7 +286,7 @@ export const useCartStore = defineStore('cart', () => {
       if (authStore.isLoggedIn) {
         await useApi(API_ROUTES.cart.clear, { method: 'DELETE' });
       } else {
-        cartHelpers.clearGuestCart();
+        cartHelpers.clearGuestCart(tenantId.value);
       }
       setCart({ items: [], total_price: 0, total_items: 0 });
     } catch (err) {
@@ -291,24 +298,26 @@ export const useCartStore = defineStore('cart', () => {
   }
 
   async function mergeGuestCartToServer() {
-    const guestCart = cartHelpers.loadGuestCart();
+    const guestCart = cartHelpers.loadGuestCart(tenantId.value);
     if (guestCart.items.length === 0) return;
 
-    for (const item of guestCart.items) {
-      try {
-        await useApi(API_ROUTES.cart.items, {
-          method: 'POST',
-          body: {
+    try {
+      const { data, error: apiError } = await useApi<CartResponse>(API_ROUTES.cart.bulk, {
+        method: 'POST',
+        body: {
+          items: guestCart.items.map((item) => ({
             product_variant_id: item.variant.id,
             quantity: item.quantity,
-          },
-        });
-      } catch {
-        console.warn(`Failed to merge cart item: ${item.product.id}`);
-      }
+          })),
+        },
+      });
+      if (apiError) throw apiError;
+      if (data) setCart(data.data);
+      cartHelpers.clearGuestCart(tenantId.value);
+    } catch (err) {
+      console.error('Failed to merge cart:', err);
+      // If bulk fails, we keep the guest cart for next attempt
     }
-
-    cartHelpers.clearGuestCart();
   }
 
   async function onLogin() {
@@ -318,7 +327,7 @@ export const useCartStore = defineStore('cart', () => {
 
   function onLogout() {
     setCart({ items: [], total_price: 0, total_items: 0 });
-    cartHelpers.clearGuestCart();
+    cartHelpers.clearGuestCart(tenantId.value);
     initialized.value = false;
   }
 

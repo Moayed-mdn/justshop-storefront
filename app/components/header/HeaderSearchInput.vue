@@ -84,8 +84,8 @@ import { AUTOCOMPLETE_QUERY } from '~/graphql/queries/search'
 import type { Suggestion, AutocompleteResult } from '~~/types/search'
 
 const { locale } = useI18n()
-const localePath = useLocalePath()
 const router = useRouter()
+const routes = useStorefrontRoutes()
 
 // ── Refs ─────────────────────────────────────────
 const containerRef = ref<HTMLElement>()
@@ -175,8 +175,9 @@ function onArrowUp() {
 }
 
 function onEnter() {
-  if (highlightedIndex.value >= 0 && highlightedIndex.value < suggestions.value.length) {
-    onSelectSuggestion(suggestions.value[highlightedIndex.value])
+  const selectedSuggestion = suggestions.value[highlightedIndex.value]
+  if (highlightedIndex.value >= 0 && selectedSuggestion) {
+    onSelectSuggestion(selectedSuggestion)
     return
   }
 
@@ -191,13 +192,13 @@ function onSelectSuggestion(item: Suggestion) {
 
   switch (item.type) {
     case 'PRODUCT':
-      router.push(localePath(`/products/product/${item.slug}`))
+      router.push(routes.product(item.slug))
       break
     case 'CATEGORY':
-      router.push(localePath(`/products/category/${item.slug}`))
+      router.push(routes.category(item.slug))
       break
     case 'BRAND':
-      navigateToSearch(item.text)
+      router.push(routes.search(item.text))
       break
   }
 }
@@ -211,7 +212,7 @@ function onSeeAll() {
 function navigateToSearch(query: string) {
   isDropdownOpen.value = false
   highlightedIndex.value = -1
-  router.push({ path: localePath('/search'), query: { q: query } })
+  router.push(routes.search(query))
 }
 
 function clearSearch() {

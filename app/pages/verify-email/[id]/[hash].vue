@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import { API_ROUTES, APP_ROUTES } from '~~/shared/utils/routes'
+import { API_ROUTES } from '~~/shared/utils/routes'
 
+const routes = useStorefrontRoutes()
 const route = useRoute()
 const loading = ref(true)
 const error = ref<string | null>(null)
@@ -63,16 +64,16 @@ onMounted(async () => {
      
       <div v-else-if="error" class="text-red-500">
         <p class="mb-4">{{ error }}</p>
-        <NuxtLink :to="APP_ROUTES.register" class="text-blue-500 underline">
+        <NuxtLink :to="routes.register()" class="text-blue-500 underline">
           Resend Verification Email
         </NuxtLink>
       </div>
 
       <div v-else-if="success" class="text-green-500">
         <p class="mb-4">Your email has been successfully verified!</p>
-        <NuxtLink :to="APP_ROUTES.login" class="bg-blue-600 text-white px-4 py-2 rounded inline-block">
+        <NuxtLinkLocale :to="routes.login()" class="bg-blue-600 text-white px-4 py-2 rounded inline-block">
           Go to Login
-        </NuxtLink>
+        </NuxtLinkLocale>
       </div>
     </div>
   </div>

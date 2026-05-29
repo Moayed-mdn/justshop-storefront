@@ -3,7 +3,7 @@
     <NuxtLinkLocale
       class="group items-center gap-2"
       v-if="categoryName" 
-      :to="categorySlug ? `/products/category/${categorySlug}` : '#'"
+      :to="categorySlug ? routes.category(categorySlug) : '#'"
       > 
       <h2 class="my-8 max-w-[80%] capitalize text-2xl font-semibold text-(--slider-title-color) whitespace-pre-wrap wrap-break-word">
          {{ $t('best-seller.title') }}  {{ categoryName }}
@@ -51,6 +51,7 @@ const isBoundFromLeft = ref(false)
 const isBoundFromRight = ref(false)
 
 const { locale } = useI18n()
+const routes = useStorefrontRoutes()
 const isRtl = computed(() => locale.value === 'ar')
 
 const props = defineProps<{

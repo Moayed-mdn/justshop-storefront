@@ -1,4 +1,23 @@
 import { resolveTenant } from '../../src/core/tenant/resolver'
+import {
+  isStorefrontRuntimeEnabledForTenant,
+  normalizeStorefrontRuntimeRolloutConfig,
+} from '../../src/core/runtime/rollout/isStorefrontRuntimeEnabled'
+
+const legacyPassthroughPrefixes = [
+  '/login',
+  '/register',
+  '/cart',
+  '/checkout',
+  '/orders',
+  '/profile',
+  '/verify-email',
+  '/auth',
+]
+
+const isLegacyPassthroughPath = (path: string): boolean => {
+  return legacyPassthroughPrefixes.some(prefix => path === prefix || path.startsWith(`${prefix}/`))
+}
 
 export default defineEventHandler(async (event) => {
   // 1. Resolve hostname
@@ -7,18 +26,11 @@ export default defineEventHandler(async (event) => {
   // 2. Resolve tenant
   const tenant = await resolveTenant(hostname)
   
-  // 3. Reject unknown or suspended tenants
+  // 3. Reject malformed tenants
   if (!tenant) {
     throw createError({
       statusCode: 404,
       statusMessage: 'Tenant not found',
-    })
-  }
-  
-  if (tenant.status === 'suspended') {
-    throw createError({
-      statusCode: 403,
-      statusMessage: 'Storefront suspended',
     })
   }
 
@@ -28,16 +40,43 @@ export default defineEventHandler(async (event) => {
   
   // 5. Setup initial storefront context for SSR
   // This will be picked up by useStorefrontContext on the client
-  const locale = getCookie(event, 'i18n_redirected') || 'en'
-  
+  const locale = String(getCookie(event, 'i18n_redirected') || getHeader(event, 'x-storefront-locale') || 'en')
+  const query = getQuery(event)
+  const preview = query.preview === 'true' || query.preview === '1'
+  const previewToken = typeof query.previewToken === 'string'
+    ? query.previewToken
+    : typeof query.token === 'string'
+      ? query.token
+      : null
+  const requestId = String(getHeader(event, 'x-request-id') || crypto.randomUUID())
+  const runtimeConfig = useRuntimeConfig(event)
+  const rollout = normalizeStorefrontRuntimeRolloutConfig(runtimeConfig.storefrontRuntimeRollout)
+  const storefrontRuntimeEnabled = isStorefrontRuntimeEnabledForTenant(tenant, rollout)
+
   event.context.storefrontContext = {
     tenant,
     locale,
     currency: tenant.settings?.currency || 'USD',
     theme: tenant.settings?.theme || 'default',
-    preview: false, // TODO: handle preview mode
+    preview,
+    previewToken,
     route: event.path,
-    featureFlags: {}, // TODO: handle feature flags
-    requestId: event.id || Math.random().toString(36).substring(7),
+    featureFlags: {
+      storefront_runtime: storefrontRuntimeEnabled,
+    },
+    requestId,
+    navigation: null,
+    themePayload: null,
+  }
+
+  if (
+    !storefrontRuntimeEnabled
+    && !event.path.startsWith('/api/')
+    && !isLegacyPassthroughPath(event.path)
+  ) {
+    throw createError({
+      statusCode: 404,
+      statusMessage: 'Page not found',
+    })
   }
 })

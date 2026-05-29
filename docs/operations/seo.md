@@ -56,6 +56,14 @@ This means crawling is broadly allowed by default.
 - Many pages do not yet define route-specific titles or descriptions.
 - Product detail pages currently do not show richer SEO metadata ownership in the live code inspected for Phase 4.
 
+## Runtime Contract Reference
+
+The storefront runtime migration now defines the Laravel-owned target SEO payload in:
+
+- `docs/operations/storefront-runtime-seo-contract-specification-v1.md`
+
+That specification is the Phase 1 target contract for future runtime pages. This owner document still describes the current live frontend SEO implementation and gaps.
+
 ## Operational Checks
 
 When SEO-relevant code changes:

@@ -3,6 +3,8 @@
  * Using `as const` ensures strict type safety when referencing these routes.
  */
 
+import { STOREFRONT_ROUTE_PATHS } from './storefront-routes'
+
 /**
  * App-facing API routes (Nuxt/Nitro internal handlers)
  * These are the endpoints the frontend calls (via useApi)
@@ -18,11 +20,13 @@ export const API_ROUTES = {
     googleCallback: '/api/auth/google/callback',
     googleRedirect: '/api/auth/google/redirect',
     passwordForgot: '/api/auth/password/forgot',
+    passwordReset: '/api/auth/password/reset',
   },
   cart: {
     index: '/api/cart',
     clear: '/api/cart/clear',
     items: '/api/cart/items',
+    bulk: '/api/cart/bulk',
     item: (itemId: string | number) => `/api/cart/items/${itemId}`,
   },
   products: {
@@ -46,6 +50,15 @@ export const API_ROUTES = {
     avatar: '/api/profile/avatar',
     info: '/api/profile/info',
     password: '/api/profile/password',
+  },
+  storefront: {
+    runtime: {
+      resolve: '/api/storefront/runtime/resolve',
+      page: (id: string) => `/api/storefront/runtime/page/${id}`,
+      navigation: '/api/storefront/runtime/navigation',
+      theme: '/api/storefront/runtime/theme',
+      previewValidate: '/api/storefront/runtime/preview/validate',
+    },
   },
   search: '/api/search',
   checkout: {
@@ -71,11 +84,13 @@ export const EXTERNAL_API_ROUTES = {
     googleCallback: 'auth/google/callback',
     googleRedirect: 'auth/google/redirect',
     passwordForgot: 'auth/password/forgot',
+    passwordReset: 'auth/password/reset',
   },
   cart: {
     show: 'cart',
     clear: 'cart/clear',
     addItem: 'cart/items',
+    bulk: 'cart/bulk',
     updateItem: (itemId: string | number) => `cart/items/${itemId}`,
     removeItem: (itemId: string | number) => `cart/items/${itemId}`,
   },
@@ -112,6 +127,15 @@ export const EXTERNAL_API_ROUTES = {
     updateInfo: 'profile/info',
     updatePassword: 'profile/password',
   },
+  storefront: {
+    runtime: {
+      resolve: 'storefront/runtime/resolve',
+      page: (id: string) => `storefront/runtime/page/${id}`,
+      navigation: 'storefront/runtime/navigation',
+      theme: 'storefront/runtime/theme',
+      previewValidate: 'storefront/runtime/preview/validate',
+    },
+  },
   search: {
     index: 'search',
   },
@@ -120,28 +144,23 @@ export const EXTERNAL_API_ROUTES = {
 /**
  * Application page routes (Frontend navigation)
  */
+/** @deprecated Prefer `STOREFRONT_ROUTE_PATHS` and `useStorefrontRoutes()` for storefront navigation. */
 export const APP_ROUTES = {
-  home: '/',
-  login: '/login',
-  register: '/register',
-  profile: '/profile',
-  cart: '/cart',
-  search: '/search',
-  checkout: {
-    success: '/checkout/success',
-    cancel: '/checkout/cancel',
-  },
-  orders: {
-    index: '/orders',
-    detail: (orderNumber: string | number) => `/orders/${orderNumber}`,
-    track: '/orders/track',
-  },
+  home: STOREFRONT_ROUTE_PATHS.home,
+  login: STOREFRONT_ROUTE_PATHS.login,
+  register: STOREFRONT_ROUTE_PATHS.register,
+  profile: STOREFRONT_ROUTE_PATHS.profile,
+  cart: STOREFRONT_ROUTE_PATHS.cart,
+  search: STOREFRONT_ROUTE_PATHS.search,
+  checkout: STOREFRONT_ROUTE_PATHS.checkout,
+  orders: STOREFRONT_ROUTE_PATHS.orders,
   products: {
-    index: '/products',
-    category: (slug: string) => `/products/category/${slug}`,
-    detail: (slug: string) => `/products/product/${slug}`,
+    /** @deprecated Use `STOREFRONT_ROUTE_PATHS.shop` */
+    index: STOREFRONT_ROUTE_PATHS.shop,
+    category: STOREFRONT_ROUTE_PATHS.category,
+    detail: STOREFRONT_ROUTE_PATHS.product,
   },
-  verifyEmail: (id: string | number, hash: string) => `/verify-email/${id}/${hash}`,
+  verifyEmail: STOREFRONT_ROUTE_PATHS.verifyEmail,
 } as const;
 
 export type ApiRoutes = typeof API_ROUTES;

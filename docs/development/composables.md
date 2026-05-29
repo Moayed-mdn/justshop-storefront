@@ -29,8 +29,6 @@ The live repo currently includes these notable composables:
 | `useProduct.ts` | Products listing data fetch for the main shop listing |
 | `useProductByCategory.ts` | Category-specific product listing fetch |
 | `useProductDetail.ts` | Product detail and related-product fetches |
-| `useBestSellers.ts` | Best-seller data fetch |
-| `useHero.ts` | Hero content fetch |
 | `useAvatar.ts` | Avatar URL and initials helpers |
 | `useAppToast.ts` | Shared app toast helpers |
 | `useCachedData.ts` | Timestamp-based cached payload helper for async data |
@@ -82,7 +80,7 @@ This is the preferred boundary. Pages should orchestrate feature screens, while 
 
 ## Async Data Rules
 
-- Keep `useAsyncData` and `useLazyAsyncData` usage close to the feature-specific listing or data-loading composable, as seen in `useProduct.ts` and `useBestSellers.ts`.
+- Keep `useAsyncData` and `useLazyAsyncData` usage close to the feature-specific listing or data-loading composable, as seen in `useProduct.ts` and `useProductDetail.ts`.
 - Use stable keys that include the live routing or locale dimensions that affect the result.
 - Keep transform or cache helpers generic when they are cross-feature utilities, as in `useCachedData.ts`.
 

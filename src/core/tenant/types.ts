@@ -1,3 +1,8 @@
+import type {
+  RuntimeNavigationResponse,
+  RuntimeThemeResponse,
+} from '../runtime/contracts/types'
+
 export interface Tenant {
   id: string | number
   name: string
@@ -13,7 +18,10 @@ export interface StorefrontContext {
   currency: string
   theme: string
   preview: boolean
+  previewToken?: string | null
   route: string
   featureFlags: Record<string, boolean>
   requestId: string
+  navigation: RuntimeNavigationResponse['data'] | null
+  themePayload: RuntimeThemeResponse['data'] | null
 }

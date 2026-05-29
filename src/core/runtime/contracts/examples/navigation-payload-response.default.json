@@ -1,0 +1,53 @@
+{
+  "requestContext": {
+    "requestId": "req_01jwx4mey5g3b6n8s6h48k2d77",
+    "tenantId": "store_42",
+    "tenantKey": "justshop-demo",
+    "locale": "en",
+    "path": "/about-us",
+    "runtimeVersion": "2026-05-28",
+    "preview": false
+  },
+  "data": {
+    "header": [
+      {
+        "id": "nav_home",
+        "label": "Home",
+        "path": "/",
+        "external": false,
+        "children": []
+      },
+      {
+        "id": "nav_shop",
+        "label": "Shop",
+        "path": "/products",
+        "external": false,
+        "children": [
+          {
+            "id": "nav_shop_shoes",
+            "label": "Shoes",
+            "path": "/products/category/shoes",
+            "external": false,
+            "children": []
+          }
+        ]
+      }
+    ],
+    "footer": [
+      {
+        "id": "nav_footer_about",
+        "label": "About",
+        "path": "/about-us",
+        "external": false,
+        "children": []
+      }
+    ]
+  },
+  "cache": {
+    "key": "storefront_runtime:2026-05-28:tenant:justshop-demo:locale:en:artifact:navigation:path:/about-us",
+    "artifact": "navigation",
+    "ttlSeconds": 1800,
+    "tags": ["tenant:justshop-demo", "locale:en", "artifact:navigation"],
+    "bypassed": false
+  }
+}

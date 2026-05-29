@@ -30,10 +30,12 @@ defineProps({
 
 const closeMenu = inject('closeMenu') 
 
+const routes = useStorefrontRoutes()
+
 const navLinks = computed(() => [
-{ name: t('header.links.home'), path: '/' },
-{ name: t('header.links.shop'), path: '/products' },
-{ name: t('header.links.contact'), path: '#' }
+  { name: t('header.links.home'), path: routes.home() },
+  { name: t('header.links.shop'), path: routes.shop() },
+  { name: t('header.links.contact'), path: '#' },
 ])
 </script>
 

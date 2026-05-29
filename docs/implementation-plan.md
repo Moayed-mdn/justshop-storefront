@@ -1,5 +1,22 @@
 # JustShop Frontend Documentation Implementation Plan
 
+## Status
+
+This document remains the authoritative roadmap for the repository's documentation system and owner-document structure.
+
+Current state:
+
+- Phases 1 through 5 are complete.
+- This file should still be used for documentation ownership, maintenance rules, and cleanup workflow references.
+- `docs/operations/` (Operations and performance)
+- `docs/refactoring-plan/` (Storefront Runtime Integration & Commerce Consolidation programs)
+
+## Program Successors
+
+The documentation system now supports two major refactoring programs:
+1. **Storefront Runtime Integration (Maintenance)**: Established the SSR infrastructure and runtime contracts.
+2. **Storefront Commerce Consolidation (Active)**: Unifying routing, shell, and commerce state into the runtime foundation.
+
 ## 1. Purpose And Scope
 
 This document defines the standardized end-to-end roadmap for building the complete documentation system for the `justshop-frontend` Nuxt 4 application. It converts the validated target documentation architecture into an implementation sequence that is dependency-safe, measurable, auditable, and aligned with the existing codebase.

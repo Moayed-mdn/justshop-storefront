@@ -1,0 +1,34 @@
+{
+  "title": "RuntimePreviewValidationResponse",
+  "type": "object",
+  "required": ["requestContext", "data"],
+  "properties": {
+    "requestContext": {
+      "type": "object",
+      "required": ["requestId", "tenantId", "tenantKey", "locale", "path", "runtimeVersion", "preview"],
+      "properties": {
+        "requestId": { "type": "string" },
+        "tenantId": { "type": ["string", "null"] },
+        "tenantKey": { "type": ["string", "null"] },
+        "locale": { "type": "string", "enum": ["en", "ar"] },
+        "path": { "type": "string" },
+        "runtimeVersion": { "type": "string" },
+        "preview": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    },
+    "data": {
+      "type": "object",
+      "required": ["valid", "previewState", "pageId", "expiresAt", "cacheBypass"],
+      "properties": {
+        "valid": { "type": "boolean" },
+        "previewState": { "type": "string", "enum": ["authorized", "denied", "expired"] },
+        "pageId": { "type": ["string", "null"] },
+        "expiresAt": { "type": ["string", "null"] },
+        "cacheBypass": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

@@ -8,13 +8,13 @@
           class="flex items-center gap-2 text-sm mb-3"
           :style="{ color: 'var(--category-header-crumb)' }"
         >
-          <NuxtLinkLocale to="/" class="hover:text-(--color-primary) transition-colors">
+          <NuxtLinkLocale :to="routes.home()" class="hover:text-(--color-primary) transition-colors">
             {{ $t('product.breadcrumb_home') }}
           </NuxtLinkLocale>
   
           <span>/</span>
   
-          <NuxtLinkLocale to="/products" class="hover:text-(--color-primary) transition-colors">
+          <NuxtLinkLocale :to="routes.shop()" class="hover:text-(--color-primary) transition-colors">
             {{ $t('product.breadcrumb_shop') }}
           </NuxtLinkLocale>
   
@@ -22,7 +22,7 @@
             <span>/</span>
             <NuxtLinkLocale
               v-if="idx < breadcrumb.length - 1"
-              :to="`/products/category/${crumb.slug}`"
+              :to="routes.category(crumb.slug)"
               class="hover:text-(--color-primary) transition-colors"
             >
               {{ crumb.name }}
@@ -48,6 +48,8 @@
   
   <script setup lang="ts">
 import type { BreadcrumbItem } from '~~/types/product';
+
+  const routes = useStorefrontRoutes()
 
   defineProps<{
     name: string

@@ -20,6 +20,7 @@ Code surfaces this file aligns with:
 
 - Standalone ADRs now exist for request-helper consolidation, API-base runtime boundaries, and Google callback ownership.
 - Phase 5 audit-closure work and the review-required type decisions are complete for the validated `2026-05-27` cleanup batch.
+- Storefront runtime Phase 8 closeout is complete for repo scope (`2026-05-29`): unused migration composables removed, keep/retire log published, Phase 7 operator rollout deferred.
 - This file remains the index for implemented decisions, open ADRs, and any remaining backlog topics.
 - When a future decision needs formal rationale, create an ADR using `docs/templates/adr-template.md` and add it to this index.
 
@@ -34,6 +35,7 @@ Code surfaces this file aligns with:
 | Shared route ownership | Route literals are centralized in `shared/utils/routes.ts` for app routes, internal API routes, and backend path fragments. | `shared/utils/routes.ts` | `docs/architecture/routing-and-navigation.md`, `docs/architecture/api-integration.md`, `docs/development/coding-standards.md` | Implemented, no ADR file yet |
 | Plugin startup order | Client startup order is explicitly coordinated with numeric plugin prefixes so auth hydration runs before cart initialization. | `app/plugins/01.auth.client.ts`, `app/plugins/02.cart.client.ts` | `docs/configuration/plugins.md`, `docs/architecture/rendering-strategy.md` | Implemented, no ADR file yet |
 | Localization strategy | The app uses `@nuxtjs/i18n` with `en` and `ar` locales and `prefix_except_default` routing. | `nuxt.config.ts`, `i18n/locales/**` | `docs/configuration/nuxt-config.md`, `docs/architecture/routing-and-navigation.md`, `docs/operations/seo.md` | Implemented, no ADR file yet |
+| Storefront runtime contract-first boundary | Freeze the Laravel-to-Nuxt storefront runtime interface as versioned DTOs, schemas, examples, and owner docs before Phase 2 API work or Phase 3 frontend integration proceeds. | `src/core/runtime/contracts/**`, `scripts/check-runtime-contracts.mjs`, `docs/architecture/storefront-runtime-contracts.md` | `docs/architecture/storefront-runtime-api-contract-specification-v1.md`, `docs/architecture/storefront-runtime-dto-mapping-specification-v1.md`, `docs/development/storefront-runtime-contract-test-matrix-v1.md` | Implemented in `docs/reference/adr-007-storefront-runtime-contract-first-boundary.md` |
 
 ## Standalone ADRs
 
@@ -47,6 +49,7 @@ These ADRs now formalize the highest-priority backlog topics without claiming th
 | Orders route protection policy | Protect the main orders index and details while keeping guest tracking public. | `docs/reference/adr-004-orders-protection-policy.md` | Implemented |
 | Theme behavior roadmap | Restore system preference detection and user-choice persistence by removing hardcoded light-mode overrides. | `docs/reference/adr-005-theme-behavior-roadmap.md` | Implemented |
 | Naming and directory normalization | Standardize on lowercase component feature folders and remove redundant `use` prefixes from composables. | `docs/reference/adr-006-naming-normalization.md` | Implemented |
+| Storefront runtime contract-first boundary | Freeze the migration boundary between Laravel and Nuxt before runtime API implementation continues. | `docs/reference/adr-007-storefront-runtime-contract-first-boundary.md` | Implemented |
 
 ## Remaining ADR Backlog
 

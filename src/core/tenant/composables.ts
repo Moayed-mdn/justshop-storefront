@@ -1,4 +1,4 @@
-import type { StorefrontContext, Tenant } from './types'
+import type { StorefrontContext } from './types'
 
 export const useStorefrontContext = () => {
   return useState<StorefrontContext>('storefront_context', () => ({
@@ -7,9 +7,12 @@ export const useStorefrontContext = () => {
     currency: 'USD',
     theme: 'default',
     preview: false,
+    previewToken: null,
     route: '',
     featureFlags: {},
     requestId: '',
+    navigation: null,
+    themePayload: null,
   }))
 }
 

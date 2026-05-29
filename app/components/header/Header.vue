@@ -40,9 +40,8 @@ const showLinks = ref(false)
 
 const isDesktop = useMediaQuery('(min-width: 1024px)')
 
-provide('closeMenu',() => {
-  console.log('i am here')
-  showLinks.value = false;
+provide('closeMenu', () => {
+  showLinks.value = false
 })
 
 watch(isDesktop,(val)=>{

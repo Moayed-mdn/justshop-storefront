@@ -18,10 +18,15 @@ The live repo does not currently contain:
 - automated unit tests
 - integration test files
 - end-to-end test files
-- npm test scripts
 - CI workflows in `.github/`
 
-Current verification is therefore manual and build-oriented.
+The repo now does include targeted storefront runtime verification scripts:
+
+- `npm run runtime:contracts:check`
+- `npm run runtime:verify:phase6`
+- `npm run runtime:verify:phase7`
+
+Current verification is therefore manual plus build- and script-oriented for the storefront runtime migration.
 
 ## Current Available Commands
 
@@ -31,6 +36,18 @@ Current verification is therefore manual and build-oriented.
 | `npm run build` | Production compilation check |
 | `npm run preview` | Local production-preview validation |
 | `npm run generate` | Optional static-generation validation |
+| `npm run runtime:contracts:check` | Validates the checked-in storefront runtime schemas and examples |
+| `npm run runtime:verify:phase6` | Verifies built SSR runtime pages, SEO markers, and runtime shell output against the Laravel runtime backend |
+| `npm run runtime:verify:phase7` | Verifies internal allowlist gating and kill-switch rollback behavior for the controlled rollout package |
+
+## Storefront Runtime Rollout Verification
+
+The runtime migration now has repo-backed preflight verification for the rollout phase:
+
+- `npm run runtime:verify:phase6` covers SSR runtime smoke for homepage, marketing, category, and product routes, plus canonical and JSON-LD markers.
+- `npm run runtime:verify:phase7` covers the Phase 7 rollout controls: internal-tenant gating, blocked-tenant rejection, and kill-switch rollback behavior.
+- The owner package for the operational rollout is `docs/refactoring-plan/storefront-runtime-phase-7-rollout.md`.
+- Local script success does not replace staging or production monitoring, pilot UAT, or sign-off requirements from the execution plan.
 
 ## Required Current Verification Flow
 
@@ -46,6 +63,10 @@ For meaningful change validation in this repo today:
 Current high-value smoke checks should cover:
 
 - home page and hero content
+- runtime homepage SSR through the catch-all route when the Laravel runtime backend is reachable
+- runtime marketing page SSR such as `/about-us`
+- runtime category page SSR such as `/products/category/<slug>`
+- runtime product page SSR such as `/products/product/<slug>` or the backend-approved product runtime path
 - product listing and category listing
 - product detail, variant selection, and add-to-cart
 - cart behavior for guest and authenticated users
@@ -61,6 +82,7 @@ Current high-value smoke checks should cover:
 
 - diagnostics on edited markdown files
 - link and owner-doc consistency
+- `npm run runtime:contracts:check` when storefront runtime contract docs or artifacts change
 
 ### UI Or Styling Changes
 
@@ -94,10 +116,17 @@ Until a test framework is introduced, prefer targeted manual checks and `npm run
 
 ## Current Gaps
 
-- No test harness is wired into `package.json`.
+- No general-purpose unit, integration, or end-to-end test harness is wired into `package.json`.
 - No CI automation is visible in the repo.
 - No component preview or visual regression tooling is present.
-- Verification evidence depends on local build success and human smoke testing.
+- Phase 7 completion evidence still depends on environment execution, monitoring, and human approvals even though local rollout verification scripts exist.
+
+For the storefront runtime migration specifically:
+
+- Phase 1 contract schemas and examples are now validated locally by `npm run runtime:contracts:check`.
+- CI execution of that command remains a later delivery task because no repository workflow is currently present.
+- Phase 3 verification should explicitly cover runtime SSR for homepage, marketing, category, and product pages, plus legacy-sensitive regressions for auth, cart, checkout, profile, and orders.
+- If the Laravel runtime backend is unavailable locally, treat `npm run build` plus legacy route SSR smoke checks as local verification and complete runtime SSR verification in an environment where Nitro can reach the backend runtime APIs.
 
 ## Change Rules
 

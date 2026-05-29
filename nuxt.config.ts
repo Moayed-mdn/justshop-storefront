@@ -1,6 +1,10 @@
 import tailwindcss from '@tailwindcss/vite'
+import { fileURLToPath } from 'node:url'
 
 export default defineNuxtConfig({
+  future: {
+    compatibilityVersion: 4,
+  },
   compatibilityDate: '2025-07-15',
   devtools: {
     enabled: true,
@@ -14,6 +18,9 @@ export default defineNuxtConfig({
     plugins: [
       tailwindcss(),
     ],
+    server: {
+      allowedHosts: ['demo.justshop.test'],
+    },
     optimizeDeps: {
       include: ['@apollo/client/core', 'graphql-tag'],
     },
@@ -21,6 +28,20 @@ export default defineNuxtConfig({
   runtimeConfig: {
     // Server-side API base (defaults to public if NUXT_API_BASE is not set)
     apiBase: process.env.NUXT_API_BASE || process.env.NUXT_PUBLIC_API_BASE,
+    storefrontRuntimeRollout: {
+      mode: (process.env.NUXT_STOREFRONT_RUNTIME_ROLLOUT_MODE
+        || process.env.STOREFRONT_RUNTIME_ROLLOUT_MODE
+        || 'full') as 'off' | 'internal' | 'pilot' | 'full',
+      killSwitch: (process.env.NUXT_STOREFRONT_RUNTIME_KILL_SWITCH
+        || process.env.STOREFRONT_RUNTIME_KILL_SWITCH
+        || 'false') === 'true',
+      internalTenantKeys: process.env.NUXT_STOREFRONT_RUNTIME_INTERNAL_TENANT_KEYS
+        || process.env.STOREFRONT_RUNTIME_INTERNAL_TENANT_KEYS
+        || 'justshop-demo,demo.justshop.test',
+      pilotTenantKeys: process.env.NUXT_STOREFRONT_RUNTIME_PILOT_TENANT_KEYS
+        || process.env.STOREFRONT_RUNTIME_PILOT_TENANT_KEYS
+        || '',
+    },
     public: {
       // Client-side API base
       apiBase: process.env.NUXT_PUBLIC_API_BASE,
@@ -34,17 +55,23 @@ export default defineNuxtConfig({
     ],
 
   components: [
-    { path: '~/components' },
-    { path: 'src/core/rendering', prefix: 'Runtime' },
+    { path: '~/components/ui', prefix: 'Ui', pathPrefix: false },
+    { path: '~/components', pathPrefix: false },
+    {
+      path: fileURLToPath(new URL('./src/core/rendering', import.meta.url)),
+      prefix: 'Runtime',
+      ignore: ['SectionBoundary.vue', 'SectionFallback.vue'],
+    },
   ],
 
   imports: {
     dirs: [
       'shared/utils',
-      'src/core/**',
+      'src/core/tenant',
+      'src/core/api',
+      'src/core/cache',
       'src/domains/**',
       'src/platform/**',
-      'src/core/rendering/sections',
     ],
   },
 
@@ -79,7 +106,7 @@ export default defineNuxtConfig({
         icon: 'i-circle-flags-gb' ,
         files: ['en/header.json', 'en/cart.json', 'en/best-seller.json','en/product.json','en/search.json',
            'en/filter.json', 'en/topbar.json','en/footer.json', 'en/checkout.json','en/orders.json',
-           'en/login.json', 'en/register.json', 'en/profile.json']
+           'en/login.json', 'en/register.json', 'en/profile.json', 'en/auth.json']
       },
       {
         code: 'ar',
@@ -89,7 +116,7 @@ export default defineNuxtConfig({
         icon: 'i-circle-flags-sa' ,
         files: ['ar/header.json', 'ar/cart.json', 'ar/best-seller.json','ar/product.json', 'ar/search.json',
            'ar/filter.json', 'ar/topbar.json','ar/footer.json', 'ar/checkout.json','ar/orders.json',
-           'ar/login.json', 'ar/register.json', 'ar/profile.json']
+           'ar/login.json', 'ar/register.json', 'ar/profile.json', 'ar/auth.json']
       },
       
     ]

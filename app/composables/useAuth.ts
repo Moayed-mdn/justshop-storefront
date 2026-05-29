@@ -1,6 +1,6 @@
 // composables/useAuth.ts
 import { useApi } from '~/composables/useApi';
-import { API_ROUTES, APP_ROUTES } from '~~/shared/utils/routes';
+import { API_ROUTES } from '~~/shared/utils/routes';
 import type { AuthResponse, UserResponse } from '~~/types/auth';
 import type { ApiSuccess } from '~~/types/api';
 
@@ -8,7 +8,7 @@ export const useAuth = () => {
   const authStore = useAuthStore();
   const { showSuccessToast } = useAppToast();
   const loading = useState('auth_loading', () => false);
-  const localePath = useLocalePath();
+  const storefrontRoutes = useStorefrontRoutes();
 
   const login = async (credentials: Record<string, string>) => {
     loading.value = true;
@@ -28,7 +28,7 @@ export const useAuth = () => {
       const cartStore = useCartStore();
       await cartStore.onLogin();
 
-      return navigateTo(localePath(APP_ROUTES.home));
+      return navigateTo(storefrontRoutes.home());
     }finally {
       loading.value = false;
     }
@@ -73,6 +73,40 @@ export const useAuth = () => {
     }
   };
 
+  const forgotPassword = async (email: string) => {
+    loading.value = true;
+    try {
+      const { data, error } = await useApi<ApiSuccess<{}>>(
+        API_ROUTES.auth.passwordForgot,
+        {
+          method: 'POST',
+          body: { email },
+        },
+      );
+      if (error) throw error;
+      return data;
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  const resetPassword = async (form: Record<string, string>) => {
+    loading.value = true;
+    try {
+      const { data, error } = await useApi<ApiSuccess<{}>>(
+        API_ROUTES.auth.passwordReset,
+        {
+          method: 'POST',
+          body: form,
+        },
+      );
+      if (error) throw error;
+      return data;
+    } finally {
+      loading.value = false;
+    }
+  };
+
   const logout = async () => {
     loading.value = true;
     try {
@@ -83,7 +117,7 @@ export const useAuth = () => {
       authStore.clearAuth();
       useCartStore().onLogout();
       loading.value = false;
-      return navigateTo(localePath(APP_ROUTES.login));
+      return navigateTo(storefrontRoutes.login());
     }
   };
 
@@ -114,7 +148,7 @@ export const useAuth = () => {
       const cartStore = useCartStore();
       await cartStore.onLogin();
 
-      return navigateTo(localePath('/'));
+      return navigateTo(storefrontRoutes.home());
     } catch (err: any) {
       authStore.clearAuth();
       throw err;
@@ -133,5 +167,7 @@ export const useAuth = () => {
     loginWithGoogle,
     handleGoogleCallback,
     resendVerificationEmail,
+    forgotPassword,
+    resetPassword,
   };
 };

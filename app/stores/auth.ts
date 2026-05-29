@@ -35,7 +35,7 @@ export const useAuthStore = defineStore('auth', () => {
   };
 }, {
   persist: {
-    key: 'auth',
+    key: 'js_auth',
     storage: piniaPluginPersistedstate.cookies(),
     pick: ['token'],
   },

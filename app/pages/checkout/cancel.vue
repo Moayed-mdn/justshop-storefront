@@ -21,7 +21,7 @@
         <!-- Actions -->
         <div class="flex flex-col sm:flex-row gap-3 pt-2 justify-center">
           <NuxtLinkLocale
-            to="/cart"
+            :to="routes.cart()"
             class="py-3 px-6 text-sm font-semibold text-white bg-(--color-primary)
                    rounded-md hover:bg-(--green-950) transition-colors"
           >
@@ -29,7 +29,7 @@
           </NuxtLinkLocale>
   
           <NuxtLinkLocale
-            to="/"
+            :to="routes.home()"
             class="py-3 px-6 text-sm font-semibold text-gray-700 border border-gray-300
                    rounded-md hover:bg-gray-50 transition-colors"
           >
@@ -41,6 +41,8 @@
   </template>
   
   <script setup lang="ts">
+  const routes = useStorefrontRoutes()
+
   definePageMeta({
     layout: 'default',
   })

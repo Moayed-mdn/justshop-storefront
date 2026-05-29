@@ -17,6 +17,8 @@ export const SEARCH_QUERY = gql`
         reviews_count
         category_name
         brand_name
+        product_variant_id
+        max_quantity
       }
       categories {
         id

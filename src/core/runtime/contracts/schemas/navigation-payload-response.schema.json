@@ -1,0 +1,66 @@
+{
+  "title": "RuntimeNavigationResponse",
+  "type": "object",
+  "required": ["requestContext", "data", "cache"],
+  "properties": {
+    "requestContext": {
+      "type": "object",
+      "required": ["requestId", "tenantId", "tenantKey", "locale", "path", "runtimeVersion", "preview"],
+      "properties": {
+        "requestId": { "type": "string" },
+        "tenantId": { "type": ["string", "null"] },
+        "tenantKey": { "type": ["string", "null"] },
+        "locale": { "type": "string", "enum": ["en", "ar"] },
+        "path": { "type": "string" },
+        "runtimeVersion": { "type": "string" },
+        "preview": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    },
+    "data": {
+      "type": "object",
+      "required": ["header", "footer"],
+      "properties": {
+        "header": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/navigationItem" }
+        },
+        "footer": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/navigationItem" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "cache": {
+      "type": "object",
+      "required": ["key", "artifact", "ttlSeconds", "tags", "bypassed"],
+      "properties": {
+        "key": { "type": "string" },
+        "artifact": { "type": "string", "enum": ["navigation"] },
+        "ttlSeconds": { "type": "integer" },
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "bypassed": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "definitions": {
+    "navigationItem": {
+      "type": "object",
+      "required": ["id", "label", "path", "external", "children"],
+      "properties": {
+        "id": { "type": "string" },
+        "label": { "type": "string" },
+        "path": { "type": "string" },
+        "external": { "type": "boolean" },
+        "children": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/navigationItem" }
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

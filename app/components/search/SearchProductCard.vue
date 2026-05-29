@@ -1,7 +1,7 @@
 <!-- app/components/search/SearchProductCard.vue -->
 
 <template>
-    <NuxtLinkLocale :to="`/products/product/${product.slug}`" class="group w-full block">
+    <NuxtLinkLocale :to="routes.product(product.slug)" class="group w-full block">
       <!-- Image -->
       <div class="
         bg-(--card-bg-light) rounded-(--radius-md) flex items-center justify-center
@@ -70,12 +70,31 @@
         <p class="text-sm text-(--card-description) line-clamp-2 mt-2">
           {{ product.description }}
         </p>
+
+        <!-- ── Commerce Action ──────────────── -->
+        <div class="mt-4">
+          <ClientOnly>
+            <UiCartButton
+              :product-id="Number(product.id)"
+              :product-variant-id="Number(product.product_variant_id || product.id)"
+              :name="product.name"
+              :price="String(product.price)"
+              :image="product.image_url"
+              :max-quantity="product.max_quantity || undefined"
+            />
+            <template #fallback>
+              <div class="h-10 bg-(--gray-100) rounded-full animate-pulse" />
+            </template>
+          </ClientOnly>
+        </div>
       </div>
     </NuxtLinkLocale>
   </template>
   
   <script setup lang="ts">
   import type { ProductSearchResult } from '~~/types/search'
+
+  const routes = useStorefrontRoutes()
   
   defineProps<{
     product: ProductSearchResult

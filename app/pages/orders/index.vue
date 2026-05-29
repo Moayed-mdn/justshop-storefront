@@ -166,7 +166,7 @@ const handleReorder = async (orderNumber: string) => {
         })
       }
 
-      navigateTo(localePath('/cart'))
+      navigateTo(useStorefrontRoutes().cart())
     }
   } catch (err: any) {
     showErrorToast(err?.data?.message || t('orders.reorder_failed'))

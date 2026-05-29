@@ -1,27 +1,80 @@
 import type { Tenant } from './types'
 
+const normalizeHostname = (hostname: string): string => {
+  return hostname
+    .trim()
+    .toLowerCase()
+    .split(',')[0]!
+    .trim()
+    .split(':')[0]!
+}
+
+const formatTenantName = (slug: string): string => {
+  return slug
+    .split(/[-_]/g)
+    .filter(Boolean)
+    .map(part => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ') || 'Storefront'
+}
+
+const knownDevTenants: Record<string, Pick<Tenant, 'id' | 'name' | 'slug'>> = {
+  'demo.justshop.test': {
+    id: 'store_1',
+    name: 'Merchant Store',
+    slug: 'merchant-store',
+  },
+}
+
 export const resolveTenant = async (hostname: string): Promise<Tenant | null> => {
-  // In a real implementation, this would call a backend API or a cache.
-  // For now, we'll return a mock tenant for localhost and simulate a lookup.
-  
-  if (hostname.includes('localhost') || hostname.includes('127.0.0.1')) {
+  const normalizedHost = normalizeHostname(hostname)
+
+  if (!normalizedHost) {
+    return null
+  }
+
+  const knownTenant = knownDevTenants[normalizedHost]
+
+  if (knownTenant) {
     return {
-      id: 1,
-      name: 'Default Store',
-      slug: 'default',
-      domain: hostname,
+      ...knownTenant,
+      domain: normalizedHost,
       status: 'active',
       settings: {
         theme: 'default',
         currency: 'USD',
-      }
+      },
     }
   }
 
-  // Example of how we might fetch from an API
-  // const config = useRuntimeConfig()
-  // const response = await $fetch(`${config.apiBase}/tenants/resolve`, { query: { domain: hostname } })
-  // return response.data
+  if (normalizedHost === 'localhost' || normalizedHost === '127.0.0.1') {
+    return {
+      id: 'localhost',
+      name: 'Default Store',
+      slug: 'default',
+      domain: normalizedHost,
+      status: 'active',
+      settings: {
+        theme: 'default',
+        currency: 'USD',
+      },
+    }
+  }
 
-  return null
+  const hostParts = normalizedHost.split('.')
+  const slug = hostParts[0] || 'storefront'
+
+  // Runtime APIs remain the authority for actual tenant validity. The frontend
+  // stores a host-derived shell here so SSR, request headers, and cache keys
+  // stay stable before Laravel returns the canonical tenant identity.
+  return {
+    id: slug,
+    name: formatTenantName(slug),
+    slug,
+    domain: normalizedHost,
+    status: 'active',
+    settings: {
+      theme: 'default',
+      currency: 'USD',
+    },
+  }
 }

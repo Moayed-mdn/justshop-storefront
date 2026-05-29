@@ -3,6 +3,7 @@
 ## Document Control
 - Document title: `JustShop Storefront Runtime Integration Execution Plan`
 - Document purpose: provide an explicit, phase-by-phase implementation plan that an external delivery team can execute without additional clarification.
+- Shareable overview: [PLAN-SUMMARY.md](./PLAN-SUMMARY.md) (plain language, current phase status, local demo notes)
 - Scope: `justshop-frontend` and `laratenant-backend`
 - Delivery duration: `18 weeks`
 - Delivery model: sequential gated phases
@@ -775,5 +776,8 @@ Retire only approved legacy runtime elements and transfer ownership to steady-st
 - `Weeks 16-17`: Phase 7
 - `Week 18`: Phase 8
 
-## Immediate Next Step
-Start Phase 1 and produce `Runtime API Contract Specification v1` before assigning implementation tickets.
+## Program Status (repo closeout)
+
+- Phases 1–6: implemented with repo-backed tests and certification scripts.
+- Phase 7: **deferred** — operator rollout evidence optional; see `storefront-runtime-phase-7-rollout.md` and `storefront-runtime-phase-8-legacy-retirement.md`.
+- Phase 8: **complete** — see `storefront-runtime-phase-8-legacy-retirement.md`, `storefront-runtime-phase-8-operating-guide.md`.

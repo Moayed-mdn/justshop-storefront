@@ -1,0 +1,52 @@
+{
+  "title": "RuntimeRouteResolutionResponse",
+  "type": "object",
+  "required": ["requestContext", "data", "cache"],
+  "properties": {
+    "requestContext": {
+      "type": "object",
+      "required": ["requestId", "tenantId", "tenantKey", "locale", "path", "runtimeVersion", "preview"],
+      "properties": {
+        "requestId": { "type": "string" },
+        "tenantId": { "type": ["string", "null"] },
+        "tenantKey": { "type": ["string", "null"] },
+        "locale": { "type": "string", "enum": ["en", "ar"] },
+        "path": { "type": "string" },
+        "runtimeVersion": { "type": "string" },
+        "preview": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    },
+    "data": {
+      "type": "object",
+      "required": ["status", "routeType", "pageId", "resourceType", "resourceId", "path", "locale", "layout", "redirectTo", "redirectStatus", "legacyPassthrough"],
+      "properties": {
+        "status": { "type": "string", "enum": ["matched", "redirect", "not_found"] },
+        "routeType": { "type": "string", "enum": ["home", "marketing_page", "category_page", "product_page", "redirect"] },
+        "pageId": { "type": ["string", "null"] },
+        "resourceType": { "type": "string", "enum": ["page", "product", "category", "none"] },
+        "resourceId": { "type": ["string", "null"] },
+        "path": { "type": "string" },
+        "locale": { "type": "string", "enum": ["en", "ar"] },
+        "layout": { "type": ["string", "null"], "enum": ["default", "marketing", "catalog", "product", null] },
+        "redirectTo": { "type": ["string", "null"] },
+        "redirectStatus": { "type": ["integer", "null"], "enum": [301, 302, null] },
+        "legacyPassthrough": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    },
+    "cache": {
+      "type": "object",
+      "required": ["key", "artifact", "ttlSeconds", "tags", "bypassed"],
+      "properties": {
+        "key": { "type": "string" },
+        "artifact": { "type": "string", "enum": ["route"] },
+        "ttlSeconds": { "type": "integer" },
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "bypassed": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,5 +1,11 @@
-<script setup>
-const props = defineProps(['products'])
+<script setup lang="ts">
+import ProductCard from './ProductCard.vue'
+import ProductNoResults from './ProductNoResults.vue'
+import ProductCardSkeleton from './ProductCardSkeleton.vue'
+
+const props = defineProps<{
+  products: any[]
+}>()
 const pending = inject('pending', ref(false))
 </script>
 

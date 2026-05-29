@@ -57,13 +57,12 @@
     <AuthFooterLink
       :text="$t('register.already_have_account')"
       :link-text="$t('register.log_in')"
-      :to="APP_ROUTES.login"
+      :to="routes.login()"
     />
   </AuthCard>
 </template>
 
 <script setup lang='ts'>
-import { APP_ROUTES } from '~~/shared/utils/routes'
 import type { ApiError } from '~~/types/api'
 
 definePageMeta({
@@ -71,6 +70,7 @@ definePageMeta({
   middleware: 'guest',
 })
 
+const routes = useStorefrontRoutes()
 const { register, loading, loginWithGoogle } = useAuth()
 const errors = ref<ApiError | null>(null)
 const router = useRouter()
@@ -94,7 +94,7 @@ const handleRegister = async () => {
     // ✨ Redirect to login with success message indicator
     if (response?.message) {
       router.push({
-        path: APP_ROUTES.login,
+        path: routes.login(),
         query: { registered: 'true' }
       })
       return

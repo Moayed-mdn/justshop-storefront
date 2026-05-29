@@ -2,13 +2,22 @@
 
 ## Purpose
 
-This file defines the mandatory operating rules for AI agents and automation working in `/home/leader/projects/nuxt/justshop-frontend`.
+This file defines the mandatory operating rules for AI agents and automation working in `/home/leader/projects/laravel/tenant/justshop-frontend`.
 
 Use this file together with:
 
 - `CONTRIBUTING.md` for shared contributor workflow
+- `docs/index.md` for the current documentation map and owner documents
 - `docs/implementation-plan.md` for the authoritative documentation roadmap
+- `docs/refactoring-plan/README.md` for the storefront refactoring program map
 - `README.md` for repository entry points and setup commands
+
+## Current Program Context
+
+- The repository documentation system is complete through the implementation-plan phases and now operates in maintenance mode.
+- The active storefront refactoring program is `docs/refactoring-plan/storefront-commerce-consolidation-execution-plan.md`.
+- The previous storefront runtime program remains important historical context in `docs/refactoring-plan/storefront-runtime-integration-execution-plan.md`.
+- When a request touches storefront routing, shell composition, auth, cart, search, tenant isolation, SSR continuity, or legacy retirement, inspect `docs/refactoring-plan/README.md` first to determine the active source-of-truth document.
 
 ## Repository Facts You Must Preserve
 
@@ -41,8 +50,9 @@ Important files to inspect before documenting related behavior:
 1. Inspect before editing.
 2. Read the live source files that own the behavior you are about to change or document.
 3. Treat `docs/implementation-plan.md` as the controlling roadmap for documentation sequencing unless the user explicitly changes scope.
-4. Follow the documented phase order. Do not skip ahead when an upstream owner document is missing.
-5. Update documentation in the same change set whenever you modify:
+4. Treat `docs/refactoring-plan/storefront-commerce-consolidation-execution-plan.md` as the active storefront transformation roadmap when the task concerns storefront consolidation work.
+5. Follow the documented phase order. Do not skip ahead when an upstream owner document is missing.
+6. Update documentation in the same change set whenever you modify:
    - environment variables
    - routes or route families
    - stores
@@ -50,8 +60,9 @@ Important files to inspect before documenting related behavior:
    - modules
    - deployment or runtime behavior
    - external integrations
-6. Keep root docs concise and navigational. Put deep technical detail in `docs/`.
-7. Run diagnostics after substantive edits and fix issues you introduced when practical.
+   - refactoring program assumptions or phase ownership
+7. Keep root docs concise and navigational. Put deep technical detail in `docs/`.
+8. Run diagnostics after substantive edits and fix issues you introduced when practical.
 
 ## Maintenance Cadence
 
@@ -59,6 +70,7 @@ Important files to inspect before documenting related behavior:
 - On every major architectural or governance decision, update `docs/reference/decisions.md` in the same change set and add a standalone ADR when durable rationale or supersession tracking is needed.
 - For file-cleanup work, re-run the removal workflow from `docs/implementation-plan.md`, record review-required keep/remove outcomes in `docs/reference/decisions.md`, and update `CHANGELOG.md` when deletions affect contributor workflow or repository structure.
 - Before closing a cleanup batch, verify diagnostics and rerun `npm run build` when removed files could affect runtime, typing, or build behavior.
+- When consolidation phases advance or are superseded, update `docs/refactoring-plan/README.md` and `docs/index.md` in the same change set.
 
 ## Accuracy Rules
 
@@ -83,6 +95,15 @@ Important files to inspect before documenting related behavior:
 - Respect plugin mode and ordering semantics already visible in `app/plugins/`, especially `01.auth.client.ts` and `02.cart.client.ts`.
 - Keep auth persistence behavior aligned with `app/stores/auth.ts` and the persisted cookie storage currently configured there.
 - Keep guest cart behavior aligned with `app/stores/cart.ts`, including client-only local storage handling and merge-on-login behavior.
+
+## SSR And Hydration Rules
+
+- Treat hydration mismatches as SSR/client render divergence first, not as a component-resolution problem.
+- When browser-only state such as `localStorage`, guest cart state, media queries, `window`, or `document` drives a small UI fragment, prefer isolating the smallest affected subtree.
+- `ClientOnly` is acceptable for minimal client-personalized UI such as guest-cart badges, guest-cart counters, theme toggles, or browser-only widgets that are not SEO-critical.
+- When using `ClientOnly`, keep the wrapped subtree as small as possible and preserve layout stability with a fallback when needed.
+- Do not use `ClientOnly` to wrap page-level content, layouts, runtime shells, primary navigation, SEO content, or main storefront sections only to silence hydration warnings.
+- If the mismatch affects core content or shared structure, fix the SSR/client state divergence at the source instead of hiding it.
 
 ## File Removal And Cleanup
 

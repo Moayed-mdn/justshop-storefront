@@ -75,6 +75,7 @@ export function useCart() {
     itemsCount: computed(() => cartStore.itemsCount),
     isEmpty: computed(() => cartStore.isEmpty),
     loading: computed(() => cartStore.loading),
+    initialized: computed(() => cartStore.initialized),
     error: computed(() => cartStore.error),
     isItemLoading: cartStore.isItemLoading,
 

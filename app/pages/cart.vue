@@ -1,57 +1,62 @@
 <template>
   <div class="min-h-[60vh]" :style="{ backgroundColor: 'var(--cart-page-bg)' }">
-    <!-- Show skeleton on initial load -->
-    <CartSkeleton v-if="!isHydrated" />
+    <!-- Show skeleton on initial load if not initialized or actively loading -->
+    <ClientOnly>
+      <CartSkeleton v-if="loading && !initialized" />
 
-    <!-- Main content -->
-    <ClientOnly v-else>
-      <CartBreadcrumb />
+      <!-- Main content -->
+      <div v-else>
+        <CartBreadcrumb />
 
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-        <!-- Loading State -->
-        <CartLoading v-if="loading" />
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+          <!-- Loading State (Subsequent loads) -->
+          <CartLoading v-if="loading && items.length > 0" />
 
-        <!-- Empty Cart -->
-        <CartEmpty v-else-if="isEmpty" />
+          <!-- Empty Cart -->
+          <CartEmpty v-else-if="isEmpty" />
 
-        <!-- Cart Content -->
-        <div v-else>
-          <CartHeader
-            :items-count="itemsCount"
-            @clear="handleClearCart"
-          />
+          <!-- Cart Content -->
+          <div v-else>
+            <CartHeader
+              :items-count="itemsCount"
+              @clear="handleClearCart"
+            />
 
-          <!-- Two Column Layout -->
-          <div class="flex flex-col lg:flex-row gap-6 lg:gap-8">
-            <CartItemsList :items="items" />
+            <!-- Two Column Layout -->
+            <div class="flex flex-col lg:flex-row gap-6 lg:gap-8">
+              <CartItemsList :items="items" />
 
-            <!-- Order Summary -->
-            <div class="w-full lg:w-[380px] flex-shrink-0">
-              <div class="lg:sticky lg:top-4">
-                <CartSummary
-                  :total="total"
-                  :items-count="itemsCount"
-                />
+              <!-- Order Summary -->
+              <div class="w-full lg:w-[380px] flex-shrink-0">
+                <div class="lg:sticky lg:top-4">
+                  <CartSummary
+                    :total="total"
+                    :items-count="itemsCount"
+                  />
+                </div>
               </div>
             </div>
           </div>
         </div>
+
+        <!-- Mobile Sticky Checkout Bar -->
+        <CartMobileCheckout
+          :show="!isEmpty && !loading"
+          :total="total"
+          :loading="checkoutLoading"
+          @checkout="handleMobileCheckout"
+        />
+
+        <!-- Clear Cart Confirmation Modal -->
+        <CartClearModal
+          :show="showClearConfirm"
+          @cancel="showClearConfirm = false"
+          @confirm="confirmClear"
+        />
       </div>
-
-      <!-- Mobile Sticky Checkout Bar -->
-      <CartMobileCheckout
-        :show="!isEmpty && !loading"
-        :total="total"
-        :loading="checkoutLoading"
-        @checkout="handleMobileCheckout"
-      />
-
-      <!-- Clear Cart Confirmation Modal -->
-      <CartClearModal
-        :show="showClearConfirm"
-        @cancel="showClearConfirm = false"
-        @confirm="confirmClear"
-      />
+      <template #fallback>
+        <CartSkeleton />
+      </template>
     </ClientOnly>
   </div>
 </template>
@@ -69,15 +74,10 @@ const {
   itemsCount,
   isEmpty,
   loading,
+  initialized
 } = cart
 
 const showClearConfirm = ref(false)
-const isHydrated = ref(false)
-
-// Lifecycle
-onMounted(() => {
-  isHydrated.value = true
-})
 
 // Methods
 const handleClearCart = () => {

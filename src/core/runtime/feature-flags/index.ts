@@ -1,6 +1,7 @@
 import { useStorefrontContext } from '../../tenant/composables'
 
 export interface FeatureFlags {
+  storefront_runtime: boolean
   dynamic_rendering: boolean
   new_checkout: boolean
   merchant_previews: boolean

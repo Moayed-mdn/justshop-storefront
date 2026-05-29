@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This is the documentation hub for `/home/leader/projects/nuxt/justshop-frontend`.
+This is the documentation hub for `/home/leader/projects/laravel/tenant/justshop-frontend`.
 
 It links the current owner documents, records what has already been created, and shows what is still planned under the approved implementation roadmap in `docs/implementation-plan.md`.
 
@@ -30,10 +30,31 @@ It links the current owner documents, records what has already been created, and
 | `docs/architecture/overview.md` | Top-level runtime layer overview |
 | `docs/architecture/rendering-strategy.md` | SSR, client-only, and hydration boundaries |
 | `docs/architecture/routing-and-navigation.md` | Route families, middleware, and locale routing |
+| `docs/architecture/storefront-routes.md` | Canonical storefront paths, builders, and legacy redirect rules |
+| `docs/architecture/storefront-shell.md` | Unified storefront shell layouts and commerce affordances |
 | `docs/architecture/data-fetching.md` | REST proxy and GraphQL data access patterns |
 | `docs/architecture/state-management.md` | Pinia store ownership and persistence rules |
 | `docs/architecture/auth-and-security.md` | Auth flows, token handling, and protection rules |
 | `docs/architecture/api-integration.md` | Internal API proxy model and backend mapping |
+| `docs/architecture/storefront-runtime-contracts.md` | Hub for the Phase 1 storefront runtime contract package |
+| `docs/architecture/storefront-runtime-api-contract-specification-v1.md` | Versioned runtime API request and response contract |
+| `docs/architecture/storefront-runtime-dto-mapping-specification-v1.md` | DTO normalization rules between Laravel and Nuxt |
+| `docs/refactoring-plan/README.md` | Navigation hub for the storefront refactoring programs (Runtime Integration & Commerce Consolidation) |
+| `docs/refactoring-plan/storefront-commerce-consolidation-execution-plan.md` | Authoritative 12-phase program for unifying routing, shell, auth, and cart into a coherent commerce storefront |
+| `docs/refactoring-plan/PLAN-SUMMARY.md` | Plain-language storefront runtime plan summary for sharing (phases, status, architecture, local demo) |
+| `docs/refactoring-plan/storefront-runtime-integration-execution-plan.md` | Authoritative 18-week storefront runtime integration execution plan |
+| `docs/refactoring-plan/storefront-runtime-phase-2-3-implementation-stories.md` | Phase 2 and Phase 3 implementation stories derived from the frozen runtime contracts |
+| `docs/refactoring-plan/storefront-runtime-phase-6-certification.md` | Repo-backed certification evidence and environment-owned gaps before rollout |
+| `docs/refactoring-plan/storefront-runtime-phase-7-rollout.md` | Controlled rollout checklist, completion boundary, and Phase 7 closeout requirements |
+| `docs/refactoring-plan/storefront-runtime-phase-7-deployment-package.md` | Operator deployment package for internal, pilot, and full rollout steps |
+| `docs/refactoring-plan/storefront-runtime-phase-7-monitoring-log.md` | Operator monitoring evidence log for internal, pilot, and full rollout |
+| `docs/refactoring-plan/storefront-runtime-phase-7-pilot-report.md` | Pilot merchant validation and sign-off template |
+| `docs/refactoring-plan/storefront-runtime-phase-7-evidence.md` | Local rollout verification evidence for the repo-backed Phase 7 controls |
+| `docs/refactoring-plan/storefront-runtime-phase-8-legacy-retirement.md` | Phase 8 legacy keep/retire log, deferred Phase 7 note, and program closeout |
+| `docs/refactoring-plan/storefront-runtime-phase-8-decommission-backlog.md` | Future runtime retirements (search, checkout, auth migration) |
+| `docs/refactoring-plan/storefront-runtime-phase-8-support-handover.md` | Support and on-call handover for steady-state runtime operations |
+| `docs/refactoring-plan/storefront-runtime-phase-8-operating-guide.md` | Steady-state operating guide after Phase 8 closeout |
+| `docs/refactoring-plan/audits/storefront-commerce-consolidation-audit.md` | Current-state storefront audit that explains the runtime consolidation and shell/routing gaps |
 | `docs/development/coding-standards.md` | Current repo coding, naming, SSR, and dependency rules |
 | `docs/development/components.md` | Component namespaces, ownership boundaries, and current API patterns |
 | `docs/development/composables.md` | Composable responsibilities, side-effect rules, and helper overlap notes |
@@ -50,6 +71,10 @@ It links the current owner documents, records what has already been created, and
 | `docs/operations/monitoring-and-logging.md` | Current logging reality, observability signals, and monitoring gaps |
 | `docs/operations/performance.md` | Current runtime hotspots and performance review expectations |
 | `docs/operations/seo.md` | Current metadata, localization, crawl rules, and SEO gaps |
+| `docs/operations/storefront-runtime-logging-specification-v1.md` | Runtime log and trace schema for the migration contract |
+| `docs/operations/storefront-runtime-cache-key-standard-v1.md` | Runtime cache key rules and artifact segmentation |
+| `docs/operations/storefront-runtime-seo-contract-specification-v1.md` | Laravel-owned SEO payload rules for runtime pages |
+| `docs/operations/storefront-runtime-preview-security-specification-v1.md` | Preview token scope, expiry, and cache-bypass rules |
 | `docs/operations/incident-playbook.md` | Current incident triage, critical flow checks, and evidence collection |
 | `docs/reference/glossary.md` | Shared technical and product terminology |
 | `docs/reference/external-services.md` | External backend, GraphQL, and auth-provider integration summary |
@@ -57,11 +82,12 @@ It links the current owner documents, records what has already been created, and
 | `docs/reference/adr-001-request-helper-consolidation.md` | Proposed consolidation boundary for overlapping request helpers |
 | `docs/reference/adr-002-api-base-runtime-boundary.md` | Proposed separation between server and public API base config |
 | `docs/reference/adr-003-google-callback-owner.md` | Proposed single-owner rule for Google callback handling |
+| `docs/reference/adr-007-storefront-runtime-contract-first-boundary.md` | Contract-first boundary for the storefront runtime migration |
 | `docs/templates/adr-template.md` | Standard ADR template |
 | `docs/templates/page-doc-template.md` | Standard page documentation template |
 | `docs/templates/feature-doc-template.md` | Standard feature documentation template |
-| `docs/implementation-plan.md` | Authoritative documentation roadmap and phase order |
-| `docs/ai-session-handoff-prompt.md` | Session continuity prompt for future documentation work |
+| `docs/implementation-plan.md` | Authoritative documentation-system roadmap and phase order |
+| `docs/ai-session-handoff-prompt.md` | Session continuity prompt for documentation maintenance and audit follow-up work |
 
 ## Current Source Anchors
 
@@ -92,6 +118,8 @@ These code surfaces currently anchor the foundation docs:
 ## Planned Documentation Tree
 
 The approved target tree is owned by `docs/implementation-plan.md`. The implementation plan phases are complete through Phase 5, and follow-up work now focuses on ADR formalization plus ongoing maintenance updates when code changes.
+
+The storefront runtime transformation program is tracked separately under `docs/refactoring-plan/`, which now includes a dedicated README, an audit subfolder, and an archive for superseded draft plans.
 
 ## Ownership Rules
 

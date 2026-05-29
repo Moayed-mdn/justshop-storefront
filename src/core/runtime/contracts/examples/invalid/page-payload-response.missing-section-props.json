@@ -1,0 +1,60 @@
+{
+  "requestContext": {
+    "requestId": "req_invalid_page",
+    "tenantId": "store_42",
+    "tenantKey": "justshop-demo",
+    "locale": "en",
+    "path": "/about-us",
+    "runtimeVersion": "2026-05-28",
+    "preview": false
+  },
+  "data": {
+    "page": {
+      "id": "mkt_about_us",
+      "pageType": "marketing_page",
+      "title": "About JustShop",
+      "slug": "about-us",
+      "locale": "en",
+      "layout": "marketing",
+      "status": "published",
+      "sections": [
+        {
+          "id": "hero_about",
+          "type": "hero_banner",
+          "component": "HeroSection",
+          "version": "1",
+          "dataState": "ready"
+        }
+      ],
+      "seo": {
+        "title": "About JustShop",
+        "description": "Learn how JustShop delivers tenant-aware storefront experiences.",
+        "canonicalUrl": "https://demo.justshop.com/about-us",
+        "robots": "index,follow",
+        "hreflang": [],
+        "openGraph": {
+          "title": "About JustShop",
+          "description": "Learn how JustShop delivers tenant-aware storefront experiences.",
+          "type": "website",
+          "imageUrl": null
+        },
+        "twitter": {
+          "card": "summary",
+          "title": "About JustShop",
+          "description": "Learn how JustShop delivers tenant-aware storefront experiences.",
+          "imageUrl": null
+        },
+        "jsonLd": []
+      },
+      "publishedAt": "2026-05-12T10:30:00Z",
+      "updatedAt": "2026-05-28T09:15:00Z"
+    }
+  },
+  "cache": {
+    "key": "storefront_runtime:2026-05-28:tenant:justshop-demo:locale:en:artifact:page:path:/about-us",
+    "artifact": "page",
+    "ttlSeconds": 3600,
+    "tags": ["tenant:justshop-demo", "locale:en", "artifact:page", "page:mkt_about_us"],
+    "bypassed": false
+  }
+}

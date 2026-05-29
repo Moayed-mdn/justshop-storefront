@@ -4,10 +4,10 @@ import { normalizeError } from './errors'
 
 export const useStorefrontApi = async <T>(url: string, options?: FetchOptions & { showError?: boolean }) => {
   const headers = getStorefrontHeaders()
+  const authStore = import.meta.client ? useAuthStore() : null
   
   const api = $fetch.create({
     onRequest({ options }) {
-      const authStore = useAuthStore()
       // Inject storefront headers
       options.headers = {
         ...headers,
@@ -15,7 +15,7 @@ export const useStorefrontApi = async <T>(url: string, options?: FetchOptions & 
       }
       
       // Inject auth token if available
-      if (authStore.token) {
+      if (authStore?.token) {
         if (options.headers instanceof Headers) {
           options.headers.set('Authorization', `Bearer ${authStore.token}`)
         } else {
@@ -34,7 +34,7 @@ export const useStorefrontApi = async <T>(url: string, options?: FetchOptions & 
   })
 
   try {
-    const data = await api<T>(url, options as FetchOptions)
+    const data = await api<T>(url, options as any)
     return { data, error: null }
   } catch (e) {
     return { data: null, error: normalizeError(e) }

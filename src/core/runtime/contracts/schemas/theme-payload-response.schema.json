@@ -1,0 +1,72 @@
+{
+  "title": "RuntimeThemeResponse",
+  "type": "object",
+  "required": ["requestContext", "data", "cache"],
+  "properties": {
+    "requestContext": {
+      "type": "object",
+      "required": ["requestId", "tenantId", "tenantKey", "locale", "path", "runtimeVersion", "preview"],
+      "properties": {
+        "requestId": { "type": "string" },
+        "tenantId": { "type": ["string", "null"] },
+        "tenantKey": { "type": ["string", "null"] },
+        "locale": { "type": "string", "enum": ["en", "ar"] },
+        "path": { "type": "string" },
+        "runtimeVersion": { "type": "string" },
+        "preview": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    },
+    "data": {
+      "type": "object",
+      "required": ["themeKey", "tokens", "assets", "settings"],
+      "properties": {
+        "themeKey": { "type": "string" },
+        "tokens": {
+          "type": "object",
+          "required": ["colorPrimary", "colorSurface", "colorText", "fontBody", "fontHeading"],
+          "properties": {
+            "colorPrimary": { "type": "string" },
+            "colorSurface": { "type": "string" },
+            "colorText": { "type": "string" },
+            "fontBody": { "type": "string" },
+            "fontHeading": { "type": "string" }
+          },
+          "additionalProperties": false
+        },
+        "assets": {
+          "type": "object",
+          "required": ["logoUrl", "faviconUrl"],
+          "properties": {
+            "logoUrl": { "type": ["string", "null"] },
+            "faviconUrl": { "type": ["string", "null"] }
+          },
+          "additionalProperties": false
+        },
+        "settings": {
+          "type": "object",
+          "required": ["radius", "direction"],
+          "properties": {
+            "radius": { "type": "string", "enum": ["none", "sm", "md", "lg"] },
+            "direction": { "type": "string", "enum": ["ltr", "rtl"] }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "cache": {
+      "type": "object",
+      "required": ["key", "artifact", "ttlSeconds", "tags", "bypassed"],
+      "properties": {
+        "key": { "type": "string" },
+        "artifact": { "type": "string", "enum": ["theme"] },
+        "ttlSeconds": { "type": "integer" },
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "bypassed": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

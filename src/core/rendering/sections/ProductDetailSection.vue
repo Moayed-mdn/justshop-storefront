@@ -92,116 +92,27 @@ const props = defineProps<{
 }>()
 
 const { t } = useI18n()
-const { startCheckout } = useCheckout()
-const localePath = useLocalePath()
 const cart = useCart()
 
 // ── State ──
-const selectedVariant = ref<ProductVariant | null | undefined>(null)
-const quantity = ref(1)
-const addingToCart = ref(false)
-
-// ── Computed ──
-const hasVariants = computed(() => {
-  return (props.product?.variants?.length ?? 0) > 0
-})
-
-const currentPrice = computed(() => {
-  if (selectedVariant.value) {
-    return selectedVariant.value.price
-  }
-  if (props.product?.variants?.[0]) {
-    return props.product.variants[0].price
-  }
-  return 0
-})
-
-const priceRange = computed(() => {
-  if (!props.product?.variants?.length) {
-    return { min: 0, max: 0 }
-  }
-  const prices = props.product.variants.map((v: any) => v.price)
-  return {
-    min: Math.min(...prices),
-    max: Math.max(...prices),
-  }
-})
-
-const currentImages = computed(() => {
-  if (selectedVariant.value?.images?.length) {
-    return selectedVariant.value.images
-  }
-  if (props.product?.variants?.[0]?.images?.length) {
-    return props.product.variants[0].images
-  }
-  return []
-})
-
-const maxQuantity = computed(() => {
-  if (selectedVariant.value) {
-    return Math.min(10, selectedVariant.value.stock || 10)
-  }
-  return 10
-})
-
-const canAddToCart = computed(() => {
-  if (!hasVariants.value) {
-    return true
-  }
-  return Boolean(selectedVariant.value && selectedVariant.value.stock > 0)
-})
-
-const isInCart = computed(() => {
-  if (!props.product) return false
-  if (selectedVariant.value) {
-    return cart.isInCart(props.product.id, selectedVariant.value.id)
-  }
-  return false
-})
+const {
+  selectedVariant,
+  quantity,
+  addingToCart,
+  hasVariants,
+  currentPrice,
+  priceRange,
+  currentImages,
+  maxQuantity,
+  canAddToCart,
+  isInCart,
+  handleAddToCart,
+  handleBuyNow,
+} = useProductCommerce(computed(() => props.product))
 
 // ── Methods ──
 const onVariantChange = (variant: ProductVariant) => {
   selectedVariant.value = variant
   quantity.value = 1
 }
-
-const handleAddToCart = async () => {
-  if (isInCart.value) {
-    return navigateTo(localePath('/cart'))
-  }
-  if (!canAddToCart.value || !props.product) return
-  addingToCart.value = true
-  const variantToAdd = selectedVariant.value || props.product.variants?.[0]
-  if (!variantToAdd) {
-    addingToCart.value = false
-    return
-  }
-  await cart.addToCart({
-    product_id: props.product.id,
-    product_variant_id: variantToAdd.id,
-    name: props.product.name,
-    image: (variantToAdd as any).primary_image?.url || currentImages.value[0]?.url || '',
-    price: variantToAdd.price,
-    quantity: quantity.value,
-    max_quantity: variantToAdd.stock,
-  })
-  addingToCart.value = false
-}
-
-const handleBuyNow = async () => {
-  await handleAddToCart()
-  await startCheckout()
-}
-
-// Pre-select default variant
-watch(() => props.product, (newProduct) => {
-  if (newProduct?.default_variant_id && newProduct.variants?.length) {
-    const defaultVar = newProduct.variants.find(
-      (v: any) => v.id === newProduct?.default_variant_id
-    )
-    if (defaultVar) {
-      selectedVariant.value = defaultVar
-    }
-  }
-}, { immediate: true })
 </script>

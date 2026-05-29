@@ -1,0 +1,31 @@
+{
+  "requestContext": {
+    "requestId": "req_01jwx4m7z2n2k2h0b8a4r1x9we",
+    "tenantId": "store_42",
+    "tenantKey": "justshop-demo",
+    "locale": "ar",
+    "path": "/missing-page",
+    "runtimeVersion": "2026-05-28",
+    "preview": false
+  },
+  "data": {
+    "status": "not_found",
+    "routeType": "marketing_page",
+    "pageId": null,
+    "resourceType": "none",
+    "resourceId": null,
+    "path": "/missing-page",
+    "locale": "ar",
+    "layout": null,
+    "redirectTo": null,
+    "redirectStatus": null,
+    "legacyPassthrough": false
+  },
+  "cache": {
+    "key": "storefront_runtime:2026-05-28:tenant:justshop-demo:locale:ar:artifact:route:path:/missing-page",
+    "artifact": "route",
+    "ttlSeconds": 60,
+    "tags": ["tenant:justshop-demo", "locale:ar", "artifact:route", "path:/missing-page"],
+    "bypassed": false
+  }
+}

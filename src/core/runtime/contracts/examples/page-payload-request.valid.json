@@ -1,0 +1,15 @@
+{
+  "headers": {
+    "host": "demo.justshop.com",
+    "x-storefront-version": "2026-05-28",
+    "x-storefront-locale": "en",
+    "x-request-id": "req_01jwx4mb9m9r1h0x7r0x7xbv2a",
+    "x-preview-token": null
+  },
+  "params": {
+    "id": "mkt_about_us"
+  },
+  "query": {
+    "preview": false
+  }
+}

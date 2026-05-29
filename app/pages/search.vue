@@ -65,7 +65,7 @@
             <NuxtLinkLocale
               v-for="cat in results.categories"
               :key="cat.id"
-              :to="`/products/category/${cat.slug}`"
+              :to="routes.category(cat.slug)"
               class="
                 inline-flex items-center gap-2 px-4 py-2 rounded-full
                 bg-(--search-badge-category-bg) text-(--search-badge-category-text)
@@ -88,7 +88,7 @@
             <NuxtLinkLocale
               v-for="brand in results.brands"
               :key="brand.id"
-              :to="`/search?q=${encodeURIComponent(brand.name)}`"
+              :to="routes.search(brand.name)"
               class="
                 inline-flex items-center gap-2 px-4 py-2 rounded-full
                 bg-(--search-badge-brand-bg) text-(--search-badge-brand-text)
@@ -127,59 +127,38 @@ import type { SearchResult } from '~~/types/search'
 
 const route = useRoute()
 const { locale, t } = useI18n()
+const routes = useStorefrontRoutes()
 
 // ── Reactive search term from URL ────────────────
 const searchTerm = computed(() => ((route.query.q as string) ?? '').trim())
 
-// ── State ────────────────────────────────────────
-const results = ref<SearchResult['search'] | null>(null)
-const pending = ref(false)
+// ─── Fetch logic (SSR-safe) ────────────────────
+const { data, pending, error: fetchError } = await useAsyncData(
+  `search-${searchTerm.value}-${locale.value}`,
+  async () => {
+    if (!searchTerm.value) return null
 
-// ── Fetch logic (client-only) ────────────────────
-async function performSearch() {
-  if (!searchTerm.value) {
-    results.value = null
-    return
-  }
+    const apollo = useNuxtApp().$apollo
+    if (!apollo) return null
 
-  const apollo = useNuxtApp().$apollo
-  if (!apollo) return
-
-  pending.value = true
-
-  try {
-    const { data } = await apollo.query<SearchResult>({
+    const { data: searchData } = await apollo.query<SearchResult>({
       query: SEARCH_QUERY,
       variables: {
         query: searchTerm.value,
         locale: locale.value,
         limit: 30,
       },
-      fetchPolicy: 'no-cache',
     })
 
-    results.value = data?.search ?? null
+    return searchData?.search ?? null
+  },
+  {
+    watch: [searchTerm, locale],
+    server: true,
   }
-  catch (err) {
-    console.error('[Search Page] Error:', err)
-    results.value = null
-  }
-  finally {
-    pending.value = false
-  }
-}
+)
 
-// Run on mount (client-only since $apollo is client-only)
-onMounted(() => {
-  if (searchTerm.value) {
-    performSearch()
-  }
-})
-
-// Re-fetch when query or locale changes
-watch([searchTerm, locale], () => {
-  performSearch()
-})
+const results = computed(() => data.value)
 
 // ── SEO ──────────────────────────────────────────
 useHead({

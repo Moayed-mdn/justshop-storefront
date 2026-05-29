@@ -39,6 +39,7 @@ The usual REST flow is:
 | `orders` | `orders` |
 | `profile` | `profile` |
 | `checkout` | `checkout` |
+| `storefront runtime` | `storefront/runtime` |
 | `search` | `search` |
 
 ## Shared Route Ownership
@@ -64,3 +65,14 @@ Search is currently handled outside the Nitro proxy layer:
 - `app/utils/serverApi.ts` exists as an additional helper that uses `config.public.apiBase`, which overlaps with the server-side `useServerApi(event)` path.
 - The repo currently mixes `useApi()`, injected `$api`, and other helper surfaces, so fetch ownership should be kept explicit when changing integration behavior.
 - Because `runtimeConfig.apiBase` is currently sourced from a public env variable, the server-side backend base URL is not yet isolated from the client-visible value.
+- The storefront runtime Nitro proxy currently normalizes the server base by removing a trailing `/users` suffix before calling Laravel runtime endpoints, because the approved runtime APIs live under `/api/v1/storefront/runtime/**` rather than the legacy customer `/api/v1/users/**` family.
+
+## Storefront Runtime Contract Package
+
+The storefront runtime migration now has a dedicated Phase 1 contract package that freezes the Laravel-to-Nuxt boundary before runtime API implementation continues.
+
+Primary owner docs:
+
+- `docs/architecture/storefront-runtime-contracts.md`
+- `docs/architecture/storefront-runtime-api-contract-specification-v1.md`
+- `docs/architecture/storefront-runtime-dto-mapping-specification-v1.md`

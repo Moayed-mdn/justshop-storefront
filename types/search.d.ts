@@ -11,6 +11,8 @@ export interface ProductSearchResult {
   reviews_count: number
   category_name?: string | null
   brand_name?: string | null
+  product_variant_id?: number | null
+  max_quantity?: number | null
 }
   
   export interface CategorySearchResult {

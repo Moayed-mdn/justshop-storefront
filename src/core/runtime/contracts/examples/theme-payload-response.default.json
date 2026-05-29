@@ -1,0 +1,36 @@
+{
+  "requestContext": {
+    "requestId": "req_01jwx4mgs8xmny3pcg0grndyrd",
+    "tenantId": "store_42",
+    "tenantKey": "justshop-demo",
+    "locale": "en",
+    "path": "/about-us",
+    "runtimeVersion": "2026-05-28",
+    "preview": false
+  },
+  "data": {
+    "themeKey": "default-light",
+    "tokens": {
+      "colorPrimary": "#2563eb",
+      "colorSurface": "#ffffff",
+      "colorText": "#111827",
+      "fontBody": "Inter, sans-serif",
+      "fontHeading": "Inter, sans-serif"
+    },
+    "assets": {
+      "logoUrl": "https://cdn.justshop.com/assets/logo.png",
+      "faviconUrl": "https://cdn.justshop.com/assets/favicon.ico"
+    },
+    "settings": {
+      "radius": "md",
+      "direction": "ltr"
+    }
+  },
+  "cache": {
+    "key": "storefront_runtime:2026-05-28:tenant:justshop-demo:locale:en:artifact:theme:path:/about-us",
+    "artifact": "theme",
+    "ttlSeconds": 3600,
+    "tags": ["tenant:justshop-demo", "locale:en", "artifact:theme"],
+    "bypassed": false
+  }
+}

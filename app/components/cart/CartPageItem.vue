@@ -151,9 +151,11 @@
   const cartStore = useCartStore()
   
   // ── Product link ──
+  const routes = useStorefrontRoutes()
+
   const productLink = computed(() => {
     const slug = props.item.product?.slug
-    if (slug) return `/products/product/${slug}`
+    if (slug) return routes.product(slug)
     return '#'
   })
   

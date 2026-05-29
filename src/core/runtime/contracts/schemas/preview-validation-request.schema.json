@@ -1,0 +1,31 @@
+{
+  "title": "RuntimePreviewValidationRequest",
+  "type": "object",
+  "required": ["headers", "body"],
+  "properties": {
+    "headers": {
+      "type": "object",
+      "required": ["host", "x-storefront-version", "x-storefront-locale", "x-request-id", "x-preview-token"],
+      "properties": {
+        "host": { "type": "string" },
+        "x-storefront-version": { "type": "string" },
+        "x-storefront-locale": { "type": "string", "enum": ["en", "ar"] },
+        "x-request-id": { "type": "string" },
+        "x-preview-token": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "body": {
+      "type": "object",
+      "required": ["token", "pageId", "path", "locale"],
+      "properties": {
+        "token": { "type": "string" },
+        "pageId": { "type": "string" },
+        "path": { "type": "string" },
+        "locale": { "type": "string", "enum": ["en", "ar"] }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

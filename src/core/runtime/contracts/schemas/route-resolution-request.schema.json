@@ -1,0 +1,29 @@
+{
+  "title": "RuntimeRouteResolutionRequest",
+  "type": "object",
+  "required": ["headers", "query"],
+  "properties": {
+    "headers": {
+      "type": "object",
+      "required": ["host", "x-storefront-version", "x-storefront-locale", "x-request-id"],
+      "properties": {
+        "host": { "type": "string" },
+        "x-storefront-version": { "type": "string" },
+        "x-storefront-locale": { "type": "string", "enum": ["en", "ar"] },
+        "x-request-id": { "type": "string" },
+        "x-preview-token": { "type": ["string", "null"] }
+      },
+      "additionalProperties": false
+    },
+    "query": {
+      "type": "object",
+      "required": ["path"],
+      "properties": {
+        "path": { "type": "string" },
+        "locale": { "type": "string", "enum": ["en", "ar"] }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

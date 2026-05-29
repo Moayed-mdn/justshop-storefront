@@ -117,7 +117,7 @@
         })
       }
   
-      navigateTo(localePath('/cart'))
+      navigateTo(useStorefrontRoutes().cart())
     } catch (err: any) {
       showErrorToast(err?.data?.message || t('orders.reorder_failed'))
     } finally {
@@ -132,7 +132,7 @@
     } catch {
       // If order is not found, fetchOrder will throw. Redirect to the orders list.
       // A toast is not shown because the user is being redirected anyway.
-      navigateTo(localePath('/orders'))
+      navigateTo(useStorefrontRoutes().orders())
     }
   })
   </script>

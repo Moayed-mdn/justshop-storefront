@@ -1,0 +1,19 @@
+{
+  "requestContext": {
+    "tenantId": "store_42",
+    "tenantKey": "justshop-demo",
+    "locale": "en",
+    "path": "/about-us",
+    "runtimeVersion": "2026-05-28",
+    "preview": true
+  },
+  "error": {
+    "code": "runtime.preview_invalid",
+    "message": "The preview token is invalid for the requested tenant and page.",
+    "httpStatus": 403,
+    "retryable": false,
+    "details": {
+      "pageId": "mkt_about_us"
+    }
+  }
+}

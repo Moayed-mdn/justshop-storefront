@@ -2,11 +2,11 @@
     <div class="bg-(--color-bg-surface) border-b border-(--color-border-default)">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
         <nav class="flex items-center gap-2 text-sm text-(--color-text-secondary)">
-          <NuxtLinkLocale to="/" class="hover:text-(--color-primary)">
+          <NuxtLinkLocale :to="routes.home()" class="hover:text-(--color-primary)">
             {{ $t('product.breadcrumb_home') }}
           </NuxtLinkLocale>
           <span>/</span>
-          <NuxtLinkLocale to="/products" class="hover:text-(--color-primary)">
+          <NuxtLinkLocale :to="routes.shop()" class="hover:text-(--color-primary)">
             {{ $t('product.breadcrumb_shop') }}
           </NuxtLinkLocale>
           <span>/</span>
@@ -22,4 +22,6 @@
   defineProps<{
     productName: string
   }>()
+
+  const routes = useStorefrontRoutes()
   </script>

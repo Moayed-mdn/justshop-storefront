@@ -21,18 +21,20 @@
             </svg>
           </div>
           <p class="mt-4 text-red-600 font-medium">{{ error }}</p>
-          <NuxtLink
-            to="/login"
+          <NuxtLinkLocale
+            :to="routes.login()"
             class="mt-4 inline-block px-4 py-2 text-sm font-medium text-white bg-(--color-primary) rounded-md hover:bg-(--green-950)"
           >
             Back to Login
-          </NuxtLink>
+          </NuxtLinkLocale>
         </div>
       </div>
     </div>
   </template>
   
   <script setup>
+  const routes = useStorefrontRoutes()
+
   definePageMeta({
     layout: 'auth',
   })

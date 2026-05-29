@@ -1,8 +1,16 @@
-# AI Session Handoff Prompt For Phase 5 Closure And Ongoing Maintenance
+# AI Session Handoff Prompt For Documentation Maintenance And Audit Continuity
 
-You are continuing the documentation architecture and audit-closure project for the Nuxt 4 repository at `/home/leader/projects/nuxt/justshop-frontend`.
+You are continuing the documentation architecture and audit-closure project for the Nuxt 4 repository at `/home/leader/projects/laravel/tenant/justshop-frontend`.
 
 Your mission is to continue from the current documented state without redoing completed phases, losing continuity, or inventing undocumented behavior. Treat this prompt and `docs/implementation-plan.md` as the continuity baseline, with live code remaining the source of truth.
+
+Use `docs/refactoring-plan/README.md` when the task involves the separate storefront runtime transformation program, rollout records, or archived runtime-planning material.
+
+### Active Refactoring Program
+- **Hub**: [README.md](docs/refactoring-plan/README.md)
+- **Active Plan**: [Consolidation Execution Plan](docs/refactoring-plan/storefront-commerce-consolidation-execution-plan.md)
+- **Goal**: Transition from "hybrid runtime infrastructure" to "unified commerce storefront" (routing, shell, auth, cart consolidation).
+- **Previous Program**: [Runtime Integration Plan](docs/refactoring-plan/storefront-runtime-integration-execution-plan.md) (established SSR/contracts).
 
 ## 1. Core Objective
 
@@ -18,7 +26,7 @@ Maintain a complete, project-specific documentation system for this storefront s
 ## 2. Current Repository Context
 
 Repository root:
-`/home/leader/projects/nuxt/justshop-frontend`
+`/home/leader/projects/laravel/tenant/justshop-frontend`
 
 Current stack and runtime shape visible in code:
 
@@ -34,27 +42,28 @@ Current stack and runtime shape visible in code:
 
 High-priority anchors for future documentation or audit work:
 
-- `/home/leader/projects/nuxt/justshop-frontend/docs/implementation-plan.md`
-- `/home/leader/projects/nuxt/justshop-frontend/docs/index.md`
-- `/home/leader/projects/nuxt/justshop-frontend/docs/reference/decisions.md`
-- `/home/leader/projects/nuxt/justshop-frontend/AGENTS.md`
-- `/home/leader/projects/nuxt/justshop-frontend/CONTRIBUTING.md`
-- `/home/leader/projects/nuxt/justshop-frontend/CHANGELOG.md`
-- `/home/leader/projects/nuxt/justshop-frontend/nuxt.config.ts`
-- `/home/leader/projects/nuxt/justshop-frontend/package.json`
-- `/home/leader/projects/nuxt/justshop-frontend/shared/utils/routes.ts`
-- `/home/leader/projects/nuxt/justshop-frontend/app/composables/useApi.ts`
-- `/home/leader/projects/nuxt/justshop-frontend/app/composables/useClientApi.ts`
-- `/home/leader/projects/nuxt/justshop-frontend/app/plugins/api.ts`
-- `/home/leader/projects/nuxt/justshop-frontend/app/utils/serverApi.ts`
-- `/home/leader/projects/nuxt/justshop-frontend/app/middleware/google-auth.ts`
-- `/home/leader/projects/nuxt/justshop-frontend/app/pages/auth/google/callback.vue`
-- `/home/leader/projects/nuxt/justshop-frontend/app/pages/orders/index.vue`
-- `/home/leader/projects/nuxt/justshop-frontend/app/pages/orders/[orderNumber].vue`
-- `/home/leader/projects/nuxt/justshop-frontend/app/pages/orders/track.vue`
-- `/home/leader/projects/nuxt/justshop-frontend/app/composables/useOrders.ts`
-- `/home/leader/projects/nuxt/justshop-frontend/app/composables/useTheme.ts`
-- `/home/leader/projects/nuxt/justshop-frontend/types/ofetch.d.ts`
+- `/home/leader/projects/laravel/tenant/justshop-frontend/docs/implementation-plan.md`
+- `/home/leader/projects/laravel/tenant/justshop-frontend/docs/index.md`
+- `/home/leader/projects/laravel/tenant/justshop-frontend/docs/reference/decisions.md`
+- `/home/leader/projects/laravel/tenant/justshop-frontend/docs/refactoring-plan/README.md`
+- `/home/leader/projects/laravel/tenant/justshop-frontend/AGENTS.md`
+- `/home/leader/projects/laravel/tenant/justshop-frontend/CONTRIBUTING.md`
+- `/home/leader/projects/laravel/tenant/justshop-frontend/CHANGELOG.md`
+- `/home/leader/projects/laravel/tenant/justshop-frontend/nuxt.config.ts`
+- `/home/leader/projects/laravel/tenant/justshop-frontend/package.json`
+- `/home/leader/projects/laravel/tenant/justshop-frontend/shared/utils/routes.ts`
+- `/home/leader/projects/laravel/tenant/justshop-frontend/app/composables/useApi.ts`
+- `/home/leader/projects/laravel/tenant/justshop-frontend/app/composables/useClientApi.ts`
+- `/home/leader/projects/laravel/tenant/justshop-frontend/app/plugins/api.ts`
+- `/home/leader/projects/laravel/tenant/justshop-frontend/app/utils/serverApi.ts`
+- `/home/leader/projects/laravel/tenant/justshop-frontend/app/middleware/google-auth.ts`
+- `/home/leader/projects/laravel/tenant/justshop-frontend/app/pages/auth/google/callback.vue`
+- `/home/leader/projects/laravel/tenant/justshop-frontend/app/pages/orders/index.vue`
+- `/home/leader/projects/laravel/tenant/justshop-frontend/app/pages/orders/[orderNumber].vue`
+- `/home/leader/projects/laravel/tenant/justshop-frontend/app/pages/orders/track.vue`
+- `/home/leader/projects/laravel/tenant/justshop-frontend/app/composables/useOrders.ts`
+- `/home/leader/projects/laravel/tenant/justshop-frontend/app/composables/useTheme.ts`
+- `/home/leader/projects/laravel/tenant/justshop-frontend/types/ofetch.d.ts`
 
 ## 3. Milestones Already Completed
 

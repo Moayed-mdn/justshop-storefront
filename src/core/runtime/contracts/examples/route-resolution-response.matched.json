@@ -1,0 +1,31 @@
+{
+  "requestContext": {
+    "requestId": "req_01jwx4m3r8z7h8v0y7k4p91d3e",
+    "tenantId": "store_42",
+    "tenantKey": "justshop-demo",
+    "locale": "en",
+    "path": "/about-us",
+    "runtimeVersion": "2026-05-28",
+    "preview": false
+  },
+  "data": {
+    "status": "matched",
+    "routeType": "marketing_page",
+    "pageId": "mkt_about_us",
+    "resourceType": "page",
+    "resourceId": "mkt_about_us",
+    "path": "/about-us",
+    "locale": "en",
+    "layout": "marketing",
+    "redirectTo": null,
+    "redirectStatus": null,
+    "legacyPassthrough": false
+  },
+  "cache": {
+    "key": "storefront_runtime:2026-05-28:tenant:justshop-demo:locale:en:artifact:route:path:/about-us",
+    "artifact": "route",
+    "ttlSeconds": 300,
+    "tags": ["tenant:justshop-demo", "locale:en", "artifact:route", "path:/about-us"],
+    "bypassed": false
+  }
+}

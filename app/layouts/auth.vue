@@ -1,15 +1,5 @@
 <template>
-  <!-- <HeaderAuth/> -->
-  <div class="bg-(--color-bg-page)">
+  <StorefrontShell variant="minimal">
     <slot />
-    <FooterAuth/>
-  </div>
+  </StorefrontShell>
 </template>
-
-<script lang="ts" setup>
-
-</script>
-
-<style>
-
-</style>

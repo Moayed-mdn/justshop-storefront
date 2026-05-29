@@ -24,13 +24,16 @@ That means default English routes are unprefixed while non-default locale routes
 
 ## Shared Route Owners
 
-`shared/utils/routes.ts` currently owns three route groups:
+`shared/utils/routes.ts` owns API and transitional `APP_ROUTES` aliases.
 
-- `APP_ROUTES` for frontend navigation
-- `API_ROUTES` for internal `server/api` paths
-- `EXTERNAL_API_ROUTES` for backend proxy mappings
+**Storefront navigation** must use the canonical contract:
 
-Prefer these shared constants over repeating path strings when a matching constant already exists.
+- `shared/utils/storefront-routes.ts` — locale-neutral path constants and legacy redirect rules
+- `app/composables/useStorefrontRoutes.ts` — locale-aware builders (`localePath`)
+
+See `docs/architecture/storefront-routes.md` for the canonical path table.
+
+`API_ROUTES` and `EXTERNAL_API_ROUTES` remain in `shared/utils/routes.ts` for Nitro proxy paths.
 
 ## Current Page Route Families
 
@@ -38,7 +41,8 @@ Prefer these shared constants over repeating path strings when a matching consta
 |---|---|
 | Home | `app/pages/index.vue` |
 | Auth | `app/pages/login.vue`, `app/pages/register.vue`, `app/pages/auth/google/callback.vue`, `app/pages/verify-email/[id]/[hash].vue` |
-| Products | `app/pages/products/index.vue`, `app/pages/products/category/[slug].vue`, `app/pages/products/product/[slug].vue` |
+| Runtime catalog | `app/pages/[...slug].vue` (home, shop, category, product, marketing) |
+| Legacy commerce | `app/pages/cart.vue`, `app/pages/search.vue`, orders, profile, auth |
 | Cart and checkout | `app/pages/cart.vue`, `app/pages/checkout/success.vue`, `app/pages/checkout/cancel.vue` |
 | Orders | `app/pages/orders/index.vue`, `app/pages/orders/[orderNumber].vue`, `app/pages/orders/track.vue` |
 | Profile | `app/pages/profile.vue` |

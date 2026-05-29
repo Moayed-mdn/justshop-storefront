@@ -4,7 +4,7 @@
       class="bg-(--card-bg-light) rounded-(--radius-md) flex items-center justify-center
              h-(--card-img-height-mobile) lg:h-(--card-img-height-desktop) overflow-hidden group"
     >
-      <NuxtLinkLocale :to="`/products/product/${product.slug}`" class="cursor-pointer">
+      <NuxtLinkLocale :to="routes.product(product.slug)" class="cursor-pointer">
         <img
           class="max-h-full object-contain transition-transform duration-(--card-transition-speed) group-hover:scale-110"
           :src="product.image"
@@ -16,11 +16,13 @@
     <div class="flex flex-col px-2 mt-3">
       <div class="flex justify-between w-full mb-1 font-bold">
         <h3 class="line-clamp-1">{{ product.name }}</h3>
-        <UiPrice
-          :price="product.price"
-          :currency="product.currency || 'USD'"
-          integerClass="text-lg"
-        />
+        <ClientOnly>
+          <UiPrice
+            :price="product.price"
+            :currency="product.currency || 'USD'"
+            integerClass="text-lg"
+          />
+        </ClientOnly>
       </div>
 
       <p class="text-sm text-(--color-text-secondary) line-clamp-2 first-letter:uppercase lowercase">
@@ -51,6 +53,10 @@
 
 <script setup lang="ts">
 import type { ProductDto } from '~/../src/core/api/dto/storefront'
+import UiPrice from '../ui/Price.vue'
+import UiCartButton from '../ui/CartButton.vue'
+
+const routes = useStorefrontRoutes()
 
 defineProps<{ product: ProductDto }>()
 </script>

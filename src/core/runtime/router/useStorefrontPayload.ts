@@ -1,105 +1,165 @@
-import type { StorefrontPayload, RuntimeResolvedRoute } from './types'
+import type {
+  RuntimeNavigationResponse,
+  RuntimePagePayloadResponse,
+  RuntimePreviewValidationResponse,
+  RuntimeThemeResponse,
+} from '../contracts/types'
+import type { RuntimeResolvedRoute, StorefrontRuntimeBundle } from './types'
 import { useStorefrontApi } from '../../api/client'
-import { createTenantCacheKey } from '../../cache/createTenantCacheKey'
-import { useSectionData } from '../../rendering/useSectionData'
+import { API_ROUTES } from '../../../../shared/utils/routes'
+import { useStorefrontContext } from '../../tenant/composables'
 
 export const useStorefrontPayload = () => {
-  const { fetchSectionData } = useSectionData()
+  const context = useStorefrontContext()
+  const nuxtApp = useNuxtApp()
+  const requestHost = import.meta.server
+    ? useRequestHeaders(['host']).host || context.value.tenant?.domain || 'localhost'
+    : null
 
-  const fetchPayload = async (resolved: RuntimeResolvedRoute): Promise<StorefrontPayload | null> => {
-    const key = createTenantCacheKey(`payload:${resolved.type}:${resolved.resourceId}`)
-
-    const { data } = await useAsyncData(key, async () => {
-      // In Phase 2/3, we orchestrate the payload
-      const mockPayload = getMockPayload(resolved)
-      
-      // Fetch data for each section
-      const sectionsWithData = await Promise.all(
-        mockPayload.sections.map(async (section) => {
-          const sectionData = await fetchSectionData(section.type, section.settings)
-          return {
-            ...section,
-            data: sectionData
-          }
-        })
-      )
-
-      return {
-        ...mockPayload,
-        sections: sectionsWithData
-      } as StorefrontPayload
-    })
-
-    return data.value || null
-  }
-
-  const getMockPayload = (resolved: RuntimeResolvedRoute): StorefrontPayload => {
-    if (resolved.type === 'product') {
-      return {
-        id: resolved.resourceId,
-        title: `Product ${resolved.slug}`,
-        sections: [
-          {
-            id: 'product-detail-1',
-            type: 'product_detail',
-            settings: { slug: resolved.slug },
-            data: {}
-          }
-        ],
-        seo: {
-          title: `Buy ${resolved.slug}`,
-          description: `Best price for ${resolved.slug}`
-        },
-        theme: {}
-      }
+  const fetchPayload = async (resolved: RuntimeResolvedRoute): Promise<StorefrontRuntimeBundle | null> => {
+    if (resolved.status !== 'matched' || resolved.pageId === null || resolved.legacyPassthrough) {
+      return null
     }
 
-    if (resolved.type === 'category' || resolved.type === 'collection') {
-      return {
-        id: resolved.resourceId,
-        title: `${resolved.type} ${resolved.slug}`,
-        sections: [
-          {
-            id: 'shop-grid-1',
-            type: 'shop_grid',
-            settings: { 
-              categorySlug: resolved.type === 'category' ? resolved.slug : undefined,
-              params: resolved.metadata?.params || {}
-            },
-            data: {}
-          }
-        ],
-        seo: {
-          title: `Shop ${resolved.slug}`,
-          description: `Browse our ${resolved.slug} collection`
-        },
-        theme: {}
-      }
+    if (context.value.preview && context.value.previewToken) {
+      await nuxtApp.runWithContext(() => validatePreview(resolved))
     }
+
+    const [pageResponse, navigationResponse, themeResponse] = await nuxtApp.runWithContext(() => Promise.all([
+      useStorefrontApi<RuntimePagePayloadResponse>(API_ROUTES.storefront.runtime.page(resolved.pageId as string), {
+        query: {
+          path: resolved.path,
+          ...(context.value.preview ? { preview: 1 } : {}),
+        },
+        showError: false,
+      }),
+      useStorefrontApi<RuntimeNavigationResponse>(API_ROUTES.storefront.runtime.navigation, {
+        query: {
+          path: resolved.path,
+        },
+        showError: false,
+      }),
+      useStorefrontApi<RuntimeThemeResponse>(API_ROUTES.storefront.runtime.theme, {
+        query: {
+          path: resolved.path,
+        },
+        showError: false,
+      }),
+    ]))
+
+    if (pageResponse.error) {
+      throw createError({
+        statusCode: pageResponse.error.statusCode || 500,
+        statusMessage: pageResponse.error.message,
+        data: pageResponse.error,
+      })
+    }
+
+    if (navigationResponse.error) {
+      throw createError({
+        statusCode: navigationResponse.error.statusCode || 500,
+        statusMessage: navigationResponse.error.message,
+        data: navigationResponse.error,
+      })
+    }
+
+    if (themeResponse.error) {
+      throw createError({
+        statusCode: themeResponse.error.statusCode || 500,
+        statusMessage: themeResponse.error.message,
+        data: themeResponse.error,
+      })
+    }
+
+    if (!pageResponse.data || !navigationResponse.data || !themeResponse.data) {
+      throw createError({
+        statusCode: 500,
+        statusMessage: 'The storefront runtime payload is incomplete.',
+      })
+    }
+
+    syncTenantContext(pageResponse.data, navigationResponse.data, themeResponse.data)
 
     return {
-      id: resolved.resourceId,
-      title: `Mock ${resolved.type}`,
-      sections: [
-        {
-          id: 'section-1',
-          type: 'hero_section',
-          settings: {},
-          data: {}
-        },
-        {
-          id: 'section-2',
-          type: 'best_sellers',
-          settings: {},
-          data: {}
-        }
-      ],
-      seo: {
-        title: `Storefront - ${resolved.type}`,
-        description: 'Dynamic Storefront Platform'
-      },
-      theme: {}
+      page: pageResponse.data.data.page,
+      navigation: navigationResponse.data.data,
+      theme: themeResponse.data.data,
+    } satisfies StorefrontRuntimeBundle
+  }
+
+  const validatePreview = async (resolved: RuntimeResolvedRoute): Promise<void> => {
+    const previewToken = context.value.previewToken
+
+    if (!previewToken || resolved.pageId === null) {
+      throw createError({
+        statusCode: 403,
+        statusMessage: 'Preview access requires a valid preview token.',
+      })
     }
+
+    const { data, error } = await useStorefrontApi<RuntimePreviewValidationResponse>(
+      API_ROUTES.storefront.runtime.previewValidate,
+      {
+        method: 'POST',
+        body: {
+          token: previewToken,
+          pageId: resolved.pageId,
+          path: resolved.path,
+          locale: context.value.locale,
+        },
+        showError: false,
+      },
+    )
+
+    if (error) {
+      throw createError({
+        statusCode: error.statusCode || 403,
+        statusMessage: error.message,
+        data: error,
+      })
+    }
+
+    if (!data?.data.valid || data.data.previewState !== 'authorized') {
+      throw createError({
+        statusCode: 403,
+        statusMessage: 'Preview access was denied.',
+      })
+    }
+  }
+
+  const syncTenantContext = (
+    pageResponse: RuntimePagePayloadResponse,
+    navigationResponse: RuntimeNavigationResponse,
+    themeResponse: RuntimeThemeResponse,
+  ): void => {
+    const host = import.meta.server
+      ? requestHost || context.value.tenant?.domain || 'localhost'
+      : window.location.host
+
+    if (pageResponse.requestContext.requestId) {
+      context.value.requestId = pageResponse.requestContext.requestId
+    }
+
+    const storeName = themeResponse.data.branding?.storeName
+      || context.value.tenant?.name
+      || 'Storefront'
+
+    context.value.tenant = {
+      id: pageResponse.requestContext.tenantId || context.value.tenant?.id || 'default',
+      name: storeName,
+      slug: pageResponse.requestContext.tenantKey || context.value.tenant?.slug || 'default',
+      domain: host.split(':')[0] || 'localhost',
+      status: 'active',
+      settings: {
+        ...(context.value.tenant?.settings || {}),
+        theme: themeResponse.data.themeKey,
+        direction: themeResponse.data.settings.direction,
+      },
+    }
+
+    context.value.theme = themeResponse.data.themeKey
+    context.value.navigation = navigationResponse.data
+    context.value.themePayload = themeResponse.data
   }
 
   return {

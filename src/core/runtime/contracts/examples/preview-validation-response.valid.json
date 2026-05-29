@@ -1,0 +1,18 @@
+{
+  "requestContext": {
+    "requestId": "req_01jwx4mj2vfd9a0q4zjqx2f81g",
+    "tenantId": "store_42",
+    "tenantKey": "justshop-demo",
+    "locale": "en",
+    "path": "/about-us",
+    "runtimeVersion": "2026-05-28",
+    "preview": true
+  },
+  "data": {
+    "valid": true,
+    "previewState": "authorized",
+    "pageId": "mkt_about_us",
+    "expiresAt": "2026-05-28T10:15:00Z",
+    "cacheBypass": true
+  }
+}

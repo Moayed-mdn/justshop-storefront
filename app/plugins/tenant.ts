@@ -1,4 +1,6 @@
-export default defineNuxtPlugin((nuxtApp) => {
+import { useStorefrontContext } from '../../src/core/tenant/composables'
+
+export default defineNuxtPlugin(() => {
   const context = useStorefrontContext()
 
   if (import.meta.server) {
