@@ -101,10 +101,14 @@ export const useProfile = () => {
   }
 
   // ── Delete account ─────────────────────────────────────────
-  const deleteAccount = async () => {
+  const deleteAccount = async (password?: string) => {
     loading.value = true
     try {
-      const { error } = await api(API_ROUTES.profile.index, { method: 'DELETE' })
+      const body: Record<string, string> = {}
+      if (password) {
+        body.password = password
+      }
+      const { error } = await api(API_ROUTES.profile.index, { method: 'DELETE', body })
       if (error) throw error
       authStore.clearAuth()
       return navigateTo(storefrontRoutes.login())

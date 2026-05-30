@@ -19,8 +19,11 @@
       :confirm-text="confirmText"
       :loading-text="loadingText"
       :loading="loading"
+      :require-password="requirePassword"
+      :password-placeholder="passwordPlaceholder"
       @cancel="$emit('cancelDelete')"
       @confirm="$emit('confirmDelete')"
+      @confirm-with-password="(password: string) => $emit('confirmDeleteWithPassword', password)"
     />
   </ProfileSectionCard>
 </template>
@@ -40,13 +43,19 @@ interface Props {
   loadingText: string
 
   loading: boolean
+  requirePassword?: boolean
+  passwordPlaceholder?: string
 }
 
-defineProps<Props>()
+withDefaults(defineProps<Props>(), {
+  requirePassword: false,
+  passwordPlaceholder: 'Current password',
+})
 
 defineEmits<{
   (e: 'requestDelete'): void
   (e: 'cancelDelete'): void
   (e: 'confirmDelete'): void
+  (e: 'confirmDeleteWithPassword', password: string): void
 }>()
 </script>

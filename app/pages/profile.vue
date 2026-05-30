@@ -59,9 +59,11 @@
           :confirm-text="t('profile.dangerZone.confirm.confirmButton')"
           :loading-text="t('profile.dangerZone.confirm.deletingButton')"
           :loading="profileLoading"
+          :require-password="Boolean(user?.has_password)"
           @request-delete="showDeleteConfirm = true"
           @cancel-delete="showDeleteConfirm = false"
           @confirm-delete="handleDeleteAccount"
+          @confirm-delete-with-password="handleDeleteAccountWithPassword"
         />
   
       </div>
@@ -154,6 +156,14 @@
   const handleDeleteAccount = async () => {
     try {
       await deleteAccount()
+    } catch {
+      showErrorToast(t('profile.toasts.deleteAccountError'))
+    }
+  }
+
+  const handleDeleteAccountWithPassword = async (password: string) => {
+    try {
+      await deleteAccount(password)
     } catch {
       showErrorToast(t('profile.toasts.deleteAccountError'))
     }
