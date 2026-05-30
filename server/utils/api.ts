@@ -64,7 +64,6 @@ const buildApiRoot = (apiBase: string) => apiBase.replace(/\/v1(?:\/users)?\/?$/
 
 export const useServerApi = (event: H3Event) => {
   const config = useRuntimeConfig(event)
-  const normalizedHost = getNormalizedRequestHost(event)
 
   // Locale from cookie
   const locale = getCookie(event, 'i18n_redirected') || getHeader(event, 'accept-language') || 'en'
@@ -87,7 +86,6 @@ export const useServerApi = (event: H3Event) => {
 
     onRequest({ options }) {
       options.headers.set('Accept', 'application/json')
-      options.headers.set('Host', normalizedHost)
       options.headers.set('X-Tenant-Id', String(tenantId))
       options.headers.set('X-Storefront-Locale', locale)
       options.headers.set('X-Storefront-Version', '1.0.0')
