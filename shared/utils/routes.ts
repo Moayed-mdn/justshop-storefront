@@ -120,7 +120,7 @@ export const EXTERNAL_API_ROUTES = {
     related: (storeId: string | number, slug: string) => `storefront/stores/${storeId}/products/${slug}/related`,
   },
   profile: {
-    show: 'profile',
+    show: 'customer/me',
     destroy: 'profile',
     updateAvatar: 'profile/avatar',
     updateInfo: 'profile/info',
