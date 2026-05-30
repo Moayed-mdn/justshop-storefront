@@ -11,7 +11,7 @@ const error = ref<string | null>(null)
 const success = ref(false)
 const api = useApi()
 definePageMeta({
-  layout: false
+  layout: 'auth'
 })
 onMounted(async () => {
  
@@ -53,30 +53,25 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="flex items-center justify-center min-h-screen bg-(--color-primary)">
-    <div class="p-8 bg-white rounded-lg shadow-md w-96 text-center">
-        <div class="flex justify-center py-10 ">
-            <img  src="~/assets/icons/logo.png" alt="">
-        </div>
-      <h1 class="text-2xl font-bold mb-4">Email Verification</h1>
-     
-      <div v-if="loading">
-        <p class="animate-pulse">Checking your email...</p>
-      </div>
-     
-      <div v-else-if="error" class="text-red-500">
-        <p class="mb-4">{{ error }}</p>
-        <NuxtLink :to="routes.register()" class="text-blue-500 underline">
-          Resend Verification Email
-        </NuxtLink>
-      </div>
+  <AuthCard>
+    <AuthHeader title="Email Verification" />
 
-      <div v-else-if="success" class="text-green-500">
-        <p class="mb-4">Your email has been successfully verified!</p>
-        <NuxtLinkLocale :to="routes.login()" class="bg-blue-600 text-white px-4 py-2 rounded inline-block">
-          Go to Login
-        </NuxtLinkLocale>
-      </div>
+    <div v-if="loading" class="text-center">
+      <p class="animate-pulse">Checking your email...</p>
     </div>
-  </div>
+
+    <div v-else-if="error" class="text-center text-red-500">
+      <p class="mb-4">{{ error }}</p>
+      <NuxtLink :to="routes.register()" class="text-blue-500 underline">
+        Resend Verification Email
+      </NuxtLink>
+    </div>
+
+    <div v-else-if="success" class="text-center text-green-500">
+      <p class="mb-4">Your email has been successfully verified!</p>
+      <NuxtLinkLocale :to="routes.login()" class="bg-blue-600 text-white px-4 py-2 rounded inline-block">
+        Go to Login
+      </NuxtLinkLocale>
+    </div>
+  </AuthCard>
 </template>
