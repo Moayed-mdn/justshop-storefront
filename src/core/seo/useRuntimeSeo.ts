@@ -19,44 +19,64 @@ export interface SeoMetadata {
 }
 
 export const useRuntimeSeo = () => {
-  const injectSeo = (metadata: SeoMetadata) => {
-    const title = metadata.title || 'JustShop Storefront'
-    const description = metadata.description || ''
-    const canonical = metadata.canonical || ''
-    const robots = metadata.noIndex ? 'noindex,nofollow' : 'index,follow'
+  const seoMetadata = shallowRef<SeoMetadata | null>(null)
 
-    useHead({
+  useHead(() => {
+    const current = seoMetadata.value
+
+    if (!current) {
+      return {}
+    }
+
+    const title = current.title || 'JustShop Storefront'
+    const description = current.description || ''
+    const canonical = current.canonical || ''
+    const robots = current.noIndex ? 'noindex,nofollow' : 'index,follow'
+
+    return {
       title,
       meta: [
         { name: 'description', content: description },
         { name: 'robots', content: robots },
         { property: 'og:title', content: title },
         { property: 'og:description', content: description },
-        { property: 'og:type', content: metadata.ogType || 'website' },
-        ...(metadata.ogImage ? [{ property: 'og:image', content: metadata.ogImage }] : []),
-        ...(metadata.twitterCard ? [{ name: 'twitter:card', content: metadata.twitterCard }] : []),
-        ...(metadata.twitterTitle ? [{ name: 'twitter:title', content: metadata.twitterTitle }] : []),
-        ...(metadata.twitterDescription ? [{ name: 'twitter:description', content: metadata.twitterDescription }] : []),
-        ...(metadata.twitterImage ? [{ name: 'twitter:image', content: metadata.twitterImage }] : []),
+        { property: 'og:type', content: current.ogType || 'website' },
+        ...(current.ogImage
+          ? [{ property: 'og:image', content: current.ogImage }]
+          : []),
+        ...(current.twitterCard
+          ? [{ name: 'twitter:card', content: current.twitterCard }]
+          : []),
+        ...(current.twitterTitle
+          ? [{ name: 'twitter:title', content: current.twitterTitle }]
+          : []),
+        ...(current.twitterDescription
+          ? [{ name: 'twitter:description', content: current.twitterDescription }]
+          : []),
+        ...(current.twitterImage
+          ? [{ name: 'twitter:image', content: current.twitterImage }]
+          : []),
       ],
       link: [
         ...(canonical ? [{ rel: 'canonical', href: canonical }] : []),
-        ...((metadata.hreflang || []).map(entry => ({
+        ...((current.hreflang || []).map(entry => ({
           rel: 'alternate',
           hreflang: entry.locale,
           href: entry.url,
         }))),
       ],
-      script: (metadata.jsonLd || []).map(item => ({
+      script: (current.jsonLd || []).map(item => ({
         type: 'application/ld+json',
-        children: JSON.stringify(item)
+        children: JSON.stringify(item),
       })),
-    })
+    }
+  })
+
+  const injectSeo = (metadata: SeoMetadata) => {
+    seoMetadata.value = metadata
   }
 
-  return {
-    injectSeo
-  }
+  return { injectSeo }
 }
 
 export const mapRuntimeSeoPayload = (seo: RuntimeSeoPayload): SeoMetadata => ({

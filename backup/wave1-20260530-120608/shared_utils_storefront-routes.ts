@@ -2,11 +2,10 @@
  * Canonical storefront page paths (locale-neutral).
  * Localized URLs are produced by `useStorefrontRoutes()` via `localePath`.
  *
- * Live runtime alignment (2026-05-31):
- *   - product canonical:  /shop/product/:slug
- *   - category canonical: /shop/category/:slug
- *   - Compatibility redirects preserve incoming /products/* links until the
- *     frontend plan and Laravel runtime resolver are realigned again.
+ * Wave 1 changes (canonical-route-recovery):
+ *   - product:  /shop/product/:slug  →  /products/:slug
+ *   - category: /shop/category/:slug →  /products/category/:slug
+ *   - Added legacy-shop-category-path and legacy-shop-product-path redirects
  *
  * @see docs/architecture/storefront-routes.md
  * @see docs/refactoring-plan/wave1-canonical-route-recovery.md
@@ -28,17 +27,17 @@ export const STOREFRONT_ROUTE_PATHS = {
    * Canonical category page route.
    * Matches the Laravel runtime resolver's category resolution pattern.
    *
-   * @example routes.category('electronics') → '/shop/category/electronics'
+   * @example routes.category('electronics') → '/products/category/electronics'
    */
-  category: (slug: string) => `/shop/category/${encodeURIComponent(slug)}`,
+  category: (slug: string) => `/products/category/${encodeURIComponent(slug)}`,
 
   /**
    * Canonical product detail route.
    * Matches the Laravel runtime resolver's product resolution pattern.
    *
-   * @example routes.product('running-sneakers') → '/shop/product/running-sneakers'
+   * @example routes.product('running-sneakers') → '/products/running-sneakers'
    */
-  product: (slug: string) => `/shop/product/${encodeURIComponent(slug)}`,
+  product: (slug: string) => `/products/${encodeURIComponent(slug)}`,
 
   orders: {
     index: '/orders',
@@ -63,16 +62,16 @@ export const STOREFRONT_ROUTE_PATHS = {
 export type StorefrontRoutePaths = typeof STOREFRONT_ROUTE_PATHS
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Legacy redirect rules — runtime compatibility
+// Legacy redirect rules — Wave 1 (Canonical Route Recovery)
 //
 // All redirects are HTTP 301 Permanent. Logged to console in dev only.
 // Evaluated in order; first match wins.
 //
 // Inventory:
-//   legacy-products-index           /products            → /shop
-//   legacy-products-category-path   /products/category/:s → /shop/category/:s
-//   legacy-product-detail-segment   /products/product/:s → /shop/product/:s
-//   legacy-products-product-path    /products/:s        → /shop/product/:s
+//   legacy-products-index          /products            → /shop
+//   legacy-product-detail-segment  /products/product/:s → /products/:s
+//   legacy-shop-category-path      /shop/category/:s    → /products/category/:s
+//   legacy-shop-product-path       /shop/product/:s     → /products/:s
 //
 // Sunset target: Wave 11 (Legacy Surface Retirement)
 // Owner: Team A — Runtime & Routing
@@ -85,16 +84,6 @@ export const STOREFRONT_LEGACY_REDIRECTS = [
     target: (path: string) => replaceLocalePrefix(path, STOREFRONT_ROUTE_PATHS.shop),
   },
   {
-    id: 'legacy-products-category-path',
-    status: 301 as const,
-    match: (path: string) => /^\/products\/category\/[^/]+\/?$/.test(path),
-    target: (path: string) => {
-      const raw = path.replace(/^\/products\/category\//, '').replace(/\/$/, '')
-      const slug = decodeURIComponent(raw)
-      return replaceLocalePrefix(path, STOREFRONT_ROUTE_PATHS.category(slug))
-    },
-  },
-  {
     id: 'legacy-product-detail-segment',
     status: 301 as const,
     match: (path: string) => /^\/products\/product\/[^/]+\/?$/.test(path),
@@ -104,11 +93,21 @@ export const STOREFRONT_LEGACY_REDIRECTS = [
     },
   },
   {
-    id: 'legacy-products-product-path',
+    id: 'legacy-shop-category-path',
     status: 301 as const,
-    match: (path: string) => /^\/products\/(?!category\/|product\/)[^/]+\/?$/.test(path),
+    match: (path: string) => /^\/shop\/category\/[^/]+\/?$/.test(path),
     target: (path: string) => {
-      const raw = path.replace(/^\/products\//, '').replace(/\/$/, '')
+      const raw = path.replace(/^\/shop\/category\//, '').replace(/\/$/, '')
+      const slug = decodeURIComponent(raw)
+      return replaceLocalePrefix(path, STOREFRONT_ROUTE_PATHS.category(slug))
+    },
+  },
+  {
+    id: 'legacy-shop-product-path',
+    status: 301 as const,
+    match: (path: string) => /^\/shop\/product\/[^/]+\/?$/.test(path),
+    target: (path: string) => {
+      const raw = path.replace(/^\/shop\/product\//, '').replace(/\/$/, '')
       const slug = decodeURIComponent(raw)
       return replaceLocalePrefix(path, STOREFRONT_ROUTE_PATHS.product(slug))
     },

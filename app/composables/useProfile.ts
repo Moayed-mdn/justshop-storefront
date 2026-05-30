@@ -1,4 +1,5 @@
 // composables/useProfile.ts
+import { useApi } from '~/composables/useApi';
 import { API_ROUTES } from '~~/shared/utils/routes'
 import type { Profile, ProfileResponse, UpdateAvatarResponse } from '~~/types/profile'
 
@@ -7,11 +8,12 @@ export const useProfile = () => {
   const { showSuccessToast } = useAppToast()
   const loading = useState('profile_loading', () => false)
   const storefrontRoutes = useStorefrontRoutes()
+  const api = useApi()
   // ── Fetch full profile ─────────────────────────────────────
   const fetchProfile = async () => {
     loading.value = true
     try {
-      const { data, error } = await useApi<ProfileResponse>(API_ROUTES.profile.index)
+      const { data, error } = await api<ProfileResponse>(API_ROUTES.profile.index)
       if (error) throw error
       if (data) {
         authStore.setUser(data.data)
@@ -29,7 +31,7 @@ export const useProfile = () => {
   ) => {
     loading.value = true
     try {
-      const { data, error } = await useApi<ProfileResponse>(API_ROUTES.profile.info, {
+      const { data, error } = await api<ProfileResponse>(API_ROUTES.profile.info, {
         method: 'PUT',
         body: form,
       })
@@ -57,7 +59,7 @@ export const useProfile = () => {
   ) => {
     loading.value = true
     try {
-      const { data, error } = await useApi<ProfileResponse>(API_ROUTES.profile.password, {
+      const { data, error } = await api<ProfileResponse>(API_ROUTES.profile.password, {
         method: 'PUT',
         body: form,
       })
@@ -77,7 +79,7 @@ export const useProfile = () => {
     try {
       const formData = new FormData()
       formData.append('avatar', file)
-      const { data, error } = await useApi<UpdateAvatarResponse>(API_ROUTES.profile.avatar, {
+      const { data, error } = await api<UpdateAvatarResponse>(API_ROUTES.profile.avatar, {
         method: 'POST',
         body: formData,
       })
@@ -102,7 +104,7 @@ export const useProfile = () => {
   const deleteAccount = async () => {
     loading.value = true
     try {
-      const { error } = await useApi(API_ROUTES.profile.index, { method: 'DELETE' })
+      const { error } = await api(API_ROUTES.profile.index, { method: 'DELETE' })
       if (error) throw error
       authStore.clearAuth()
       return navigateTo(storefrontRoutes.login())

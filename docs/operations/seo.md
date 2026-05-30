@@ -33,12 +33,13 @@ The live repo currently has these SEO-relevant foundations:
 Explicit page-level head usage is visible today in:
 
 - `app/app.vue`
+- `app/pages/[...slug].vue`
 - `app/pages/cart.vue`
 - `app/pages/orders/index.vue`
 - `app/pages/search.vue`
 - `app/pages/products/category/[slug].vue`
 
-Current metadata coverage is therefore partial, not exhaustive across all route families.
+Current metadata coverage is therefore partial, but the storefront runtime now applies metadata centrally for catch-all runtime pages through `src/core/seo/useRuntimeSeo.ts`.
 
 ## Current Crawl Rules
 
@@ -49,12 +50,17 @@ Current metadata coverage is therefore partial, not exhaustive across all route 
 
 This means crawling is broadly allowed by default.
 
+## Runtime SEO Behavior
+
+- `src/core/seo/useRuntimeSeo.ts` registers one `useHead(() => ...)` binding during setup and updates a reactive metadata ref when runtime page payloads change.
+- `app/pages/[...slug].vue` maps Laravel-provided SEO payloads into that reactive binding from a `watchEffect`.
+- Runtime SEO updates must keep Nuxt composable calls inside setup. Later callbacks should only mutate reactive state, not call `useHead()` again.
+
 ## Current Gaps
 
 - No sitemap file or sitemap module is visible in the repo.
-- No centralized SEO composable is visible.
-- Many pages do not yet define route-specific titles or descriptions.
-- Product detail pages currently do not show richer SEO metadata ownership in the live code inspected for Phase 4.
+- Many file-routed pages do not yet define route-specific titles or descriptions.
+- Product detail pages currently do not show richer SEO metadata ownership outside the runtime path.
 
 ## Runtime Contract Reference
 

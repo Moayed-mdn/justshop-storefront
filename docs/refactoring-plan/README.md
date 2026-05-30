@@ -18,6 +18,7 @@ The foundation program that established multi-tenant SSR rendering, runtime cont
 The current program transforming the runtime foundation into a unified, tenant-safe commerce storefront experience.
 - [Execution Plan](file:///home/leader/projects/laravel/tenant/justshop-frontend/docs/refactoring-plan/storefront-commerce-consolidation-execution-plan.md)
 - [Current Audit](file:///home/leader/projects/laravel/tenant/justshop-frontend/docs/refactoring-plan/audits/storefront-commerce-consolidation-audit.md)
+- [Wave 1 Canonical Route Recovery](file:///home/leader/projects/laravel/tenant/justshop-frontend/docs/refactoring-plan/wave1-canonical-route-recovery.md) — historical recovery attempt, now superseded by the live `/shop/**` route alignment recorded on `2026-05-31`
 
 ---
 
@@ -25,6 +26,7 @@ The current program transforming the runtime foundation into a unified, tenant-s
 | Document | Phase | Focus |
 |---|---|---|
 | [Consolidation Plan](file:///home/leader/projects/laravel/tenant/justshop-frontend/docs/refactoring-plan/storefront-commerce-consolidation-execution-plan.md) | Phase 0 | Guardrails, Canonical Contracts, and Route Consolidation |
+| [Wave 1 Canonical Route Recovery](file:///home/leader/projects/laravel/tenant/justshop-frontend/docs/refactoring-plan/wave1-canonical-route-recovery.md) | Historical | Superseded route-recovery attempt; see current live `/shop/**` override note |
 | [Runtime Integration](file:///home/leader/projects/laravel/tenant/justshop-frontend/docs/refactoring-plan/storefront-runtime-integration-execution-plan.md) | Phase 8 | Steady-state operations and legacy retirement |
 
 

@@ -1,4 +1,5 @@
 // composables/useCheckout.ts
+import { useApi } from '~/composables/useApi';
 import { API_ROUTES } from '~~/shared/utils/routes'
 import type { CreateCheckoutSessionResponse, CheckoutStatusResponse } from '~~/types/checkout'
 
@@ -7,6 +8,7 @@ export const useCheckout = () => {
     const cartStore = useCartStore()
     const loading = ref(false)
     const error = ref<string | null>(null)
+    const api = useApi()
   
     /**
      * Create a Stripe Checkout Session and redirect to Stripe.
@@ -21,7 +23,7 @@ export const useCheckout = () => {
         let response: { data: CreateCheckoutSessionResponse | null; error: any }
   
         if (isLoggedIn.value) {
-          response = await useApi<CreateCheckoutSessionResponse>(API_ROUTES.checkout.sessionAuth, {
+          response = await api<CreateCheckoutSessionResponse>(API_ROUTES.checkout.sessionAuth, {
             method: 'POST',
           })
         } else {
@@ -31,7 +33,7 @@ export const useCheckout = () => {
             quantity: item.quantity,
           }))
   
-          response = await useApi<CreateCheckoutSessionResponse>(API_ROUTES.checkout.session, {
+          response = await api<CreateCheckoutSessionResponse>(API_ROUTES.checkout.session, {
             method: 'POST',
             body: { items },
           })
@@ -57,7 +59,7 @@ export const useCheckout = () => {
      */
     const getCheckoutStatus = async (sessionId: string) => {
       try {
-        const response = await useApi<CheckoutStatusResponse>(API_ROUTES.checkout.status(sessionId))
+        const response = await api<CheckoutStatusResponse>(API_ROUTES.checkout.status(sessionId))
         return response.data?.data
       } catch (err: any) {
         throw err

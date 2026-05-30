@@ -41,6 +41,7 @@ It links the current owner documents, records what has already been created, and
 | `docs/architecture/storefront-runtime-dto-mapping-specification-v1.md` | DTO normalization rules between Laravel and Nuxt |
 | `docs/refactoring-plan/README.md` | Navigation hub for the storefront refactoring programs (Runtime Integration & Commerce Consolidation) |
 | `docs/refactoring-plan/storefront-commerce-consolidation-execution-plan.md` | Authoritative 12-phase program for unifying routing, shell, auth, and cart into a coherent commerce storefront |
+| `docs/refactoring-plan/wave1-canonical-route-recovery.md` | Historical Wave 1 route-recovery note, now superseded by the live `/shop/**` storefront alignment |
 | `docs/refactoring-plan/PLAN-SUMMARY.md` | Plain-language storefront runtime plan summary for sharing (phases, status, architecture, local demo) |
 | `docs/refactoring-plan/storefront-runtime-integration-execution-plan.md` | Authoritative 18-week storefront runtime integration execution plan |
 | `docs/refactoring-plan/storefront-runtime-phase-2-3-implementation-stories.md` | Phase 2 and Phase 3 implementation stories derived from the frozen runtime contracts |
@@ -119,7 +120,7 @@ These code surfaces currently anchor the foundation docs:
 
 The approved target tree is owned by `docs/implementation-plan.md`. The implementation plan phases are complete through Phase 5, and follow-up work now focuses on ADR formalization plus ongoing maintenance updates when code changes.
 
-The storefront runtime transformation program is tracked separately under `docs/refactoring-plan/`, which now includes a dedicated README, an audit subfolder, and an archive for superseded draft plans.
+The storefront runtime transformation program is tracked separately under `docs/refactoring-plan/`, which now includes a dedicated README, an audit subfolder, and an archive for superseded draft plans. Route-recovery history for the consolidation program currently lives in `docs/refactoring-plan/wave1-canonical-route-recovery.md`, with the live override documented in the storefront route owner docs.
 
 ## Ownership Rules
 

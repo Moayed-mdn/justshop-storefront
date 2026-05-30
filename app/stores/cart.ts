@@ -1,4 +1,6 @@
 import { defineStore } from 'pinia';
+import { useAuthStore } from '~/stores/auth';
+import { useApi } from '~/composables/useApi';
 import { API_ROUTES } from '~~/shared/utils/routes';
 import { useTenant } from '~~/src/core/tenant/composables';
 import type {
@@ -67,16 +69,17 @@ const cartHelpers = {
 
 // ─── Store ───────────────────────────────────────────────────
 export const useCartStore = defineStore('cart', () => {
-  const authStore = useAuthStore();
-  const { tenantId } = useTenant();
+  const authStore = useAuthStore()
+  const { tenantId } = useTenant()
+  const api = useApi()
 
-  // ── State ────────────────────────────────────────────────
-  const items = ref<(CartItem | GuestCartItem)[]>([]);
-  const total = ref(0);
-  const itemsCount = ref(0);
-  const loading = ref(false);
-  const itemLoading = ref<Record<string | number, boolean>>({});
-  const error = ref<string | null>(null);
+  // ── State ──────────────────────────────────────────────────────
+  const items = ref<(CartItem | GuestCartItem)[]>([])
+  const total = ref(0)
+  const itemsCount = ref(0)
+  const loading = ref(false)
+  const itemLoading = ref<Record<string | number, boolean>>({})
+  const error = ref<string | null>(null)
   const initialized = ref(false);
 
   // ── Computed ─────────────────────────────────────────────
@@ -146,7 +149,7 @@ export const useCartStore = defineStore('cart', () => {
           await mergeGuestCartToServer();
         }
 
-        const { data, error: apiError } = await useApi<CartResponse>(API_ROUTES.cart.index);
+        const { data, error: apiError } = await api<CartResponse>(API_ROUTES.cart.index);
         if (apiError) throw apiError;
         if (data) setCart(data.data);
       } else {
@@ -170,7 +173,7 @@ export const useCartStore = defineStore('cart', () => {
       itemLoading.value[tempId] = true;
 
       try {
-        const { data, error: apiError } = await useApi<CartResponse>(
+        const { data, error: apiError } = await api<CartResponse>(
           API_ROUTES.cart.items,
           {
             method: 'POST',
@@ -225,7 +228,7 @@ export const useCartStore = defineStore('cart', () => {
 
     try {
       if (authStore.isLoggedIn) {
-        const { data, error: apiError } = await useApi<CartResponse>(
+        const { data, error: apiError } = await api<CartResponse>(
           API_ROUTES.cart.item(itemId),
           { method: 'PATCH', body: { quantity } }
         );
@@ -260,7 +263,7 @@ export const useCartStore = defineStore('cart', () => {
 
     try {
       if (authStore.isLoggedIn) {
-        const { data, error: apiError } = await useApi<CartResponse>(
+        const { data, error: apiError } = await api<CartResponse>(
           API_ROUTES.cart.item(itemId),
           { method: 'DELETE' }
         );
@@ -284,7 +287,7 @@ export const useCartStore = defineStore('cart', () => {
 
     try {
       if (authStore.isLoggedIn) {
-        await useApi(API_ROUTES.cart.clear, { method: 'DELETE' });
+        await api(API_ROUTES.cart.clear, { method: 'DELETE' });
       } else {
         cartHelpers.clearGuestCart(tenantId.value);
       }
@@ -302,7 +305,7 @@ export const useCartStore = defineStore('cart', () => {
     if (guestCart.items.length === 0) return;
 
     try {
-      const { data, error: apiError } = await useApi<CartResponse>(API_ROUTES.cart.bulk, {
+      const { data, error: apiError } = await api<CartResponse>(API_ROUTES.cart.bulk, {
         method: 'POST',
         body: {
           items: guestCart.items.map((item) => ({

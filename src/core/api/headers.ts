@@ -1,33 +1,39 @@
 import { useStorefrontContext } from '../tenant/composables'
 import { STOREFRONT_RUNTIME_CONTRACT_VERSION } from '../runtime/contracts/constants'
 
-export const getStorefrontHeaders = () => {
+export const useStorefrontHeaders = () => {
   const context = useStorefrontContext()
-  const headers: Record<string, string> = {
-    'X-Tenant-Id': String(context.value.tenant?.id || ''),
-    'X-Storefront-Locale': context.value.locale,
-    'X-Storefront-Version': STOREFRONT_RUNTIME_CONTRACT_VERSION,
-  }
+  const requestHeaders = import.meta.server
+    ? useRequestHeaders(['host', 'x-forwarded-host'])
+    : null
+  
+  const getHeaders = () => {
+    const headers: Record<string, string> = {
+      'X-Tenant-Id': String(context.value.tenant?.id || ''),
+      'X-Storefront-Locale': context.value.locale,
+      'X-Storefront-Version': STOREFRONT_RUNTIME_CONTRACT_VERSION,
+    }
 
-  if (context.value.requestId) {
-    headers['X-Request-Id'] = context.value.requestId
-  }
+    if (context.value.requestId) {
+      headers['X-Request-Id'] = context.value.requestId
+    }
 
-  if (context.value.preview && context.value.previewToken) {
-    headers['X-Preview-Token'] = context.value.previewToken
-  }
+    if (context.value.preview && context.value.previewToken) {
+      headers['X-Preview-Token'] = context.value.previewToken
+    }
 
-  if (import.meta.server) {
-    const requestHeaders = useRequestHeaders(['host', 'x-forwarded-host'])
-
-    if (requestHeaders.host) {
+    if (requestHeaders?.host) {
       headers.host = requestHeaders.host
     }
 
-    if (requestHeaders['x-forwarded-host']) {
+    if (requestHeaders?.['x-forwarded-host']) {
       headers['x-forwarded-host'] = requestHeaders['x-forwarded-host']
     }
+
+    return headers
   }
 
-  return headers
+  return {
+    getHeaders
+  }
 }

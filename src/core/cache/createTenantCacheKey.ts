@@ -1,4 +1,3 @@
-import { useStorefrontContext } from '../tenant/composables'
 import { STOREFRONT_RUNTIME_CONTRACT_VERSION } from '../runtime/contracts/constants'
 
 type RuntimeCacheArtifact = 'route' | 'page' | 'navigation' | 'theme' | 'seo'
@@ -17,21 +16,22 @@ const normalizeRuntimePath = (path: string) => {
 
 export const createTenantCacheKey = (
   key: string,
-  options?: {
-    route?: string
+  options: {
+    tenantKey: string
+    locale: string
+    route: string
     runtimeVersion?: string
     previewState?: string
     artifact?: RuntimeCacheArtifact
   },
 ) => {
-  const context = useStorefrontContext()
-  const tenantKey = String(context.value.tenant?.slug || context.value.tenant?.id || 'default')
-  const locale = context.value.locale || 'en'
-  const preview = options?.previewState || (context.value.preview ? 'preview' : 'live')
-  const route = normalizeRuntimePath(options?.route || context.value.route || '/')
-  const runtimeVersion = options?.runtimeVersion || STOREFRONT_RUNTIME_CONTRACT_VERSION
+  const tenantKey = options.tenantKey
+  const locale = options.locale
+  const preview = options.previewState || 'live'
+  const route = normalizeRuntimePath(options.route)
+  const runtimeVersion = options.runtimeVersion || STOREFRONT_RUNTIME_CONTRACT_VERSION
 
-  if (options?.artifact) {
+  if (options.artifact) {
     const runtimeKey = `storefront_runtime:${runtimeVersion}:tenant:${tenantKey}:locale:${locale}:artifact:${options.artifact}:path:${route}`
 
     return preview !== 'live'

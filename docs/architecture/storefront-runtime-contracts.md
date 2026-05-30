@@ -67,6 +67,7 @@ The following frontend route families remain on dedicated file routes (steady-st
 - Log records use backend-observability field names including `tenant_id`, `locale`, `path`, and `request_id`.
 - Every runtime cache key includes tenant, locale, runtime version, artifact, and normalized path.
 - Preview-authorized requests bypass shared caches and must remain tenant-scoped and page-scoped.
+- Catch-all runtime orchestration in `app/pages/[...slug].vue` must capture Nuxt composable context during setup and reuse it for redirects, error conversion, and SEO updates instead of calling Nuxt composables from later async callbacks.
 - Section DTOs are presentational-only. They carry normalized props for rendering and must not require section components to fetch direct API data.
 - Nuxt resolves runtime sections from the explicit `sections[].component` contract field, not by inferring a component from `sections[].type`.
 - Runtime section components consume the standardized frontend rendering boundary `{ section, data }`, where `section` is the full DTO metadata and `data` is the validated `sections[].props` payload.

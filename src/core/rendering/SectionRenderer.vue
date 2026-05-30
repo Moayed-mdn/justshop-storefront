@@ -30,11 +30,13 @@ import type { CmsSection } from '../runtime/router/types'
 import { logRuntimeEvent } from '../runtime/observability/logRuntimeEvent'
 import { useSectionRegistry } from './registry'
 import type { RuntimeSectionData } from './types'
+import { useStorefrontContext } from '../tenant/composables'
 
 const props = defineProps<{
   sections: CmsSection[]
 }>()
 
+const storefrontContext = useStorefrontContext()
 const { getSection } = useSectionRegistry()
 
 type RuntimeSectionFallbackReason = 'unknown_component' | 'invalid_props'
@@ -91,7 +93,7 @@ watchEffect(() => {
         dataState: entry.section.dataState,
         reason: entry.reason,
       },
-    }, 'warn')
+    }, 'warn', storefrontContext)
   }
 })
 </script>

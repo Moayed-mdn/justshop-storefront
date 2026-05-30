@@ -7,6 +7,7 @@ export const useProductByCategory = async (categorySlug: string) => {
   const { locale } = useI18n();
   const route = useRoute();
   const { filters, syncFromUrl, syncToUrl, apiQuery } = useProductFilters();
+  const api = useApi();
   
   onMounted(syncFromUrl);
   watch(filters, syncToUrl, { deep: true });
@@ -35,7 +36,7 @@ export const useProductByCategory = async (categorySlug: string) => {
         per_page: 15,
       };
 
-      const { data } = await useApi<ProductListResponse>(
+      const { data } = await api<ProductListResponse>(
         API_ROUTES.products.category(categorySlug),
         {
           query: finalQuery,

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
+import { useApi } from '~/composables/useApi';
 import { API_ROUTES } from '~~/shared/utils/routes'
 
 const routes = useStorefrontRoutes()
@@ -8,6 +9,7 @@ const route = useRoute()
 const loading = ref(true)
 const error = ref<string | null>(null)
 const success = ref(false)
+const api = useApi()
 definePageMeta({
   layout: false
 })
@@ -26,7 +28,7 @@ onMounted(async () => {
   }
 
   try {
-    await useApi(API_ROUTES.auth.emailVerify(id as string, hash as string), {
+    await api(API_ROUTES.auth.emailVerify(id as string, hash as string), {
       query: {
         expires,
         signature,

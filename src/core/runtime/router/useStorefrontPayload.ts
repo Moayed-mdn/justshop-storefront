@@ -9,9 +9,18 @@ import { useStorefrontApi } from '../../api/client'
 import { API_ROUTES } from '../../../../shared/utils/routes'
 import { useStorefrontContext } from '../../tenant/composables'
 
+// Plain error factory — no Nuxt composables, safe to call anywhere
+const makeError = (statusCode: number, message: string, data?: any): Error => {
+  const err = new Error(message) as any
+  err.statusCode = statusCode
+  err.data = data
+  err.__storefront_error = true
+  return err
+}
+
 export const useStorefrontPayload = () => {
   const context = useStorefrontContext()
-  const nuxtApp = useNuxtApp()
+  const storefrontApi = useStorefrontApi()
   const requestHost = import.meta.server
     ? useRequestHeaders(['host']).host || context.value.tenant?.domain || 'localhost'
     : null
@@ -22,60 +31,62 @@ export const useStorefrontPayload = () => {
     }
 
     if (context.value.preview && context.value.previewToken) {
-      await nuxtApp.runWithContext(() => validatePreview(resolved))
+      await validatePreview(resolved)
     }
 
-    const [pageResponse, navigationResponse, themeResponse] = await nuxtApp.runWithContext(() => Promise.all([
-      useStorefrontApi<RuntimePagePayloadResponse>(API_ROUTES.storefront.runtime.page(resolved.pageId as string), {
-        query: {
-          path: resolved.path,
-          ...(context.value.preview ? { preview: 1 } : {}),
+    const [pageResponse, navigationResponse, themeResponse] = await Promise.all([
+      storefrontApi<RuntimePagePayloadResponse>(
+        API_ROUTES.storefront.runtime.page(resolved.pageId as string),
+        {
+          query: {
+            path: resolved.path,
+            ...(context.value.preview ? { preview: 1 } : {}),
+          },
+          showError: false,
         },
-        showError: false,
-      }),
-      useStorefrontApi<RuntimeNavigationResponse>(API_ROUTES.storefront.runtime.navigation, {
-        query: {
-          path: resolved.path,
+      ),
+      storefrontApi<RuntimeNavigationResponse>(
+        API_ROUTES.storefront.runtime.navigation,
+        {
+          query: { path: resolved.path },
+          showError: false,
         },
-        showError: false,
-      }),
-      useStorefrontApi<RuntimeThemeResponse>(API_ROUTES.storefront.runtime.theme, {
-        query: {
-          path: resolved.path,
+      ),
+      storefrontApi<RuntimeThemeResponse>(
+        API_ROUTES.storefront.runtime.theme,
+        {
+          query: { path: resolved.path },
+          showError: false,
         },
-        showError: false,
-      }),
-    ]))
+      ),
+    ])
 
     if (pageResponse.error) {
-      throw createError({
-        statusCode: pageResponse.error.statusCode || 500,
-        statusMessage: pageResponse.error.message,
-        data: pageResponse.error,
-      })
+      throw makeError(
+        pageResponse.error.statusCode || 500,
+        pageResponse.error.message,
+        pageResponse.error,
+      )
     }
 
     if (navigationResponse.error) {
-      throw createError({
-        statusCode: navigationResponse.error.statusCode || 500,
-        statusMessage: navigationResponse.error.message,
-        data: navigationResponse.error,
-      })
+      throw makeError(
+        navigationResponse.error.statusCode || 500,
+        navigationResponse.error.message,
+        navigationResponse.error,
+      )
     }
 
     if (themeResponse.error) {
-      throw createError({
-        statusCode: themeResponse.error.statusCode || 500,
-        statusMessage: themeResponse.error.message,
-        data: themeResponse.error,
-      })
+      throw makeError(
+        themeResponse.error.statusCode || 500,
+        themeResponse.error.message,
+        themeResponse.error,
+      )
     }
 
     if (!pageResponse.data || !navigationResponse.data || !themeResponse.data) {
-      throw createError({
-        statusCode: 500,
-        statusMessage: 'The storefront runtime payload is incomplete.',
-      })
+      throw makeError(500, 'The storefront runtime payload is incomplete.')
     }
 
     syncTenantContext(pageResponse.data, navigationResponse.data, themeResponse.data)
@@ -91,13 +102,10 @@ export const useStorefrontPayload = () => {
     const previewToken = context.value.previewToken
 
     if (!previewToken || resolved.pageId === null) {
-      throw createError({
-        statusCode: 403,
-        statusMessage: 'Preview access requires a valid preview token.',
-      })
+      throw makeError(403, 'Preview access requires a valid preview token.')
     }
 
-    const { data, error } = await useStorefrontApi<RuntimePreviewValidationResponse>(
+    const { data, error } = await storefrontApi<RuntimePreviewValidationResponse>(
       API_ROUTES.storefront.runtime.previewValidate,
       {
         method: 'POST',
@@ -112,18 +120,11 @@ export const useStorefrontPayload = () => {
     )
 
     if (error) {
-      throw createError({
-        statusCode: error.statusCode || 403,
-        statusMessage: error.message,
-        data: error,
-      })
+      throw makeError(error.statusCode || 403, error.message, error)
     }
 
     if (!data?.data.valid || data.data.previewState !== 'authorized') {
-      throw createError({
-        statusCode: 403,
-        statusMessage: 'Preview access was denied.',
-      })
+      throw makeError(403, 'Preview access was denied.')
     }
   }
 
@@ -136,18 +137,19 @@ export const useStorefrontPayload = () => {
       ? requestHost || context.value.tenant?.domain || 'localhost'
       : window.location.host
 
-    if (pageResponse.requestContext.requestId) {
+    if (pageResponse.requestContext?.requestId) {
       context.value.requestId = pageResponse.requestContext.requestId
     }
 
-    const storeName = themeResponse.data.branding?.storeName
-      || context.value.tenant?.name
-      || 'Storefront'
+    const storeName =
+      themeResponse.data.branding?.storeName ||
+      context.value.tenant?.name ||
+      'Storefront'
 
     context.value.tenant = {
-      id: pageResponse.requestContext.tenantId || context.value.tenant?.id || 'default',
+      id: pageResponse.requestContext?.tenantId || context.value.tenant?.id || 'default',
       name: storeName,
-      slug: pageResponse.requestContext.tenantKey || context.value.tenant?.slug || 'default',
+      slug: pageResponse.requestContext?.tenantKey || context.value.tenant?.slug || 'default',
       domain: host.split(':')[0] || 'localhost',
       status: 'active',
       settings: {
@@ -162,7 +164,5 @@ export const useStorefrontPayload = () => {
     context.value.themePayload = themeResponse.data
   }
 
-  return {
-    fetchPayload
-  }
+  return { fetchPayload }
 }

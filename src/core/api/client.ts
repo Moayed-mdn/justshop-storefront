@@ -1,16 +1,16 @@
 import type { FetchOptions, FetchContext, FetchResponse } from 'ofetch'
-import { getStorefrontHeaders } from './headers'
+import { useStorefrontHeaders } from './headers'
 import { normalizeError } from './errors'
 
-export const useStorefrontApi = async <T>(url: string, options?: FetchOptions & { showError?: boolean }) => {
-  const headers = getStorefrontHeaders()
+export const useStorefrontApi = () => {
+  const { getHeaders } = useStorefrontHeaders()
   const authStore = import.meta.client ? useAuthStore() : null
 
   const api = $fetch.create({
     onRequest({ options }) {
       // Inject storefront headers
       options.headers = {
-        ...headers,
+        ...getHeaders(),
         ...options.headers,
       }
       
@@ -30,10 +30,12 @@ export const useStorefrontApi = async <T>(url: string, options?: FetchOptions & 
     },
   })
 
-  try {
-    const data = await api<T>(url, options as any)
-    return { data, error: null }
-  } catch (e) {
-    return { data: null, error: normalizeError(e) }
+  return async <T>(url: string, options?: FetchOptions & { showError?: boolean }) => {
+    try {
+      const data = await api<T>(url, options as any)
+      return { data, error: null }
+    } catch (e) {
+      return { data: null, error: normalizeError(e) }
+    }
   }
 }

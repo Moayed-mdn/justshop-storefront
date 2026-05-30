@@ -2,13 +2,29 @@
 
 **Program**: JustShop Storefront Commerce Consolidation  
 **Wave**: 1 — Canonical Route Recovery  
-**Executed**: 20260529-213306  
+**Executed**: 20260530-120608  
 **Owner**: Team A — Runtime & Routing  
-**Status**: Applied  
+**Status**: Superseded by live runtime alignment on 2026-05-31  
 
 ---
 
 ## Problem Summary
+
+## Supersession Note
+
+Runtime evidence collected on `2026-05-31` showed the live Laravel resolver still
+canonicalizes product detail traffic to `/shop/product/:slug`. Keeping the Wave 1
+frontend redirects active therefore created a redirect loop:
+
+- frontend middleware: `/shop/product/:slug` → `/products/:slug`
+- runtime resolver: `/products/:slug` → `/shop/product/:slug`
+
+The frontend has been realigned with the live resolver until the broader
+canonical-route plan is re-executed end-to-end.
+
+---
+
+## Historical Problem Summary
 
 The storefront had two competing route systems for product and category pages.
 The Laravel runtime resolver recognized:
@@ -96,13 +112,13 @@ eliminate log noise in production and staging environments.
 Originals are backed up to:
 
 ```
-backup/wave1-20260529-213306/
+backup/wave1-20260530-120608/
 ```
 
 To restore any single file:
 
 ```bash
-cp backup/wave1-20260529-213306/shared_utils_storefront-routes.ts \
+cp backup/wave1-20260530-120608/shared_utils_storefront-routes.ts \
    shared/utils/storefront-routes.ts
 ```
 
@@ -144,3 +160,17 @@ The unified shell (`StorefrontShell.vue`, `StorefrontShellHeader.vue`,
 - Verifying runtime-bridge layout variant correctly exposes auth/cart/search
 - Mobile navigation parity between runtime and legacy surfaces
 - Tenant branding propagation through the shell context
+
+## Current Live Override
+
+Current live frontend route ownership is:
+
+- Category canonical: `/shop/category/:slug`
+- Product canonical: `/shop/product/:slug`
+- Compatibility redirects:
+  - `/products/category/:slug` → `/shop/category/:slug`
+  - `/products/:slug` → `/shop/product/:slug`
+  - `/products/product/:slug` → `/shop/product/:slug`
+
+This document remains as historical context for the attempted Wave 1 recovery,
+not as the current source of truth.

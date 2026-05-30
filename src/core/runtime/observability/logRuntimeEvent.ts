@@ -1,5 +1,6 @@
+import type { Ref } from 'vue'
+import type { StorefrontContext } from '../../tenant/types'
 import { STOREFRONT_RUNTIME_CONTRACT_VERSION } from '../contracts/constants'
-import { useStorefrontContext } from '../../tenant/composables'
 
 export type RuntimeLogStatus = 'success' | 'failure' | 'bypassed'
 
@@ -11,6 +12,8 @@ export interface RuntimeLogContext {
   duration_ms?: number
   details?: Record<string, unknown>
 }
+
+type StorefrontContextRef = Ref<StorefrontContext>
 
 const normalizeRuntimePath = (path: string) => {
   const trimmed = path.trim()
@@ -24,17 +27,20 @@ const normalizeRuntimePath = (path: string) => {
   return normalized !== '/' ? normalized.replace(/\/+$/, '') : '/'
 }
 
-export const logRuntimeEvent = (context: RuntimeLogContext, level: 'info' | 'warn' | 'error' = 'info') => {
-  const storefrontContext = useStorefrontContext()
-  const tenant = storefrontContext.value.tenant
-  const path = normalizeRuntimePath(context.path || storefrontContext.value.route || '/')
+export const logRuntimeEvent = (
+  context: RuntimeLogContext,
+  level: 'info' | 'warn' | 'error' = 'info',
+  storefrontContext?: StorefrontContextRef,
+) => {
+  const tenant = storefrontContext?.value.tenant
+  const path = normalizeRuntimePath(context.path || storefrontContext?.value.route || '/')
 
   const record = {
     tenant_id: tenant?.id ? String(tenant.id) : null,
     tenant_key: tenant?.slug || null,
-    locale: storefrontContext.value.locale || 'en',
+    locale: storefrontContext?.value.locale || 'en',
     path,
-    request_id: storefrontContext.value.requestId || null,
+    request_id: storefrontContext?.value.requestId || null,
     runtime_version: STOREFRONT_RUNTIME_CONTRACT_VERSION,
     artifact: context.artifact,
     event: context.event,

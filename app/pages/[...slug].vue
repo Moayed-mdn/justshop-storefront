@@ -50,16 +50,26 @@ const previewToken = computed(() => {
   if (typeof route.query.previewToken === 'string') {
     return route.query.previewToken
   }
-
   return typeof route.query.token === 'string' ? route.query.token : null
 })
 
-const isPreview = computed(() => route.query.preview === 'true' || route.query.preview === '1')
-const runtimeDataKey = computed(() => createTenantCacheKey('catch-all-runtime-page', {
-  artifact: 'page',
-  route: route.path,
-  previewState: isPreview.value ? 'preview' : 'live',
-}))
+const isPreview = computed(() =>
+  route.query.preview === 'true' || route.query.preview === '1'
+)
+
+const runtimeDataKey = computed(() =>
+  createTenantCacheKey('catch-all-runtime-page', {
+    tenantKey: String(
+      storefrontContext.value.tenant?.slug ||
+      storefrontContext.value.tenant?.id ||
+      'default'
+    ),
+    locale: storefrontContext.value.locale || 'en',
+    artifact: 'page',
+    route: route.path,
+    previewState: isPreview.value ? 'preview' : 'live',
+  })
+)
 
 const syncRuntimeContext = () => {
   storefrontContext.value.route = route.path
@@ -67,71 +77,86 @@ const syncRuntimeContext = () => {
   storefrontContext.value.previewToken = previewToken.value
 }
 
-const toRuntimePageError = (error: unknown) => {
-  const normalized = normalizeError(error)
+const isExternalRuntimeRedirect = (target: string) => /^https?:\/\//i.test(target)
 
-  if (
-    normalized.code === 'runtime.rollout_disabled'
-    || (
-      normalized.statusCode === 403
-      && /storefront runtime is not enabled/i.test(normalized.message)
-    )
-  ) {
-    return createError({
-      statusCode: 404,
-      statusMessage: 'Page not found',
-      data: normalized,
-    })
+// Plain error class — zero Nuxt composables, safe anywhere including async
+class StorefrontPageError extends Error {
+  statusCode: number
+  isNotFound: boolean
+  originalError: unknown
+
+  constructor(message: string, statusCode: number, isNotFound = false, originalError?: unknown) {
+    super(message)
+    this.name = 'StorefrontPageError'
+    this.statusCode = statusCode
+    this.isNotFound = isNotFound
+    this.originalError = originalError
   }
-
-  return createError({
-    statusCode: normalized.statusCode || 500,
-    statusMessage: normalized.message,
-    data: normalized,
-  })
 }
 
-const isExternalRuntimeRedirect = (target: string) => /^https?:\/\//i.test(target)
+const isNuxtError = (error: unknown): error is Error & { __nuxt_error: true } =>
+  Boolean(error && typeof error === 'object' && '__nuxt_error' in error)
+
+const toRuntimePageError = (error: unknown) => {
+  if (error instanceof StorefrontPageError) {
+    return {
+      statusCode: error.statusCode,
+      statusMessage: error.message,
+      data: {
+        originalStack: error.stack,
+      },
+    }
+  }
+
+  const normalized = normalizeError(error)
+  const isRolloutDisabled =
+    normalized.code === 'runtime.rollout_disabled' ||
+    (normalized.statusCode === 403 &&
+      /storefront runtime is not enabled/i.test(normalized.message))
+
+  return {
+    statusCode: isRolloutDisabled ? 404 : (normalized.statusCode || 500),
+    statusMessage: isRolloutDisabled ? 'Page not found' : normalized.message,
+    data: {
+      ...normalized,
+      originalStack: (error as Error)?.stack,
+    },
+  }
+}
 
 const { data: runtimeData, pending, error } = await useAsyncData(
   runtimeDataKey.value,
   async () => {
     syncRuntimeContext()
 
-    try {
-      const resolved = await nuxtApp.runWithContext(() => resolveRoute(route.path))
+    const resolved = await resolveRoute(route.path)
 
-      if (resolved.status === 'redirect' && resolved.redirectTo) {
-        return await navigateTo(resolved.redirectTo, {
+    if (resolved.status === 'redirect' && resolved.redirectTo) {
+      // navigateTo needs context — run it via nuxtApp
+      await nuxtApp.runWithContext(() =>
+        navigateTo(resolved.redirectTo!, {
           redirectCode: resolved.redirectStatus || 302,
-          external: isExternalRuntimeRedirect(resolved.redirectTo),
+          external: isExternalRuntimeRedirect(resolved.redirectTo!),
           replace: resolved.redirectStatus === 301,
         })
-      }
-
-      if (resolved.status === 'not_found' || resolved.legacyPassthrough) {
-        throw createError({
-          statusCode: 404,
-          statusMessage: 'Page not found',
-        })
-      }
-
-      const bundle = await nuxtApp.runWithContext(() => fetchPayload(resolved))
-
-      if (!bundle) {
-        throw createError({
-          statusCode: 500,
-          statusMessage: 'The storefront runtime payload is unavailable.',
-        })
-      }
-
-      return {
-        resolved,
-        bundle,
-      }
-    } catch (runtimeError) {
-      throw toRuntimePageError(runtimeError)
+      )
+      return null
     }
+
+    if (resolved.status === 'not_found' || resolved.legacyPassthrough) {
+      throw new StorefrontPageError('Page not found', 404, true)
+    }
+
+    const bundle = await fetchPayload(resolved)
+
+    if (!bundle) {
+      throw new StorefrontPageError(
+        'The storefront runtime payload is unavailable.',
+        500
+      )
+    }
+
+    return { resolved, bundle }
   },
   {
     watch: [
@@ -144,8 +169,14 @@ const { data: runtimeData, pending, error } = await useAsyncData(
   }
 )
 
+// We are synchronously in setup() here — createError is safe
 if (error.value) {
-  throw toRuntimePageError(error.value)
+  if (isNuxtError(error.value)) {
+    throw error.value
+  }
+
+  const runtimeError = nuxtApp.runWithContext(() => createError(toRuntimePageError(error.value)))
+  throw runtimeError
 }
 
 type RuntimePageState = {
@@ -157,36 +188,24 @@ type RuntimePageState = {
 } | null
 
 const runtimeState = computed(() => runtimeData.value as RuntimePageState)
-
 const resolvedRoute = computed(() => runtimeState.value?.resolved ?? null)
 
 const runtimeBundle = computed<StorefrontRuntimeBundle | null>(() => {
   const state = runtimeState.value
-
-  if (!state) {
-    return null
-  }
-
-  if (state.bundle) {
-    return state.bundle
-  }
-
+  if (!state) return null
+  if (state.bundle) return state.bundle
   return state.page && state.navigation && state.theme
-    ? {
-        page: state.page,
-        navigation: state.navigation,
-        theme: state.theme,
-      }
+    ? { page: state.page, navigation: state.navigation, theme: state.theme }
     : null
 })
 
-const runtimePage = computed(() => runtimeBundle.value?.page ?? runtimeState.value?.page ?? null)
+const runtimePage = computed(() =>
+  runtimeBundle.value?.page ?? runtimeState.value?.page ?? null
+)
+
 const runtimeShellStyle = computed<Record<string, string>>(() => {
   const theme = runtimeBundle.value?.theme
-
-  if (!theme) {
-    return {} as Record<string, string>
-  }
+  if (!theme) return {} as Record<string, string>
 
   return {
     '--color-primary': theme.tokens.colorPrimary,
@@ -203,28 +222,18 @@ const runtimeShellStyle = computed<Record<string, string>>(() => {
 useHead(() => ({
   htmlAttrs: {
     lang: runtimePage.value?.locale || storefrontContext.value.locale,
-    dir: runtimeBundle.value?.theme.settings.direction || 'ltr',
+    dir: runtimeBundle.value?.theme?.settings?.direction || 'ltr',
   },
   bodyAttrs: {
-    style: runtimeBundle.value?.theme?.tokens.fontBody
+    style: runtimeBundle.value?.theme?.tokens?.fontBody
       ? `font-family:${runtimeBundle.value.theme.tokens.fontBody};`
       : undefined,
   },
-  meta: runtimeBundle.value?.theme?.tokens.colorPrimary
-    ? [
-        {
-          name: 'theme-color',
-          content: runtimeBundle.value.theme.tokens.colorPrimary,
-        },
-      ]
+  meta: runtimeBundle.value?.theme?.tokens?.colorPrimary
+    ? [{ name: 'theme-color', content: runtimeBundle.value.theme.tokens.colorPrimary }]
     : [],
-  link: runtimeBundle.value?.theme?.assets.faviconUrl
-    ? [
-        {
-          rel: 'icon',
-          href: runtimeBundle.value.theme.assets.faviconUrl,
-        },
-      ]
+  link: runtimeBundle.value?.theme?.assets?.faviconUrl
+    ? [{ rel: 'icon', href: runtimeBundle.value.theme.assets.faviconUrl }]
     : [],
 }))
 

@@ -12,8 +12,8 @@
 |---|---|
 | Home | `/` |
 | Shop | `/shop` |
-| Category | `/products/category/:slug` |
-| Product | `/products/:slug` |
+| Category | `/shop/category/:slug` |
+| Product | `/shop/product/:slug` |
 | Search | `/search` |
 | Cart | `/cart` |
 | Auth | `/login`, `/register`, `/verify-email/:id/:hash` |
@@ -32,6 +32,8 @@ Prefer `useStorefrontRoutes()` in Vue components and middleware instead of hardc
 Explicit 301 redirects (logged in development):
 
 - `/products` → `/shop`
-- `/products/product/:slug` → `/products/:slug`
+- `/products/category/:slug` → `/shop/category/:slug`
+- `/products/product/:slug` → `/shop/product/:slug`
+- `/products/:slug` → `/shop/product/:slug`
 
-Runtime resolve may also emit `/products` → `/shop` on catch-all routes (see Laravel `StorefrontRuntimeService::resolveRedirect`).
+The live Laravel runtime resolver currently canonicalizes category and product detail traffic to the `/shop/**` family. Frontend route helpers and compatibility redirects therefore align with `/shop/category/:slug` and `/shop/product/:slug` until the backend/runtime contract is updated again.

@@ -21,6 +21,7 @@ interface OrderFiltersParams {
 export const useOrders = () => {
   const loading = ref(false);
   const error = ref<string | null>(null);
+  const api = useApi();
 
   // ── List orders (paginated + filtered) ──
   const fetchOrders = async (filters: OrderFiltersParams = {}) => {
@@ -28,7 +29,7 @@ export const useOrders = () => {
     error.value = null;
 
     try {
-      const { data, error: apiError } = await useApi<OrderListResponse>(API_ROUTES.orders.index, {
+      const { data, error: apiError } = await api<OrderListResponse>(API_ROUTES.orders.index, {
         query: filters,
       });
 
@@ -46,7 +47,7 @@ export const useOrders = () => {
   // ── Get filter options with counts ──
   const fetchFilters = async (): Promise<OrderStatusFilter[]> => {
     try {
-      const { data, error: apiError } = await useApi<OrderFiltersResponse>(
+      const { data, error: apiError } = await api<OrderFiltersResponse>(
         API_ROUTES.orders.filters,
       );
       if (apiError) throw apiError;
@@ -62,7 +63,7 @@ export const useOrders = () => {
     error.value = null;
 
     try {
-      const { data, error: apiError } = await useApi<OrderResponse>(
+      const { data, error: apiError } = await api<OrderResponse>(
         API_ROUTES.orders.detail(orderNumber),
       );
       if (apiError) throw apiError;
@@ -81,7 +82,7 @@ export const useOrders = () => {
     error.value = null;
 
     try {
-      const { data, error: apiError } = await useApi<OrderResponse>(
+      const { data, error: apiError } = await api<OrderResponse>(
         API_ROUTES.orders.cancel(orderNumber),
         {
           method: 'POST',
@@ -103,7 +104,7 @@ export const useOrders = () => {
     error.value = null;
 
     try {
-      const { data, error: apiError } = await useApi<ReorderResponse>(
+      const { data, error: apiError } = await api<ReorderResponse>(
         API_ROUTES.orders.reorder(orderNumber),
         {
           method: 'POST',
@@ -125,7 +126,7 @@ export const useOrders = () => {
     error.value = null;
 
     try {
-      const { data, error: apiError } = await useApi<OrderResponse>(
+      const { data, error: apiError } = await api<OrderResponse>(
         API_ROUTES.orders.guestLookup,
         {
           method: 'POST',

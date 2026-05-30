@@ -6,6 +6,7 @@ export const useProduct = () => {
   const { locale } = useI18n();
   const route = useRoute();
   const { filters, syncFromUrl, syncToUrl, apiQuery } = useProductFilters();
+  const api = useApi();
 
   onMounted(syncFromUrl);
   watch(filters, syncToUrl, { deep: true });
@@ -31,7 +32,7 @@ export const useProduct = () => {
         ...apiQuery.value,
         page,
       };
-      const { data: shopLayout, error: apiError } = await useApi<ProductListResponse>(
+      const { data: shopLayout, error: apiError } = await api<ProductListResponse>(
         API_ROUTES.products.index,
         {
           query: finalQuery,
