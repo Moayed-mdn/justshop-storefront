@@ -74,16 +74,16 @@ export const API_ROUTES = {
  */
 export const EXTERNAL_API_ROUTES = {
   auth: {
-    login: 'users/auth/login',
-    register: 'users/auth/register',
-    logout: 'users/auth/logout',
-    me: 'users/auth/me',
-    emailResend: 'merchant/auth/email/resend',
-    emailVerify: (id: string | number, hash: string) => `merchant/auth/email/verify/${id}/${hash}`,
+    login: 'customer/auth/login',
+    register: 'customer/auth/register',
+    logout: 'customer/auth/logout',
+    me: 'customer/me',
+    emailResend: 'customer/auth/email/resend',
+    emailVerify: (id: string | number, hash: string) => `customer/auth/email/verify/${id}/${hash}`,
     googleCallback: 'users/auth/google/callback',
     googleRedirect: 'users/auth/google/redirect',
-    passwordForgot: 'merchant/auth/password/forgot',
-    passwordReset: 'merchant/auth/password/reset',
+    passwordForgot: 'customer/auth/password/forgot',
+    passwordReset: 'customer/auth/password/reset',
   },
   cart: {
     show: (storeId: string | number) => `storefront/stores/${storeId}/cart`,
@@ -120,11 +120,11 @@ export const EXTERNAL_API_ROUTES = {
     related: (storeId: string | number, slug: string) => `storefront/stores/${storeId}/products/${slug}/related`,
   },
   profile: {
-    show: 'merchant/profile',
-    destroy: 'merchant/profile',
-    updateAvatar: 'merchant/profile/avatar',
-    updateInfo: 'merchant/profile/info',
-    updatePassword: 'merchant/profile/password',
+    show: 'profile',
+    destroy: 'profile',
+    updateAvatar: 'profile/avatar',
+    updateInfo: 'profile/info',
+    updatePassword: 'profile/password',
   },
   storefront: {
     runtime: {
