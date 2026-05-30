@@ -26,7 +26,7 @@ export interface AuthUser {
  */
 export type AuthResponse = ApiResponse<{
   user: AuthUser;
-  token: string;
+  token?: string | null;
 }>;
 
 /**

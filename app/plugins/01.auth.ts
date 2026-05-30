@@ -1,9 +1,11 @@
 // plugins/auth.client.ts
 export default defineNuxtPlugin(async () => {
-  const { fetchUser, isLoggedIn } = useAuth()
+  const { fetchUser, user } = useAuth()
+  const sessionCookie = useCookie('ecommerce_session')
+  const xsrfCookie = useCookie('XSRF-TOKEN')
 
-  // Always try to fetch user if logged in, even on server to enable SSR identity
-  if (isLoggedIn.value) {
+  // Rehydrate auth state from the backend session cookie instead of a persisted token.
+  if (!user.value && (sessionCookie.value || xsrfCookie.value)) {
     try {
       await fetchUser()
     } catch (e) {

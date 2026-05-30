@@ -23,8 +23,7 @@ export const useAuth = () => {
         throw error;
       }
 
-      authStore.setToken(data.data.token);
-      authStore.setUser(data.data.user);
+      authStore.setUser(data.data.user || null);
 
       const cartStore = useCartStore();
       await cartStore.onLogin();
@@ -123,7 +122,6 @@ export const useAuth = () => {
   };
 
   const fetchUser = async () => {
-    if (!authStore.isLoggedIn) return null;
     try {
       const { data, error } = await api<UserResponse>(API_ROUTES.auth.me);
       if (error) throw error;

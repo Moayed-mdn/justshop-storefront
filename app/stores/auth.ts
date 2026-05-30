@@ -8,7 +8,7 @@ export const useAuthStore = defineStore('auth', () => {
   const user = ref<AuthUser | null>(null);
 
   // Getters
-  const isLoggedIn = computed(() => !!token.value);
+  const isLoggedIn = computed(() => !!user.value);
 
   // Actions
   function setToken(newToken: string | null) {
@@ -33,10 +33,4 @@ export const useAuthStore = defineStore('auth', () => {
     setUser,
     clearAuth,
   };
-}, {
-  persist: {
-    key: 'js_auth',
-    storage: piniaPluginPersistedstate.cookies(),
-    pick: ['token'],
-  },
 });

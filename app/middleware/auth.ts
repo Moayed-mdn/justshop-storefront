@@ -1,19 +1,14 @@
 // middleware/auth.ts
 export default defineNuxtRouteMiddleware(async () => {
   const { isLoggedIn, user, fetchUser } = useAuth()
+  const sessionCookie = useCookie('ecommerce_session')
 
-  // Not logged in at all → redirect
-  if (!isLoggedIn.value) {
-    return navigateTo(useStorefrontRoutes().login())
+  // Rehydrate identity when the server session exists but the store is still empty.
+  if (!user.value && sessionCookie.value) {
+    await fetchUser()
   }
 
-  // Logged in but user data missing (edge case: plugin hasn't finished yet)
-  if (!user.value) {
-    await fetchUser()
-
-    // fetchUser failed (token expired) → clearAuth was called inside → redirect
-    if (!isLoggedIn.value) {
-      return navigateTo(useStorefrontRoutes().login())
-    }
+  if (!isLoggedIn.value) {
+    return navigateTo(useStorefrontRoutes().login())
   }
 })

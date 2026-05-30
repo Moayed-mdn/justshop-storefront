@@ -1,9 +1,13 @@
 // middleware/guest.ts
-export default defineNuxtRouteMiddleware((to) => {
-    const { isLoggedIn } = useAuth()
-    const localePath = useLocalePath()
-  
-    if (isLoggedIn.value) {
-      return navigateTo(useStorefrontRoutes().home())
-    }
-  })
+export default defineNuxtRouteMiddleware(async () => {
+  const { isLoggedIn, user, fetchUser } = useAuth()
+  const sessionCookie = useCookie('ecommerce_session')
+
+  if (!user.value && sessionCookie.value) {
+    await fetchUser()
+  }
+
+  if (isLoggedIn.value) {
+    return navigateTo(useStorefrontRoutes().home())
+  }
+})

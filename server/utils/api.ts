@@ -4,8 +4,67 @@ import { request as httpsRequest } from 'node:https'
 import type { H3Event } from 'h3'
 import { STOREFRONT_RUNTIME_CONTRACT_VERSION } from '../../src/core/runtime/contracts/constants'
 
+const getNormalizedRequestHost = (event: H3Event) => {
+  const hostHeader = String(getHeader(event, 'host') || getHeader(event, 'x-forwarded-host') || 'localhost')
+  return hostHeader.split(',')[0]?.trim().split(':')[0] || 'localhost'
+}
+
+const collectSetCookieHeaders = (response: Response) => {
+  const responseHeaders = response.headers as Headers & { getSetCookie?: () => string[] }
+
+  if (typeof responseHeaders.getSetCookie === 'function') {
+    return responseHeaders.getSetCookie()
+  }
+
+  const singleHeader = response.headers.get('set-cookie')
+  return singleHeader ? [singleHeader] : []
+}
+
+const normalizeProxySetCookie = (setCookieHeader: string) => setCookieHeader
+  .split(/;\s*/)
+  .filter(part => !/^domain=/i.test(part))
+  .join('; ')
+
+const mergeCookieHeaders = (...cookieHeaders: Array<string | undefined>) => {
+  const cookieMap = new Map<string, string>()
+
+  for (const cookieHeader of cookieHeaders) {
+    if (!cookieHeader) {
+      continue
+    }
+
+    for (const cookiePart of cookieHeader.split(/;\s*/)) {
+      const separatorIndex = cookiePart.indexOf('=')
+      if (separatorIndex <= 0) {
+        continue
+      }
+
+      const name = cookiePart.slice(0, separatorIndex).trim()
+      const value = cookiePart.slice(separatorIndex + 1).trim()
+
+      if (!name) {
+        continue
+      }
+
+      cookieMap.set(name, value)
+    }
+  }
+
+  return Array.from(cookieMap.entries())
+    .map(([name, value]) => `${name}=${value}`)
+    .join('; ')
+}
+
+const readCookieValue = (cookieHeader: string, name: string) => {
+  const pattern = new RegExp(`(?:^|;\\s*)${name}=([^;]+)`)
+  return cookieHeader.match(pattern)?.[1] || null
+}
+
+const buildApiRoot = (apiBase: string) => apiBase.replace(/\/v1(?:\/users)?\/?$/, '')
+
 export const useServerApi = (event: H3Event) => {
   const config = useRuntimeConfig(event)
+  const normalizedHost = getNormalizedRequestHost(event)
 
   // Locale from cookie
   const locale = getCookie(event, 'i18n_redirected') || getHeader(event, 'accept-language') || 'en'
@@ -28,6 +87,7 @@ export const useServerApi = (event: H3Event) => {
 
     onRequest({ options }) {
       options.headers.set('Accept', 'application/json')
+      options.headers.set('Host', normalizedHost)
       options.headers.set('X-Tenant-Id', String(tenantId))
       options.headers.set('X-Storefront-Locale', locale)
       options.headers.set('X-Storefront-Version', '1.0.0')
@@ -39,8 +99,121 @@ export const useServerApi = (event: H3Event) => {
       if (token) {
         options.headers.set('Authorization', `Bearer ${token}`)
       }
+
+      const incomingCookieHeader = String(getHeader(event, 'cookie') || '')
+      if (incomingCookieHeader) {
+        options.headers.set('Cookie', incomingCookieHeader)
+      }
+
+      const method = String(options.method || 'GET').toUpperCase()
+      const xsrfToken = getCookie(event, 'XSRF-TOKEN')
+      if (!['GET', 'HEAD', 'OPTIONS'].includes(method) && xsrfToken) {
+        options.headers.set('X-XSRF-TOKEN', decodeURIComponent(String(xsrfToken)))
+      }
     },
   })
+}
+
+export const proxySessionAuthRequest = async (event: H3Event, path: string, options?: {
+  method?: string
+  body?: unknown
+  headers?: HeadersInit
+}) => {
+  const config = useRuntimeConfig(event)
+  const apiBase = String(config.apiBase || '').replace(/\/+$/, '')
+  const apiRoot = buildApiRoot(apiBase)
+  const locale = String(getCookie(event, 'i18n_redirected') || getHeader(event, 'accept-language') || 'en')
+  const tenantId = String(event.context.tenantId || '')
+  const normalizedHost = getNormalizedRequestHost(event)
+  const method = String(options?.method || 'GET').toUpperCase()
+  const headers = new Headers(options?.headers)
+
+  headers.set('Accept', 'application/json')
+  headers.set('Host', normalizedHost)
+  headers.set('X-Tenant-Id', tenantId)
+  headers.set('X-Storefront-Locale', locale)
+  headers.set('X-Storefront-Version', STOREFRONT_RUNTIME_CONTRACT_VERSION)
+
+  if (locale) {
+    headers.set('Accept-Language', locale)
+  }
+
+  const incomingCookieHeader = String(getHeader(event, 'cookie') || '')
+  let forwardedCookieHeader = incomingCookieHeader
+  const requiresCsrf = !['GET', 'HEAD', 'OPTIONS'].includes(method)
+
+  if (requiresCsrf && !getCookie(event, 'XSRF-TOKEN')) {
+    const csrfResponse = await fetch(`${apiRoot}/sanctum/csrf-cookie`, {
+      method: 'GET',
+      headers,
+    })
+
+    const csrfSetCookies = collectSetCookieHeaders(csrfResponse)
+    const bootstrapCookieHeader = csrfSetCookies
+      .map(setCookieHeader => setCookieHeader.split(';', 1)[0] || '')
+      .filter(Boolean)
+      .join('; ')
+
+    forwardedCookieHeader = mergeCookieHeaders(forwardedCookieHeader, bootstrapCookieHeader)
+
+    for (const setCookieHeader of csrfSetCookies) {
+      appendResponseHeader(event, 'set-cookie', normalizeProxySetCookie(setCookieHeader))
+    }
+  }
+
+  if (forwardedCookieHeader) {
+    headers.set('Cookie', forwardedCookieHeader)
+  }
+
+  const xsrfToken = getCookie(event, 'XSRF-TOKEN') || readCookieValue(forwardedCookieHeader, 'XSRF-TOKEN')
+  if (requiresCsrf && xsrfToken) {
+    headers.set('X-XSRF-TOKEN', decodeURIComponent(String(xsrfToken)))
+  }
+
+  let payload: BodyInit | undefined
+  if (options?.body !== undefined && requiresCsrf) {
+    payload = typeof options.body === 'string' ? options.body : JSON.stringify(options.body)
+    if (!headers.has('Content-Type')) {
+      headers.set('Content-Type', 'application/json')
+    }
+  }
+
+  const response = await fetch(`${apiBase}/${path.replace(/^\/+/, '')}`, {
+    method,
+    headers,
+    body: payload,
+  })
+
+  for (const setCookieHeader of collectSetCookieHeaders(response)) {
+    appendResponseHeader(event, 'set-cookie', normalizeProxySetCookie(setCookieHeader))
+  }
+
+  const responseText = await response.text()
+  const responseData = response.headers.get('content-type')?.includes('application/json')
+    ? (() => {
+        try {
+          return JSON.parse(responseText)
+        } catch {
+          return responseText
+        }
+      })()
+    : responseText
+
+  if (!response.ok) {
+    const message = typeof responseData === 'object' && responseData !== null
+      ? String((responseData as { error?: { message?: string }, message?: string }).error?.message
+          || (responseData as { message?: string }).message
+          || `Runtime request failed with status ${response.status}`)
+      : String(responseData || `Runtime request failed with status ${response.status}`)
+
+    throw createError({
+      statusCode: response.status,
+      statusMessage: message,
+      data: responseData,
+    })
+  }
+
+  return responseData
 }
 
 export const useRuntimeServerApi = (event: H3Event) => {
