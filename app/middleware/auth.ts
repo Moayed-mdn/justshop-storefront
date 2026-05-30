@@ -5,7 +5,11 @@ export default defineNuxtRouteMiddleware(async () => {
 
   // Rehydrate identity when the server session exists but the store is still empty.
   if (!user.value && sessionCookie.value) {
-    await fetchUser()
+    try {
+      await fetchUser()
+    } catch {
+      sessionCookie.value = null
+    }
   }
 
   if (!isLoggedIn.value) {

@@ -64,12 +64,10 @@ const buildApiRoot = (apiBase: string) => apiBase.replace(/\/v1(?:\/users)?\/?$/
 
 export const useServerApi = (event: H3Event) => {
   const config = useRuntimeConfig(event)
-
-  // Locale from cookie
+  const apiBase = String(config.apiBase || '').replace(/\/+$/, '')
   const locale = getCookie(event, 'i18n_redirected') || getHeader(event, 'accept-language') || 'en'
-
-  // Tenant from event context
   const tenantId = event.context.tenantId || ''
+  const normalizedHost = getNormalizedRequestHost(event)
 
   // Token from auth cookie (try new namespaced key then legacy key)
   let token: string | null = null
@@ -81,35 +79,108 @@ export const useServerApi = (event: H3Event) => {
     }
   } catch {}
 
-  return $fetch.create({
-    baseURL: config.apiBase, // private runtime config (server-only)
+  const appendQuery = (url: string, query?: Record<string, unknown>) => {
+    if (!query) {
+      return url
+    }
 
-    onRequest({ options }) {
-      options.headers.set('Accept', 'application/json')
-      options.headers.set('X-Tenant-Id', String(tenantId))
-      options.headers.set('X-Storefront-Locale', locale)
-      options.headers.set('X-Storefront-Version', '1.0.0')
+    const separator = url.includes('?') ? '&' : '?'
+    const params = new URLSearchParams()
 
-      if (locale) {
-        options.headers.set('Accept-Language', locale)
+    for (const [key, value] of Object.entries(query)) {
+      if (value === undefined || value === null) {
+        continue
       }
 
-      if (token) {
-        options.headers.set('Authorization', `Bearer ${token}`)
+      if (Array.isArray(value)) {
+        for (const entry of value) {
+          if (entry !== undefined && entry !== null) {
+            params.append(key, String(entry))
+          }
+        }
+        continue
       }
 
-      const incomingCookieHeader = String(getHeader(event, 'cookie') || '')
-      if (incomingCookieHeader) {
-        options.headers.set('Cookie', incomingCookieHeader)
-      }
+      params.append(key, String(value))
+    }
 
-      const method = String(options.method || 'GET').toUpperCase()
+    const paramString = params.toString()
+    return paramString ? `${url}${separator}${paramString}` : url
+  }
+
+  return async <T>(path: string, options?: { method?: string; body?: unknown; headers?: HeadersInit; query?: Record<string, unknown> }) => {
+    const method = String(options?.method || 'GET').toUpperCase()
+    const headers = new Headers(options?.headers)
+
+    headers.set('Accept', 'application/json')
+    headers.set('Host', normalizedHost)
+    headers.set('X-Tenant-Id', String(tenantId))
+    headers.set('X-Storefront-Locale', locale)
+    headers.set('X-Storefront-Version', '1.0.0')
+
+    if (locale) {
+      headers.set('Accept-Language', locale)
+    }
+
+    if (token) {
+      headers.set('Authorization', `Bearer ${token}`)
+    }
+
+    const incomingCookieHeader = String(getHeader(event, 'cookie') || '')
+    if (incomingCookieHeader) {
+      headers.set('Cookie', incomingCookieHeader)
+    }
+
+    if (!['GET', 'HEAD', 'OPTIONS'].includes(method)) {
       const xsrfToken = getCookie(event, 'XSRF-TOKEN')
-      if (!['GET', 'HEAD', 'OPTIONS'].includes(method) && xsrfToken) {
-        options.headers.set('X-XSRF-TOKEN', decodeURIComponent(String(xsrfToken)))
+      if (xsrfToken) {
+        headers.set('X-XSRF-TOKEN', decodeURIComponent(String(xsrfToken)))
       }
-    },
-  })
+    }
+
+    let payload: BodyInit | undefined
+    if (options?.body !== undefined && !['GET', 'HEAD'].includes(method)) {
+      payload = typeof options.body === 'string' ? options.body : JSON.stringify(options.body)
+      if (!headers.has('Content-Type')) {
+        headers.set('Content-Type', 'application/json')
+      }
+    }
+
+    const url = appendQuery(`${apiBase}/${path.replace(/^\/+/, '')}`, options?.query as Record<string, unknown> | undefined)
+
+    const response = await fetch(url, {
+      method,
+      headers,
+      body: payload,
+    })
+
+    const responseText = await response.text()
+    const responseData = response.headers.get('content-type')?.includes('application/json')
+      ? (() => {
+          try {
+            return JSON.parse(responseText)
+          } catch {
+            return responseText
+          }
+        })()
+      : responseText
+
+    if (!response.ok) {
+      const message = typeof responseData === 'object' && responseData !== null
+        ? String((responseData as { error?: { message?: string }, message?: string }).error?.message
+            || (responseData as { message?: string }).message
+            || `Server API request failed with status ${response.status}`)
+        : String(responseData || `Server API request failed with status ${response.status}`)
+
+      throw createError({
+        statusCode: response.status,
+        statusMessage: message,
+        data: responseData,
+      })
+    }
+
+    return responseData as T
+  }
 }
 
 export const proxySessionAuthRequest = async (event: H3Event, path: string, options?: {

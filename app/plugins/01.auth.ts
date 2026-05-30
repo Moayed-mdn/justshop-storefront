@@ -13,6 +13,9 @@ export default defineNuxtPlugin(async () => {
       if (import.meta.dev) {
         console.error('[auth-plugin] fetchUser failed during initialization', e)
       }
+      // Stale or invalid session — clear cookies so we don't retry forever
+      sessionCookie.value = null
+      xsrfCookie.value = null
     }
   }
 })

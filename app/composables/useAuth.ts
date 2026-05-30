@@ -122,15 +122,10 @@ export const useAuth = () => {
   };
 
   const fetchUser = async () => {
-    try {
-      const { data, error } = await api<UserResponse>(API_ROUTES.auth.me);
-      if (error) throw error;
-      authStore.setUser(data?.data);
-      return authStore.user;
-    } catch {
-      authStore.clearAuth();
-      return null;
-    }
+    const { data, error } = await api<UserResponse>(API_ROUTES.auth.me);
+    if (error) throw error;
+    authStore.setUser(data?.data);
+    return authStore.user;
   };
 
   // ── Google OAuth ───────────────────────────────────────────
