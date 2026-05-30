@@ -3,9 +3,8 @@
  * Using `as const` ensures strict type safety when referencing these routes.
  */
 
-import { STOREFRONT_ROUTE_PATHS } from './storefront-routes'
-
 /**
+ * @deprecated Use STOREFRONT_ROUTE_PATHS and useStorefrontRoutes() from shared/utils/storefront-routes.ts instead
  * App-facing API routes (Nuxt/Nitro internal handlers)
  * These are the endpoints the frontend calls (via useApi)
  */
@@ -141,28 +140,5 @@ export const EXTERNAL_API_ROUTES = {
   },
 } as const;
 
-/**
- * Application page routes (Frontend navigation)
- */
-/** @deprecated Prefer `STOREFRONT_ROUTE_PATHS` and `useStorefrontRoutes()` for storefront navigation. */
-export const APP_ROUTES = {
-  home: STOREFRONT_ROUTE_PATHS.home,
-  login: STOREFRONT_ROUTE_PATHS.login,
-  register: STOREFRONT_ROUTE_PATHS.register,
-  profile: STOREFRONT_ROUTE_PATHS.profile,
-  cart: STOREFRONT_ROUTE_PATHS.cart,
-  search: STOREFRONT_ROUTE_PATHS.search,
-  checkout: STOREFRONT_ROUTE_PATHS.checkout,
-  orders: STOREFRONT_ROUTE_PATHS.orders,
-  products: {
-    /** @deprecated Use `STOREFRONT_ROUTE_PATHS.shop` */
-    index: STOREFRONT_ROUTE_PATHS.shop,
-    category: STOREFRONT_ROUTE_PATHS.category,
-    detail: STOREFRONT_ROUTE_PATHS.product,
-  },
-  verifyEmail: STOREFRONT_ROUTE_PATHS.verifyEmail,
-} as const;
-
 export type ApiRoutes = typeof API_ROUTES;
 export type ExternalApiRoutes = typeof EXTERNAL_API_ROUTES;
-export type AppRoutes = typeof APP_ROUTES;

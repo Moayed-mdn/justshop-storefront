@@ -5,7 +5,7 @@ import { normalizeError } from './errors'
 export const useStorefrontApi = async <T>(url: string, options?: FetchOptions & { showError?: boolean }) => {
   const headers = getStorefrontHeaders()
   const authStore = import.meta.client ? useAuthStore() : null
-  
+
   const api = $fetch.create({
     onRequest({ options }) {
       // Inject storefront headers
@@ -24,13 +24,10 @@ export const useStorefrontApi = async <T>(url: string, options?: FetchOptions & 
       }
     },
     onResponseError(ctx: FetchContext & { response: FetchResponse<any> }) {
-      // In Phase 1, we still want to show toasts if needed
-      if (import.meta.client && ctx.options.showError !== false) {
-        const { showErrorToast } = useAppToast()
-        const error = normalizeError(ctx.response)
-        showErrorToast(error.message)
+      if (ctx.options.showError !== false) {
+        normalizeError(ctx.response)
       }
-    }
+    },
   })
 
   try {

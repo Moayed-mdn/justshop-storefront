@@ -8,16 +8,22 @@
         <nav aria-label="Storefront footer navigation">
           <ul class="flex flex-wrap gap-x-6 gap-y-3 text-sm text-slate-600">
             <li v-for="item in runtimeFooterItems" :key="item.id">
-              <component
-                :is="item.external ? 'a' : 'NuxtLinkLocale'"
-                :href="item.external ? item.path : undefined"
-                :to="item.external ? undefined : item.path"
-                :target="item.external ? '_blank' : undefined"
-                :rel="item.external ? 'noreferrer noopener' : undefined"
+              <a
+                v-if="item.external"
+                :href="item.path"
+                target="_blank"
+                rel="noreferrer noopener"
                 class="transition-colors hover:text-slate-900"
               >
                 {{ item.label }}
-              </component>
+              </a>
+              <NuxtLinkLocale
+                v-else
+                :to="item.path"
+                class="transition-colors hover:text-slate-900"
+              >
+                {{ item.label }}
+              </NuxtLinkLocale>
             </li>
           </ul>
         </nav>

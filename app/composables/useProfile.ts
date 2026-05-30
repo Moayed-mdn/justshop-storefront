@@ -6,7 +6,7 @@ export const useProfile = () => {
   const authStore = useAuthStore()
   const { showSuccessToast } = useAppToast()
   const loading = useState('profile_loading', () => false)
-  const localePath = useLocalePath()
+  const storefrontRoutes = useStorefrontRoutes()
   // ── Fetch full profile ─────────────────────────────────────
   const fetchProfile = async () => {
     loading.value = true
@@ -105,7 +105,7 @@ export const useProfile = () => {
       const { error } = await useApi(API_ROUTES.profile.index, { method: 'DELETE' })
       if (error) throw error
       authStore.clearAuth()
-      return navigateTo(localePath(APP_ROUTES.login))
+      return navigateTo(storefrontRoutes.login())
     } finally {
       loading.value = false
     }

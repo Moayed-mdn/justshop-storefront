@@ -10,16 +10,22 @@
     >
       <ul class="flex flex-wrap items-center justify-center gap-4 text-sm font-medium text-[--color-text-secondary]">
         <li v-for="item in runtimeHeaderItems" :key="item.id">
-          <component
-            :is="item.external ? 'a' : 'NuxtLinkLocale'"
-            :href="item.external ? item.path : undefined"
-            :to="item.external ? undefined : item.path"
-            :target="item.external ? '_blank' : undefined"
-            :rel="item.external ? 'noreferrer noopener' : undefined"
+          <a
+            v-if="item.external"
+            :href="item.path"
+            target="_blank"
+            rel="noreferrer noopener"
             class="transition-colors hover:text-[--color-primary]"
           >
             {{ item.label }}
-          </component>
+          </a>
+          <NuxtLinkLocale
+            v-else
+            :to="item.path"
+            class="transition-colors hover:text-[--color-primary]"
+          >
+            {{ item.label }}
+          </NuxtLinkLocale>
         </li>
       </ul>
     </nav>

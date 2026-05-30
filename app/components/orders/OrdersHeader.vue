@@ -7,7 +7,7 @@
   
       <!-- Guest lookup link -->
       <NuxtLinkLocale
-        :to="APP_ROUTES.orders.track"
+        :to="storefrontRoutes.orderTrack()"
         class="text-sm text-(--color-primary) hover:underline font-medium"
       >
         {{ $t('orders.guest_title') }}
@@ -16,5 +16,7 @@
   </template>
 
 <script setup lang="ts">
-import { APP_ROUTES } from '~~/shared/utils/routes'
+import { useStorefrontRoutes } from '~~/app/composables/useStorefrontRoutes'
+
+const storefrontRoutes = useStorefrontRoutes()
 </script>
