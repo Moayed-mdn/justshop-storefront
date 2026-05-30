@@ -2,7 +2,7 @@
   <AuthCard>
     <AuthHeader :title="$t('register.title')" />
 
-    <AuthAlert type="error" :message="errors?.message && !errors?.errors ? errors.message : undefined" />
+    <AuthAlert type="error" :message="errors?.message && (!errors?.errors || Object.keys(errors.errors).length === 0) ? errors.message : undefined" />
 
     <form class="space-y-6" @submit.prevent="handleRegister" novalidate>
       <AuthFormInput
@@ -43,6 +43,7 @@
         v-model="form.password_confirmation"
         required
         autocomplete="new-password"
+        :error="errors?.errors?.password_confirmation?.[0]"
       />
 
       <AuthSubmitButton
@@ -101,13 +102,14 @@ const handleRegister = async () => {
     }
     
   } catch (err: any) {
-    // The useAuth composable now shows a toast for errors.
-    // We just need to set the local errors state for the UI.
-    const errorData = err?.data?.data || err?.data
-    if(errorData?.errors) {
-      errors.value = errorData
-    } else if (errorData) {
-      errors.value = errorData
+    const errorData = err?.data?.data || err?.data || err
+    if (errorData) {
+      errors.value = {
+        status: false,
+        message: errorData.message || 'Unable to create your account.',
+        error_code: errorData.error_code || errorData.code || 'UNKNOWN_ERROR',
+        errors: errorData.errors || null,
+      }
     }
   }
 }

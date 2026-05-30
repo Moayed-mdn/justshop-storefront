@@ -138,11 +138,13 @@ export const useAuth = () => {
     window.location.href = API_ROUTES.auth.googleRedirect;
   };
 
-  const handleGoogleCallback = async (token: string) => {
+  const handleGoogleCallback = async () => {
     loading.value = true;
     try {
-      authStore.setToken(token);
-      await fetchUser();
+      const currentUser = await fetchUser();
+      if (!currentUser) {
+        throw new Error('Authenticated user was not returned after Google callback.');
+      }
 
       const cartStore = useCartStore();
       await cartStore.onLogin();

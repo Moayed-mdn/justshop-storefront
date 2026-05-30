@@ -45,7 +45,6 @@
   const error = ref(null)
   
   onMounted(async () => {
-    const token = route.query.token
     const errorParam = route.query.error
   
     // Handle error from Laravel
@@ -54,16 +53,10 @@
       showErrorToast('Could not sign in with Google.')
       return
     }
-  
-    // Handle missing token
-    if (!token) {
-      error.value = 'No authentication token received.'
-      return
-    }
-  
-    // Process the token
+
+    // The backend callback establishes the session and then redirects here.
     try {
-      await handleGoogleCallback(token)
+      await handleGoogleCallback()
       showSuccessToast('Signed in with Google successfully.')
     } catch (err) {
       error.value = 'Failed to complete sign-in. Please try again.'

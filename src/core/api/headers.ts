@@ -4,7 +4,7 @@ import { STOREFRONT_RUNTIME_CONTRACT_VERSION } from '../runtime/contracts/consta
 export const useStorefrontHeaders = () => {
   const context = useStorefrontContext()
   const requestHeaders = import.meta.server
-    ? useRequestHeaders(['host', 'x-forwarded-host'])
+    ? useRequestHeaders(['host', 'x-forwarded-host', 'cookie', 'accept-language'])
     : null
   
   const getHeaders = () => {
@@ -28,6 +28,14 @@ export const useStorefrontHeaders = () => {
 
     if (requestHeaders?.['x-forwarded-host']) {
       headers['x-forwarded-host'] = requestHeaders['x-forwarded-host']
+    }
+
+    if (requestHeaders?.cookie) {
+      headers.cookie = requestHeaders.cookie
+    }
+
+    if (requestHeaders?.['accept-language']) {
+      headers['accept-language'] = requestHeaders['accept-language']
     }
 
     return headers

@@ -7,6 +7,7 @@ export const useStorefrontApi = () => {
   const authStore = import.meta.client ? useAuthStore() : null
 
   const api = $fetch.create({
+    credentials: 'include',
     onRequest({ options }) {
       // Inject storefront headers
       options.headers = {

@@ -17,7 +17,7 @@
       </template>
     </AuthEmailVerificationNotice>
 
-    <AuthAlert type="error" :message="errors?.message && !errors?.errors ? errors.message : undefined" />
+    <AuthAlert type="error" :message="errors?.message && (!errors?.errors || Object.keys(errors.errors).length === 0) ? errors.message : undefined" />
     <AuthAlert type="success" :message="successMessage" />
 
     <form v-if="!isEmailNotVerified" class="space-y-6" @submit.prevent="handleLogin">
@@ -104,7 +104,7 @@ const handleLogin = async () => {
   try {
     await login(form)
   } catch (err: any) {
-    const errorData = err?.data?.data || err?.data
+    const errorData = err?.data?.data || err?.data || err
     
     // ✨ Handle email not verified error (AUTH_002)
     if (errorData?.error_code === 'AUTH_002' || err?.statusCode === 403 && errorData?.message === 'auth.verify_email_before_login') {
@@ -121,10 +121,13 @@ const handleLogin = async () => {
     
     // General errors are now handled by the useAuth composable.
     // Handle Field-Specific Validation Errors (Laravel style)
-    if (errorData?.errors) {
-      errors.value = errorData
-    } else if (errorData) {
-      errors.value = errorData
+    if (errorData) {
+      errors.value = {
+        status: false,
+        message: errorData.message || 'Unable to sign in.',
+        error_code: errorData.error_code || errorData.code || 'UNKNOWN_ERROR',
+        errors: errorData.errors || null,
+      }
     }
   }
 }

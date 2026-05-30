@@ -19,7 +19,7 @@ const formatTenantName = (slug: string): string => {
 
 const knownDevTenants: Record<string, Pick<Tenant, 'id' | 'name' | 'slug'>> = {
   'demo.justshop.test': {
-    id: 'store_1',
+    id: 1,
     name: 'Merchant Store',
     slug: 'merchant-store',
   },

@@ -3,6 +3,7 @@ import { EXTERNAL_API_ROUTES } from '../../shared/utils/routes'
 import type { ProductApiFilters } from '../../types/api/product'
 
 export default defineEventHandler(async (event) => {
+  const tenantId = event.context.tenantId as string
   const rawQuery = getQuery(event)
 
   const apiFilters: ProductApiFilters = {
@@ -23,7 +24,7 @@ export default defineEventHandler(async (event) => {
 
   const api = useServerApi(event)
 
-  const response = await api(EXTERNAL_API_ROUTES.products.index, {
+  const response = await api(EXTERNAL_API_ROUTES.products.index(tenantId), {
     query: apiFilters,
   })
 
