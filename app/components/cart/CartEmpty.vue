@@ -18,7 +18,7 @@
       </p>
   
       <NuxtLinkLocale
-        to="/"
+        :to="routes.home()"
         class="px-6 py-3 bg-(--color-primary) text-white font-medium rounded-md
                hover:bg-(--green-950) transition-colors"
       >
@@ -26,3 +26,7 @@
       </NuxtLinkLocale>
     </div>
   </template>
+
+<script setup lang="ts">
+const routes = useStorefrontRoutes()
+</script>

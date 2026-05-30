@@ -15,7 +15,7 @@
       <!-- Continue Shopping -->
       <div class="pt-4">
         <NuxtLinkLocale
-          to="/"
+          :to="routes.home()"
           class="inline-flex items-center gap-2 text-sm font-medium text-(--color-primary)
                  hover:underline transition-colors"
         >
@@ -29,6 +29,8 @@
   </template>
   
   <script setup lang="ts">
+  const routes = useStorefrontRoutes()
+
   defineProps<{
     items: any[]
   }>()

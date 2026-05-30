@@ -13,7 +13,7 @@
       <h2 class="text-lg font-bold" :style="{ color: 'var(--color-text-primary)' }">{{ $t('orders.empty_title') }}</h2>
       <p class="text-sm mt-1" :style="{ color: 'var(--color-text-muted)' }">{{ $t('orders.empty_description') }}</p>
       <NuxtLinkLocale
-        to="/"
+        :to="routes.home()"
         class="orders-empty__cta inline-block mt-4 px-6 py-2 text-sm font-medium rounded-md transition-colors"
         :style="{
           color: 'var(--color-text-inverse)',
@@ -24,6 +24,10 @@
       </NuxtLinkLocale>
     </div>
   </template>
+
+  <script setup lang="ts">
+  const routes = useStorefrontRoutes()
+  </script>
 
   <style scoped>
   .orders-empty__cta:hover {

@@ -91,7 +91,7 @@
           </button>
   
           <NuxtLinkLocale
-            :to="`/orders/${order.order_number}`"
+            :to="routes.orderDetail(order.order_number)"
             class="px-3 py-1.5 text-xs font-semibold text-white bg-(--color-primary)
                    rounded-md hover:bg-(--green-950) transition-colors"
           >
@@ -107,6 +107,7 @@
   import { formatDate as formatDateUtil } from '../../utils/date'
   import type { Order } from '~~/types/order'
   
+  const routes = useStorefrontRoutes()
   const props = defineProps<{
     order: Order
     reordering?: boolean

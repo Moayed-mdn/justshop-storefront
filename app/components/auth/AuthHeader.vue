@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col items-center">
     <div class="w-40 mx-auto">
-      <NuxtLinkLocale to="/" class="block w-full h-full">
+      <NuxtLinkLocale :to="routes.home()" class="block w-full h-full">
         <img src="~/assets/icons/logo.png" alt="Logo" class="h-full w-full">
       </NuxtLinkLocale>
     </div>
@@ -12,6 +12,8 @@
 </template>
 
 <script setup lang="ts">
+const routes = useStorefrontRoutes()
+
 defineProps<{
   title: string
 }>()

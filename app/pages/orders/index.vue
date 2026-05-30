@@ -63,7 +63,6 @@ const cartStore = useCartStore()
 const { showSuccessToast, showErrorToast } = useAppToast()
 const { t } = useI18n()
 const toast = useToast()
-const localePath = useLocalePath()
 
 // State
 const orders = ref<Order[]>([])

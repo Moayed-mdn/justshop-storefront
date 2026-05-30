@@ -60,7 +60,7 @@
 
         <!-- Menu Items -->
         <NuxtLinkLocale
-          to="/profile"
+          :to="routes.profile()"
           @click="closeDropdown"
           class="header-profile-item flex items-center gap-3 px-4 py-2.5 text-sm transition-colors"
           :style="{ color: 'var(--color-text-secondary)' }"
@@ -72,7 +72,7 @@
         </NuxtLinkLocale>
 
         <NuxtLinkLocale
-          to="/orders"
+          :to="routes.orders()"
           @click="closeDropdown"
           class="header-profile-item flex items-center gap-3 px-4 py-2.5 text-sm transition-colors"
           :style="{ color: 'var(--color-text-secondary)' }"
@@ -102,6 +102,7 @@
 </template>
 
 <script setup lang="ts">
+const routes = useStorefrontRoutes()
 const { user, logout } = useAuth()
 const { getAvatarUrl, getInitials } = useAvatar()
 

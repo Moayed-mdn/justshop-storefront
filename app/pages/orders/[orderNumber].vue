@@ -73,7 +73,6 @@
   const { showSuccessToast, showErrorToast } = useAppToast()
   const { t } = useI18n()
   const toast = useToast()
-  const localePath = useLocalePath()
   
   const orderNumber = route.params.orderNumber as string
   const order = ref<any>(null)

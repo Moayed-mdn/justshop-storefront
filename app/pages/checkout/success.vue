@@ -72,7 +72,7 @@
             <h3 class="text-sm font-bold text-blue-900">{{ $t('checkout.create_account_title') }}</h3>
             <p class="text-sm text-blue-700 mt-1">{{ $t('checkout.create_account_description') }}</p>
             <NuxtLinkLocale
-              to="/register"
+              :to="routes.register()"
               class="inline-block mt-3 px-4 py-2 text-sm font-medium text-white bg-blue-600
                      rounded-md hover:bg-blue-700 transition-colors"
             >
@@ -84,7 +84,7 @@
           <div class="flex flex-col sm:flex-row gap-3 pt-2">
             <NuxtLinkLocale
               v-if="isLoggedIn"
-              to="/orders"
+              :to="routes.orders()"
               class="flex-1 py-3 px-4 text-center text-sm font-semibold text-white bg-(--color-primary)
                      rounded-md hover:bg-(--green-950) transition-colors"
             >
@@ -92,7 +92,7 @@
             </NuxtLinkLocale>
   
             <NuxtLinkLocale
-              to="/"
+              :to="routes.home()"
               class="flex-1 py-3 px-4 text-center text-sm font-semibold border border-gray-300
                      rounded-md hover:bg-gray-50 transition-colors"
               :class="isLoggedIn ? 'text-gray-700' : 'text-white bg-(--color-primary) hover:bg-(--green-950) border-transparent'"
@@ -119,7 +119,7 @@
           </div>
   
           <NuxtLinkLocale
-            to="/"
+            :to="routes.home()"
             class="inline-block py-3 px-6 text-sm font-semibold text-white bg-(--color-primary)
                    rounded-md hover:bg-(--green-950) transition-colors"
           >
@@ -135,6 +135,7 @@
     layout: 'default',
   })
   
+  const routes = useStorefrontRoutes()
   const route = useRoute()
   const { isLoggedIn } = useAuth()
   const { getCheckoutStatus, clearCartAfterCheckout } = useCheckout()

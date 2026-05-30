@@ -102,7 +102,7 @@
 
     <!-- Continue Shopping -->
     <NuxtLinkLocale
-      to="/"
+      :to="routes.home()"
       class="block w-full text-center py-2 text-sm font-medium text-(--color-primary)
              hover:underline transition-colors"
     >
@@ -159,6 +159,7 @@ defineProps<{
   itemsCount: number
 }>()
 
+const routes = useStorefrontRoutes()
 const { startCheckout, loading: checkoutLoading, error: checkoutError } = useCheckout()
 const toast = useToast()
 
