@@ -121,10 +121,10 @@ export const EXTERNAL_API_ROUTES = {
   },
   profile: {
     show: 'customer/me',
-    destroy: 'profile',
-    updateAvatar: 'profile/avatar',
-    updateInfo: 'profile/info',
-    updatePassword: 'profile/password',
+    destroy: 'customer/me',
+    updateAvatar: 'customer/me/avatar',
+    updateInfo: 'customer/me/info',
+    updatePassword: 'customer/me/password',
   },
   storefront: {
     runtime: {

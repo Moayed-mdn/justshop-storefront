@@ -140,9 +140,13 @@ export const useServerApi = (event: H3Event) => {
 
     let payload: BodyInit | undefined
     if (options?.body !== undefined && !['GET', 'HEAD'].includes(method)) {
-      payload = typeof options.body === 'string' ? options.body : JSON.stringify(options.body)
-      if (!headers.has('Content-Type')) {
-        headers.set('Content-Type', 'application/json')
+      if (typeof options.body === 'string' || options.body instanceof Buffer || options.body instanceof Uint8Array || options.body instanceof Blob || options.body instanceof FormData) {
+        payload = options.body as BodyInit
+      } else {
+        payload = JSON.stringify(options.body)
+        if (!headers.has('Content-Type')) {
+          headers.set('Content-Type', 'application/json')
+        }
       }
     }
 
