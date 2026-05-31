@@ -1,16 +1,10 @@
 // middleware/auth.ts
+// Auth rehydration is handled by the app/plugins/01.auth.ts plugin, which runs
+// before middleware on every page load (including SSR). On client-side navigation
+// the Pinia store retains user data from SSR, so a redundant fetchUser() call here
+// is unnecessary. This middleware only guards protected routes.
 export default defineNuxtRouteMiddleware(async () => {
-  const { isLoggedIn, user, fetchUser } = useAuth()
-  const sessionCookie = useCookie('ecommerce_session')
-
-  // Rehydrate identity when the server session exists but the store is still empty.
-  if (!user.value && sessionCookie.value) {
-    try {
-      await fetchUser()
-    } catch {
-      sessionCookie.value = null
-    }
-  }
+  const { isLoggedIn } = useAuth()
 
   if (!isLoggedIn.value) {
     return navigateTo(useStorefrontRoutes().login())
