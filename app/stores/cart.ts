@@ -31,7 +31,24 @@ const cartHelpers = {
 
     try {
       const key = this.getStorageKey(tenantId);
-      const raw = localStorage.getItem(key) || localStorage.getItem('guest_cart');
+      const raw = localStorage.getItem(key);
+
+      // One-time migration from the legacy global key
+      if (!raw) {
+        const legacyRaw = localStorage.getItem('guest_cart');
+        if (legacyRaw) {
+          localStorage.setItem(key, legacyRaw);
+          localStorage.removeItem('guest_cart');
+          const parsed = JSON.parse(legacyRaw);
+          return {
+            items: parsed.items ?? [],
+            total_price: parsed.total_price ?? 0,
+            total_items: parsed.total_items ?? 0,
+          };
+        }
+        return { items: [], total_price: 0, total_items: 0 };
+      }
+
       if (raw) {
         const parsed = JSON.parse(raw);
         return {
@@ -318,7 +335,7 @@ export const useCartStore = defineStore('cart', () => {
       if (data) setCart(data.data);
       cartHelpers.clearGuestCart(tenantId.value);
     } catch (err) {
-      console.error('Failed to merge cart:', err);
+      handleError(err);
       // If bulk fails, we keep the guest cart for next attempt
     }
   }
