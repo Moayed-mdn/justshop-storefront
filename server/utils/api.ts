@@ -239,10 +239,17 @@ export const proxySessionAuthRequest = async (event: H3Event, path: string, opti
   const requiresCsrf = !['GET', 'HEAD', 'OPTIONS'].includes(method)
 
   if (requiresCsrf && !getCookie(event, 'XSRF-TOKEN')) {
-    const csrfResponse = await fetch(`${apiBase}/sanctum/csrf-cookie`, {
+    const csrfResponse = await fetch(`${apiRoot}/sanctum/csrf-cookie`, {
       method: 'GET',
       headers,
     })
+
+    if (!csrfResponse.ok) {
+      throw createError({
+        statusCode: csrfResponse.status,
+        statusMessage: `Failed to bootstrap CSRF cookie for ${method} ${path}`,
+      })
+    }
 
     const csrfSetCookies = collectSetCookieHeaders(csrfResponse)
     const bootstrapCookieHeader = csrfSetCookies

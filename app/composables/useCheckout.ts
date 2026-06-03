@@ -38,9 +38,13 @@ export const useCheckout = () => {
             body: { items },
           })
         }
-  
+
+        if (response.error || !response.data) {
+          throw response.error || new Error('Checkout failed')
+        }
+
         // Redirect to Stripe hosted checkout page
-        const sessionUrl = response.data?.data?.session_url
+        const sessionUrl = response.data.data?.session_url || (response.data as any)?.session_url
         if (sessionUrl) {
           window.location.href = sessionUrl
         } else {
