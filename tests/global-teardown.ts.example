@@ -1,0 +1,25 @@
+/**
+ * Global Teardown for Playwright Tests
+ * 
+ * This file runs once after all tests.
+ * Use it for:
+ * - Cleaning up test database
+ * - Stopping additional services
+ * - Removing temporary files
+ * 
+ * Rename to global-teardown.ts and uncomment in playwright.config.ts to use.
+ */
+
+import { FullConfig } from '@playwright/test';
+
+async function globalTeardown(config: FullConfig) {
+  console.log('🧹 Starting global teardown...');
+
+  // Add cleanup logic here
+  // Example: Clean up authentication files
+  // Example: Reset test database
+
+  console.log('✅ Global teardown complete');
+}
+
+export default globalTeardown;

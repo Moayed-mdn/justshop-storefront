@@ -1,0 +1,38 @@
+/**
+ * Global Setup for Playwright Tests
+ * 
+ * This file runs once before all tests.
+ * Use it for:
+ * - Setting up test database
+ * - Seeding test data
+ * - Starting additional services
+ * - Authenticating once and saving state
+ * 
+ * Rename to global-setup.ts and uncomment in playwright.config.ts to use.
+ */
+
+import { chromium, FullConfig } from '@playwright/test';
+import path from 'path';
+import fs from 'fs';
+
+async function globalSetup(config: FullConfig) {
+  console.log('🚀 Starting global setup...');
+
+  // Example: Authenticate once and save state
+  // This is useful if you want to reuse authentication across tests
+  const { baseURL, storageState } = config.projects[0].use;
+  
+  if (!baseURL) {
+    throw new Error('baseURL is not defined in playwright.config.ts');
+  }
+
+  // Create storage state directory if it doesn't exist
+  const storageStatePath = path.join(__dirname, '.auth');
+  if (!fs.existsSync(storageStatePath)) {
+    fs.mkdirSync(storageStatePath, { recursive: true });
+  }
+
+  console.log('✅ Global setup complete');
+}
+
+export default globalSetup;

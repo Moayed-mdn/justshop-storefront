@@ -1,0 +1,1321 @@
+# Playwright Testing Rules for JustShop Frontend
+
+## Project Context
+
+This is a **Nuxt 4 multi-tenant e-commerce storefront** with:
+- Vue 3.5.24 + TypeScript (strict mode)
+- Pinia stores with persisted state (auth, cart)
+- Session-based auth via Laravel backend
+- Dual cart system (guest localStorage + authenticated server)
+- i18n with English (default) + Arabic (RTL)
+- Apollo Client for GraphQL search
+- Nitro server routes proxying to Laravel backend
+- Storefront Runtime system for dynamic CMS pages
+
+## File Organization Rules
+
+### Test File Structure
+
+```
+tests/
+├── e2e/                    # E2E test specs
+│   ├── auth/              # Authentication flows
+│   ├── cart/              # Cart operations
+│   ├── checkout/          # Checkout & payment
+│   ├── products/          # Product browsing
+│   ├── search/            # Search functionality
+│   ├── orders/            # Order management
+│   ├── profile/           # User profile
+│   └── storefront/        # General storefront
+├── page-objects/          # Page Object Models
+│   ├── auth/
+│   ├── cart/
+│   ├── products/
+│   ├── orders/
+│   ├── profile/
+│   └── components/        # Shared components
+├── helpers/               # Test utilities
+│   ├── auth.ts
+│   ├── cart.ts
+│   ├── api.ts
+│   └── storage.ts
+├── fixtures/              # Test data
+│   ├── users.ts
+│   ├── products.ts
+│   └── orders.ts
+└── playwright.config.ts
+```
+
+### Test File Naming
+
+- **Pattern:** `{feature}.spec.ts` (NOT `{feature}.test.ts`)
+- **Examples:** `login.spec.ts`, `guest-cart.spec.ts`, `product-filters.spec.ts`
+- **Use kebab-case** for multi-word files: `cart-merge-on-login.spec.ts`
+
+### Page Object Naming
+
+- **Pattern:** `{Feature}Page.ts` (PascalCase with "Page" suffix)
+- **Examples:** `LoginPage.ts`, `CartPage.ts`, `ProductDetailPage.ts`
+
+
+## TypeScript Style Rules
+
+### Follow Project's Strict TypeScript Conventions
+
+```typescript
+// ✅ CORRECT - Explicit types (project uses strict mode)
+const emailInput: Locator = page.locator('input[type="email"]');
+const cartItems: Locator[] = await page.locator('[data-testid="cart-item"]').all();
+const itemCount: number = await page.locator('[data-testid="cart-item"]').count();
+
+// ❌ WRONG - Implicit types
+const emailInput = page.locator('input[type="email"]');
+```
+
+### Import Patterns (Match Project Style)
+
+```typescript
+// ✅ CORRECT - Project uses explicit imports
+import { test, expect, Page, Locator } from '@playwright/test';
+import { LoginPage } from '../page-objects/auth/LoginPage';
+import { loginViaAPI, TEST_USERS } from '../helpers/auth';
+import type { AuthUser } from '../../types/auth';
+import type { CartItem } from '../../types/cart';
+
+// ❌ WRONG - Wildcard imports
+import * as playwright from '@playwright/test';
+```
+
+### Variable Naming (Match Project Conventions)
+
+```typescript
+// ✅ CORRECT - Project uses camelCase for variables
+const cartStore = useCartStore();
+const isLoggedIn = await checkAuthStatus();
+const userEmail = 'test@example.com';
+
+// ❌ WRONG - snake_case (not used in this project)
+const cart_store = useCartStore();
+const is_logged_in = await checkAuthStatus();
+```
+
+### Function Naming (Match Project Patterns)
+
+```typescript
+// ✅ CORRECT - Verb prefixes matching project style
+async function loginViaAPI(page: Page, user: TestUser): Promise<void>
+async function getCartCount(page: Page): Promise<number>
+async function clearGuestCart(page: Page, tenantId?: string): Promise<void>
+async function addToCartViaUI(page: Page, productSlug: string): Promise<void>
+
+// ❌ WRONG - Non-descriptive names
+async function doLogin(page: Page): Promise<void>
+async function cartCount(page: Page): Promise<number>
+```
+
+
+## Selector Strategy Rules
+
+### CRITICAL: No data-testid Attributes Exist
+
+**Current Reality:** The codebase has **ZERO** data-testid attributes.
+
+**Required Actions:**
+
+1. **ADD data-testid systematically before writing tests**
+2. **Follow consistent naming:** `{feature}-{component}-{element}`
+3. **Use kebab-case** for all test IDs
+
+### Recommended data-testid Additions
+
+```vue
+<!-- app/components/auth/AuthFormInput.vue -->
+<input :data-testid="`auth-form-input-${id}`" />
+<span data-testid="auth-form-error">{{ error }}</span>
+
+<!-- app/components/cart/CartPageItem.vue -->
+<div data-testid="cart-item" :data-item-id="item.id">
+  <img data-testid="cart-item-image" />
+  <button data-testid="cart-item-remove" />
+  <button data-testid="cart-item-quantity-increment" />
+  <button data-testid="cart-item-quantity-decrement" />
+  <span data-testid="cart-item-quantity">{{ quantity }}</span>
+</div>
+
+<!-- app/components/product/ProductCard.vue -->
+<div data-testid="product-card" :data-product-id="product.id">
+  <h3 data-testid="product-card-name" />
+  <span data-testid="product-card-price" />
+  <button data-testid="product-card-add-to-cart" />
+</div>
+
+<!-- app/pages/login.vue -->
+<form data-testid="login-form">
+  <input data-testid="login-email-input" type="email" />
+  <input data-testid="login-password-input" type="password" />
+  <button data-testid="login-submit-button" type="submit" />
+</form>
+```
+
+### Fallback Selectors (Until data-testid Added)
+
+```typescript
+// ✅ CORRECT - Use semantic selectors as fallback
+page.locator('input[type="email"]')
+page.locator('input[autocomplete="email"]')
+page.locator('button[type="submit"]')
+page.getByRole('button', { name: /log in|sign in/i })
+page.getByRole('link', { name: /cart/i })
+
+// ✅ CORRECT - Use form field IDs (found in actual code)
+page.locator('input[id="email"]')
+page.locator('input[id="password"]')
+page.locator('input[id="name"]')
+
+// ⚠️ TEMPORARY - CSS classes (use carefully, may change)
+page.locator('.orders-track__submit')
+
+// ❌ WRONG - Fragile nested selectors
+page.locator('div > div > button > span')
+```
+
+
+## Route Patterns (Actual Routes in Project)
+
+### Canonical Storefront Routes
+
+```typescript
+// ✅ CORRECT - Use actual routes found in shared/utils/storefront-routes.ts
+await page.goto('/');                              // Home
+await page.goto('/shop');                          // Shop listing
+await page.goto('/shop/category/electronics');     // Category
+await page.goto('/shop/product/running-shoes');    // Product detail
+await page.goto('/search');                        // Search
+await page.goto('/cart');                          // Cart
+await page.goto('/login');                         // Login
+await page.goto('/register');                      // Register
+await page.goto('/profile');                       // Profile (protected)
+await page.goto('/orders');                        // Orders (protected)
+await page.goto('/orders/ORD-12345');             // Order detail (protected)
+await page.goto('/orders/track');                  // Guest order tracking
+await page.goto('/checkout/success');              // Checkout success
+await page.goto('/checkout/cancel');               // Checkout cancel
+
+// ❌ WRONG - Old routes (these redirect)
+await page.goto('/products');                      // Redirects to /shop
+await page.goto('/products/category/electronics'); // Redirects to /shop/category/electronics
+await page.goto('/products/product/shoes');        // Redirects to /shop/product/shoes
+```
+
+### i18n Routes (English + Arabic)
+
+```typescript
+// ✅ CORRECT - English (no prefix, default)
+await page.goto('/cart');
+await page.goto('/shop/product/shoes');
+
+// ✅ CORRECT - Arabic (with /ar prefix)
+await page.goto('/ar/cart');
+await page.goto('/ar/shop/product/shoes');
+
+// Verify RTL direction
+const htmlDir = await page.locator('html').getAttribute('dir');
+expect(htmlDir).toBe('rtl');
+```
+
+### Protected Routes (Require Auth)
+
+```typescript
+// These routes use auth middleware - redirect to /login if not authenticated
+const PROTECTED_ROUTES = [
+  '/profile',
+  '/orders',
+  '/orders/:orderNumber',
+];
+
+// ✅ CORRECT - Setup auth before testing protected routes
+await loginViaAPI(page, TEST_USERS.customer);
+await page.goto('/profile');
+```
+
+
+## Authentication Testing Rules
+
+### Actual Auth Mechanism (Session + Cookies)
+
+**Cookies Used:**
+- `ecommerce_session` - Laravel session cookie
+- `XSRF-TOKEN` - CSRF token
+- `js_auth` or `auth` (legacy) - Pinia persisted auth state
+
+**Store:** `app/stores/auth.ts`
+
+**Plugin:** `app/plugins/01.auth.ts` (runs on every page load)
+
+### Auth Helper Pattern
+
+```typescript
+// ✅ CORRECT - Use API login for setup (faster)
+export async function loginViaAPI(page: Page, user: TestUser): Promise<void> {
+  const response = await page.request.post('/api/auth/login', {
+    data: {
+      email: user.email,
+      password: user.password,
+    },
+  });
+
+  expect(response.ok()).toBeTruthy();
+  
+  // Verify cookies are set
+  const cookies = await page.context().cookies();
+  expect(cookies.some(c => c.name === 'ecommerce_session')).toBeTruthy();
+}
+
+// ✅ CORRECT - Use UI login for testing the flow itself
+export async function loginViaUI(page: Page, user: TestUser): Promise<void> {
+  await page.goto('/login');
+  await page.locator('input[type="email"]').fill(user.email);
+  await page.locator('input[type="password"]').fill(user.password);
+  await page.locator('button[type="submit"]').click();
+  await page.waitForURL('/'); // Actual behavior: redirects to home
+}
+
+// ✅ CORRECT - Check auth state via cookies
+export async function isLoggedIn(page: Page): Promise<boolean> {
+  const cookies = await page.context().cookies();
+  const authCookie = cookies.find(c => c.name === 'js_auth' || c.name === 'auth');
+  
+  if (!authCookie) return false;
+  
+  try {
+    const authData = JSON.parse(authCookie.value);
+    return !!authData.user;
+  } catch {
+    return false;
+  }
+}
+```
+
+### Auth Test Structure
+
+```typescript
+test.describe('Authentication', () => {
+  test.beforeEach(async ({ page }) => {
+    // Start fresh - clear all auth state
+    await page.context().clearCookies();
+    await page.evaluate(() => localStorage.clear());
+  });
+
+  test('should login with valid credentials', async ({ page }) => {
+    await loginViaUI(page, TEST_USERS.customer);
+    expect(await isLoggedIn(page)).toBeTruthy();
+  });
+});
+```
+
+
+## Cart Testing Rules
+
+### Actual Cart Implementation
+
+**Guest Cart:**
+- Storage: `localStorage`
+- Key: `js_cart_{tenantId}` (e.g., `js_cart_demo`)
+- Client-side only
+- Items have local IDs: `local_12345`
+
+**Authenticated Cart:**
+- Storage: Backend database
+- Synced via `/api/cart` endpoints
+- Server calculates totals
+
+**Store:** `app/stores/cart.ts`
+
+**Plugin:** `app/plugins/02.cart.ts` (runs after auth plugin)
+
+### Cart Helper Pattern
+
+```typescript
+// ✅ CORRECT - Get guest cart from localStorage (actual key pattern)
+export async function getGuestCart(page: Page, tenantId: string = 'demo') {
+  const storageKey = `js_cart_${tenantId}`;
+  const cartData = await page.evaluate((key) => {
+    return localStorage.getItem(key);
+  }, storageKey);
+  
+  return cartData ? JSON.parse(cartData) : null;
+}
+
+// ✅ CORRECT - Clear guest cart
+export async function clearGuestCart(page: Page, tenantId: string = 'demo'): Promise<void> {
+  const storageKey = `js_cart_${tenantId}`;
+  await page.evaluate((key) => {
+    localStorage.removeItem(key);
+  }, storageKey);
+}
+
+// ✅ CORRECT - Add to cart via UI (actual flow)
+export async function addToCartViaUI(page: Page, productSlug: string): Promise<void> {
+  await page.goto(`/shop/product/${productSlug}`);
+  
+  // Select variant if multiple exist (actual behavior)
+  const variantSelector = page.locator('[data-testid="product-variant-selector"]');
+  if (await variantSelector.isVisible()) {
+    await variantSelector.first().click();
+  }
+  
+  await page.click('button:has-text("Add to Cart")');
+  
+  // Wait for success toast (actual UX pattern)
+  await expect(page.locator('text=/added to cart/i')).toBeVisible();
+}
+
+// ✅ CORRECT - Clear cart via API
+export async function clearCartViaAPI(page: Page): Promise<void> {
+  await page.request.delete('/api/cart/clear');
+}
+```
+
+### Test Cart Merge on Login (Critical Flow)
+
+```typescript
+test('guest cart merges on login', async ({ page }) => {
+  // Add items as guest
+  await addToCartViaUI(page, 'product-1');
+  await addToCartViaUI(page, 'product-2');
+  
+  // Verify guest cart
+  const guestCart = await getGuestCart(page);
+  expect(guestCart.items).toHaveLength(2);
+  
+  // Login (triggers cartStore.onLogin() - actual behavior)
+  await loginViaUI(page, TEST_USERS.customer);
+  
+  // Cart should still have 2 items (merged)
+  await page.goto('/cart');
+  const itemCount = await page.locator('[data-testid="cart-item"]').count();
+  expect(itemCount).toBe(2);
+  
+  // Guest cart should be cleared
+  const clearedCart = await getGuestCart(page);
+  expect(clearedCart).toBeNull();
+});
+```
+
+
+## API Testing Rules
+
+### Actual API Structure
+
+**Internal Routes:** `server/api/**` (Nitro)
+**Backend Routes:** Laravel backend (proxied)
+**Route Definitions:** `shared/utils/routes.ts`
+
+### API Request Headers (Required)
+
+```typescript
+// ✅ CORRECT - Multi-tenant header (required for all requests)
+use: {
+  extraHTTPHeaders: {
+    'X-Tenant-Id': process.env.TEST_TENANT_ID || 'demo',
+    'Accept-Language': 'en',
+  },
+}
+
+// In tests
+await page.request.post('/api/cart/items', {
+  headers: {
+    'X-Tenant-Id': 'demo',
+  },
+  data: { /* ... */ },
+});
+```
+
+### API Mocking Pattern
+
+```typescript
+// ✅ CORRECT - Mock actual endpoints
+await page.route('/api/cart', async (route) => {
+  await route.fulfill({
+    status: 200,
+    contentType: 'application/json',
+    body: JSON.stringify({
+      data: {
+        items: [],
+        total_price: 0,
+        total_items: 0,
+      },
+    }),
+  });
+});
+
+// ✅ CORRECT - Mock with actual response structure
+await page.route('/api/auth/login', async (route) => {
+  await route.fulfill({
+    status: 200,
+    body: JSON.stringify({
+      data: {
+        user: {
+          id: 1,
+          name: 'Test User',
+          email: 'test@example.com',
+          has_password: true,
+          has_google_linked: false,
+        },
+      },
+    }),
+  });
+});
+```
+
+### GraphQL API (Search)
+
+```typescript
+// ✅ CORRECT - Mock GraphQL search (actual Apollo Client usage)
+await page.route('/graphql', async (route) => {
+  const request = route.request();
+  const postData = request.postDataJSON();
+  
+  if (postData.operationName === 'Search') {
+    await route.fulfill({
+      body: JSON.stringify({
+        data: {
+          search: {
+            total_count: 2,
+            products: [/* actual product structure */],
+            categories: [],
+            brands: [],
+          },
+        },
+      }),
+    });
+  }
+});
+```
+
+
+## Page Object Model Rules
+
+### Page Object Structure (Match Project Patterns)
+
+```typescript
+// ✅ CORRECT - Page object structure matching project style
+
+import { Page, Locator } from '@playwright/test';
+
+export class LoginPage {
+  readonly page: Page;
+  
+  // Locators based on actual login.vue structure
+  readonly emailInput: Locator;
+  readonly passwordInput: Locator;
+  readonly submitButton: Locator;
+  readonly forgotPasswordLink: Locator;
+  readonly emailVerificationNotice: Locator;
+  readonly errorAlert: Locator;
+
+  constructor(page: Page) {
+    this.page = page;
+    
+    // Use actual selectors found in code
+    this.emailInput = page.locator('input[type="email"]');
+    this.passwordInput = page.locator('input[type="password"]');
+    this.submitButton = page.locator('button[type="submit"]');
+    this.forgotPasswordLink = page.locator('a:has-text("Forgot")');
+    this.emailVerificationNotice = page.locator('text=/verify.*email/i');
+    this.errorAlert = page.locator('[class*="error"]');
+  }
+
+  async goto(): Promise<void> {
+    await this.page.goto('/login');
+  }
+
+  async login(email: string, password: string): Promise<void> {
+    await this.emailInput.fill(email);
+    await this.passwordInput.fill(password);
+    await this.submitButton.click();
+  }
+
+  async expectLoginSuccess(): Promise<void> {
+    // Actual behavior: redirects to home
+    await this.page.waitForURL('/');
+  }
+
+  async expectEmailNotVerified(): Promise<void> {
+    // Actual AUTH_002 error handling
+    await expect(this.emailVerificationNotice).toBeVisible();
+  }
+}
+```
+
+### Component Page Objects
+
+```typescript
+// ✅ CORRECT - Component-based page objects for shared elements
+
+export class HeaderComponent {
+  readonly page: Page;
+  readonly searchInput: Locator;
+  readonly cartButton: Locator;
+  readonly cartBadge: Locator;
+  readonly profileDropdown: Locator;
+
+  constructor(page: Page) {
+    this.page = page;
+    this.searchInput = page.locator('[data-testid="header-search-input"]');
+    this.cartButton = page.locator('[data-testid="cart-button"]');
+    this.cartBadge = page.locator('[data-testid="cart-button-badge"]');
+    this.profileDropdown = page.locator('[data-testid="header-profile-dropdown"]');
+  }
+
+  async search(query: string): Promise<void> {
+    await this.searchInput.fill(query);
+    await this.searchInput.press('Enter');
+    await this.page.waitForURL(`/search?q=${query}`);
+  }
+
+  async getCartCount(): Promise<number> {
+    if (!(await this.cartBadge.isVisible())) return 0;
+    const text = await this.cartBadge.textContent();
+    return parseInt(text || '0', 10);
+  }
+
+  async goToCart(): Promise<void> {
+    await this.cartButton.click();
+    await this.page.waitForURL('/cart');
+  }
+}
+```
+
+
+## Test Structure Rules
+
+### Test File Structure (Match Project Style)
+
+```typescript
+// ✅ CORRECT - Test structure following project conventions
+
+import { test, expect, Page } from '@playwright/test';
+import { LoginPage } from '../page-objects/auth/LoginPage';
+import { loginViaAPI, TEST_USERS } from '../helpers/auth';
+import type { AuthUser } from '../../types/auth';
+
+test.describe('User Login', () => {
+  let page: Page;
+  let loginPage: LoginPage;
+
+  test.beforeEach(async ({ page: p }) => {
+    page = p;
+    loginPage = new LoginPage(page);
+    
+    // Clear state
+    await page.context().clearCookies();
+    await page.evaluate(() => localStorage.clear());
+    
+    await loginPage.goto();
+  });
+
+  test('should login with valid credentials', async () => {
+    await loginPage.login(TEST_USERS.customer.email, TEST_USERS.customer.password);
+    await loginPage.expectLoginSuccess();
+  });
+
+  test('should show error for invalid credentials', async () => {
+    await loginPage.login('wrong@email.com', 'wrongpassword');
+    await expect(loginPage.errorAlert).toBeVisible();
+  });
+
+  test('should handle unverified email (AUTH_002)', async () => {
+    // Actual error code found in login.vue
+    await loginPage.login(TEST_USERS.unverified.email, TEST_USERS.unverified.password);
+    await loginPage.expectEmailNotVerified();
+  });
+});
+```
+
+### Test Naming Conventions
+
+```typescript
+// ✅ CORRECT - Descriptive test names matching project style
+test('should login with valid credentials')
+test('guest cart merges on login')
+test('should filter products by price range')
+test('should show error for invalid email')
+test('should persist cart across page refresh')
+
+// ❌ WRONG - Generic or unclear names
+test('login works')
+test('cart test')
+test('it should work')
+```
+
+### Test Tags
+
+```typescript
+// ✅ CORRECT - Use tags for test organization
+test('should login @smoke @auth', async ({ page }) => {
+  // Critical smoke test
+});
+
+test('should filter by multiple criteria @products @filters', async ({ page }) => {
+  // Feature-specific test
+});
+
+test('cart merge on login @cart @auth @critical', async ({ page }) => {
+  // Critical integration test
+});
+```
+
+
+## Assertion Patterns
+
+### Match Project's Error/Success Patterns
+
+```typescript
+// ✅ CORRECT - Check for actual toast messages
+await expect(page.locator('text=/added to cart/i')).toBeVisible();
+await expect(page.locator('text=/success/i')).toBeVisible();
+await expect(page.locator('text=/failed/i')).toBeVisible();
+
+// ✅ CORRECT - Check for actual error patterns
+await expect(page.locator('[class*="error"]')).toBeVisible();
+await expect(page.locator('text=/invalid credentials/i')).toBeVisible();
+
+// ✅ CORRECT - Check actual route patterns
+await page.waitForURL('/');
+await page.waitForURL('/cart');
+await expect(page).toHaveURL(/\/shop\/product\//);
+await expect(page).toHaveURL(/\?status=delivered/); // Query params
+
+// ✅ CORRECT - Check actual state
+const cookies = await page.context().cookies();
+expect(cookies.some(c => c.name === 'ecommerce_session')).toBeTruthy();
+
+// ✅ CORRECT - Check localStorage (guest cart)
+const cartData = await page.evaluate(() => localStorage.getItem('js_cart_demo'));
+expect(cartData).toBeTruthy();
+
+// ✅ CORRECT - Check HTML attributes
+const htmlDir = await page.locator('html').getAttribute('dir');
+expect(htmlDir).toBe('rtl');
+
+const theme = await page.locator('html').getAttribute('data-theme');
+expect(theme).toBe('dark');
+```
+
+### Waiting Patterns
+
+```typescript
+// ✅ CORRECT - Wait for actual loading patterns
+await page.waitForSelector('[class*="loading"]', { state: 'hidden' });
+await page.waitForSelector('svg[class*="animate-spin"]', { state: 'hidden' });
+
+// ✅ CORRECT - Wait for network
+await page.waitForResponse(response => 
+  response.url().includes('/api/cart') && response.status() === 200
+);
+
+// ✅ CORRECT - Wait for navigation
+await page.waitForURL('/cart');
+await page.waitForLoadState('networkidle');
+
+// ✅ CORRECT - Wait for hydration (SSR app)
+await page.waitForLoadState('networkidle');
+await page.waitForFunction(() => document.readyState === 'complete');
+```
+
+
+## Fixture and Test Data Rules
+
+### Test User Fixtures (Match Actual Types)
+
+```typescript
+// ✅ CORRECT - Use actual AuthUser type from types/auth.ts
+
+import type { AuthUser } from '../../types/auth';
+
+export interface TestUser extends Partial<AuthUser> {
+  email: string;
+  password: string;
+  name: string;
+}
+
+export const TEST_USERS: Record<string, TestUser> = {
+  customer: {
+    id: 1,
+    email: 'customer@test.com',
+    password: 'password123',
+    name: 'Test Customer',
+    phone: '+1234567890',
+    avatar: null,
+    has_password: true,
+    has_google_linked: false,
+  },
+  unverified: {
+    id: 2,
+    email: 'unverified@test.com',
+    password: 'password123',
+    name: 'Unverified User',
+    has_password: true,
+    has_google_linked: false,
+  },
+};
+```
+
+### Product Fixtures (Match Actual Types)
+
+```typescript
+// ✅ CORRECT - Use actual ProductDto from src/core/api/dto/storefront.ts
+
+import type { ProductDto } from '../../src/core/api/dto/storefront';
+
+export const FIXTURE_PRODUCTS: ProductDto[] = [
+  {
+    id: 1,
+    variantId: 101,
+    name: 'Running Shoes',
+    slug: 'running-shoes',
+    price: 89.99,
+    currency: 'USD',
+    image: 'https://via.placeholder.com/300',
+    description: 'Comfortable running shoes for daily training',
+  },
+];
+```
+
+### Cart Item Fixtures (Match Actual Types)
+
+```typescript
+// ✅ CORRECT - Use actual AddToCartPayload from types/cart.ts
+
+import type { AddToCartPayload } from '../../types/cart';
+
+export const FIXTURE_CART_ITEMS: AddToCartPayload[] = [
+  {
+    product_id: 1,
+    product_variant_id: 101,
+    name: 'Running Shoes',
+    image: 'https://via.placeholder.com/300',
+    price: 89.99,
+    quantity: 2,
+    max_quantity: 10,
+  },
+];
+```
+
+
+## Internationalization Testing Rules
+
+### Test Both Locales (English + Arabic)
+
+```typescript
+// ✅ CORRECT - Test English (default, no prefix)
+test('cart page in English', async ({ page }) => {
+  await page.goto('/cart');
+  expect(await page.locator('html').getAttribute('lang')).toBe('en-US');
+  expect(await page.locator('html').getAttribute('dir')).toBe('ltr');
+});
+
+// ✅ CORRECT - Test Arabic (with /ar prefix, RTL)
+test('cart page in Arabic', async ({ page }) => {
+  await page.goto('/ar/cart');
+  expect(await page.locator('html').getAttribute('lang')).toBe('ar-SA');
+  expect(await page.locator('html').getAttribute('dir')).toBe('rtl');
+});
+
+// ✅ CORRECT - Test locale switching
+test('switch to Arabic locale', async ({ page }) => {
+  await page.goto('/');
+  await page.click('[data-testid="language-switcher"]');
+  await page.click('text=/العربية|Arabic/i');
+  await expect(page).toHaveURL(/^\/ar\//);
+});
+```
+
+### i18n Text Matching
+
+```typescript
+// ✅ CORRECT - Use regex for i18n text (case-insensitive)
+await page.getByRole('button', { name: /log in|sign in/i });
+await page.getByRole('link', { name: /cart/i });
+await expect(page.locator('text=/added to cart/i')).toBeVisible();
+
+// ❌ WRONG - Hardcoded text (breaks in Arabic)
+await page.click('button:has-text("Login")');
+```
+
+
+## Clean Up Rules
+
+### Always Clean State Between Tests
+
+```typescript
+// ✅ CORRECT - Clear all state in afterEach
+test.afterEach(async ({ page }) => {
+  // Clear cookies (auth state)
+  await page.context().clearCookies();
+  
+  // Clear localStorage (guest cart, theme)
+  await page.evaluate(() => {
+    localStorage.clear();
+    sessionStorage.clear();
+  });
+  
+  // Clear cart via API if authenticated
+  try {
+    await page.request.delete('/api/cart/clear');
+  } catch {
+    // Ignore if not authenticated
+  }
+});
+
+// ✅ CORRECT - Fresh start for each test
+test.beforeEach(async ({ page }) => {
+  await page.context().clearCookies();
+  await page.evaluate(() => localStorage.clear());
+});
+```
+
+### Cart-Specific Cleanup
+
+```typescript
+// ✅ CORRECT - Clear guest cart by tenant
+test.afterEach(async ({ page }) => {
+  const tenantId = process.env.TEST_TENANT_ID || 'demo';
+  await page.evaluate((tid) => {
+    localStorage.removeItem(`js_cart_${tid}`);
+  }, tenantId);
+});
+```
+
+
+## Known Flows to Test
+
+### Critical User Journeys (Based on Actual Features)
+
+1. **Guest Browsing → Add to Cart → Login → Checkout**
+   - Guest adds items to localStorage cart
+   - Login triggers automatic cart merge
+   - Items persist after merge
+   - Checkout creates order
+
+2. **Product Discovery → Filter → Detail → Add to Cart**
+   - Browse products with filters
+   - Apply price/date filters
+   - Navigate to product detail
+   - Select variant
+   - Add to cart
+
+3. **Search → Results → Product Detail → Purchase**
+   - Search via header input
+   - See autocomplete suggestions
+   - View search results page
+   - Click product
+   - Complete purchase
+
+4. **Order Management → Reorder → Checkout**
+   - View order history
+   - Click reorder
+   - Items added to cart
+   - Proceed to checkout
+
+5. **Profile Management → Update → Verify**
+   - Update profile info
+   - Change password
+   - Upload avatar
+   - Verify changes persist
+
+6. **Guest Order Tracking**
+   - Enter order number + email
+   - View order details
+   - Check shipping status
+
+### Feature-Specific Tests
+
+```typescript
+// ✅ CORRECT - Test actual feature flows
+test('complete purchase flow', async ({ page }) => {
+  // 1. Browse products
+  await page.goto('/shop');
+  await page.click('[data-testid="product-card"]').first();
+  
+  // 2. Select variant
+  await page.click('[data-testid="product-variant-selector"]').first();
+  
+  // 3. Add to cart
+  await page.click('button:has-text("Add to Cart")');
+  await expect(page.locator('text=/added to cart/i')).toBeVisible();
+  
+  // 4. View cart
+  await page.click('[data-testid="cart-button"]');
+  await page.waitForURL('/cart');
+  
+  // 5. Checkout
+  await page.click('button:has-text("Checkout")');
+  await page.waitForURL(/stripe/);
+});
+```
+
+
+## Performance and Reliability Rules
+
+### Timeouts
+
+```typescript
+// ✅ CORRECT - Set appropriate timeouts for slow operations
+test('checkout flow', async ({ page }) => {
+  test.setTimeout(120000); // 2 minutes for Stripe redirect
+  
+  await page.goto('/cart');
+  await page.click('button:has-text("Checkout")');
+  await page.waitForURL(/stripe/, { timeout: 60000 });
+});
+
+// ✅ CORRECT - Mark slow tests
+test.slow('full order history with many pages', async ({ page }) => {
+  // Test will get 3x timeout
+  await loginViaAPI(page, TEST_USERS.customer);
+  await page.goto('/orders');
+  // ... paginate through many pages
+});
+```
+
+### Stability Patterns
+
+```typescript
+// ✅ CORRECT - Wait for network idle before interactions
+await page.goto('/shop');
+await page.waitForLoadState('networkidle');
+await page.click('[data-testid="product-card"]').first();
+
+// ✅ CORRECT - Retry flaky operations
+await expect(async () => {
+  await page.click('button:has-text("Add to Cart")');
+  await expect(page.locator('text=/added to cart/i')).toBeVisible();
+}).toPass({ timeout: 10000, intervals: [1000, 2000] });
+
+// ✅ CORRECT - Wait for animations
+await page.click('[data-testid="modal-open"]');
+await page.waitForTimeout(300); // Modal animation
+await expect(page.locator('[data-testid="modal"]')).toBeVisible();
+```
+
+### Parallel Execution
+
+```typescript
+// ✅ CORRECT - Use test.describe.configure for parallel control
+test.describe.configure({ mode: 'parallel' });
+
+test.describe('Independent tests', () => {
+  // These can run in parallel
+  test('test 1', async ({ page }) => { /* ... */ });
+  test('test 2', async ({ page }) => { /* ... */ });
+});
+
+test.describe.configure({ mode: 'serial' });
+
+test.describe('Dependent tests', () => {
+  // These must run in order
+  test('create order', async ({ page }) => { /* ... */ });
+  test('view order', async ({ page }) => { /* ... */ });
+});
+```
+
+
+## Error Handling Rules
+
+### Expected Errors (Test Negative Cases)
+
+```typescript
+// ✅ CORRECT - Test actual error codes
+test('login with unverified email shows AUTH_002', async ({ page }) => {
+  const loginPage = new LoginPage(page);
+  await loginPage.goto();
+  await loginPage.login(TEST_USERS.unverified.email, TEST_USERS.unverified.password);
+  
+  // Actual error handling found in login.vue
+  await loginPage.expectEmailNotVerified();
+  await expect(page.locator('text=/verify.*email/i')).toBeVisible();
+});
+
+// ✅ CORRECT - Test validation errors
+test('register with invalid email shows error', async ({ page }) => {
+  await page.goto('/register');
+  await page.fill('input[id="email"]', 'invalid-email');
+  await page.fill('input[id="password"]', 'password123');
+  await page.click('button[type="submit"]');
+  
+  await expect(page.locator('text=/valid email/i')).toBeVisible();
+});
+
+// ✅ CORRECT - Test cart errors
+test('add to cart with out of stock item shows error', async ({ page }) => {
+  await page.goto('/shop/product/out-of-stock');
+  const addButton = page.locator('button:has-text("Add to Cart")');
+  
+  await expect(addButton).toBeDisabled();
+  await expect(page.locator('text=/out of stock/i')).toBeVisible();
+});
+```
+
+### Unexpected Errors (Fail Fast)
+
+```typescript
+// ✅ CORRECT - Fail on console errors
+test('no console errors on homepage', async ({ page }) => {
+  const errors: string[] = [];
+  
+  page.on('console', msg => {
+    if (msg.type() === 'error') {
+      errors.push(msg.text());
+    }
+  });
+  
+  await page.goto('/');
+  
+  expect(errors).toHaveLength(0);
+});
+
+// ✅ CORRECT - Fail on unhandled exceptions
+test('no uncaught exceptions during checkout', async ({ page }) => {
+  const exceptions: Error[] = [];
+  
+  page.on('pageerror', exception => {
+    exceptions.push(exception);
+  });
+  
+  await page.goto('/cart');
+  await page.click('button:has-text("Checkout")');
+  
+  expect(exceptions).toHaveLength(0);
+});
+```
+
+
+## Documentation and Comments
+
+### Comment Critical Business Logic
+
+```typescript
+// ✅ CORRECT - Document actual system behavior
+test('guest cart merges on login', async ({ page }) => {
+  // Actual behavior: app/plugins/02.cart.ts triggers cartStore.onLogin()
+  // which calls mergeGuestCartToServer() via POST /api/cart/bulk
+  await addToCartViaUI(page, 'product-1');
+  await loginViaUI(page, TEST_USERS.customer);
+  
+  // Cart should still have items after merge
+  await page.goto('/cart');
+  expect(await page.locator('[data-testid="cart-item"]').count()).toBeGreaterThan(0);
+  
+  // Guest cart localStorage should be cleared (actual cleanup behavior)
+  const guestCart = await getGuestCart(page);
+  expect(guestCart).toBeNull();
+});
+```
+
+### Document Test Setup
+
+```typescript
+// ✅ CORRECT - Explain non-obvious setup
+test('reorder flow', async ({ page }) => {
+  // Setup: Need authenticated user with existing order
+  await loginViaAPI(page, TEST_USERS.customer);
+  
+  // Setup: Clear cart first to verify reorder adds items
+  await clearCartViaAPI(page);
+  
+  // Actual test
+  await page.goto('/orders');
+  await page.click('[data-testid="order-reorder-button"]').first();
+  
+  // Should redirect to cart (actual behavior from useOrders().reorder())
+  await page.waitForURL('/cart');
+});
+```
+
+### Document Known Issues
+
+```typescript
+// ⚠️ TEMPORARY - Known issue with Stripe redirect
+test('checkout redirects to Stripe', async ({ page }) => {
+  // TODO: Mock Stripe checkout session creation
+  // Currently tests only redirect behavior, not full payment flow
+  await page.goto('/cart');
+  await page.click('button:has-text("Checkout")');
+  await expect(page).toHaveURL(/stripe/);
+});
+```
+
+
+## Test Execution Rules
+
+### Run Commands
+
+```bash
+# Run all tests
+npx playwright test
+
+# Run specific feature
+npx playwright test tests/e2e/cart/
+
+# Run single test file
+npx playwright test tests/e2e/auth/login.spec.ts
+
+# Run with specific browser
+npx playwright test --project=chromium
+
+# Run in headed mode (see browser)
+npx playwright test --headed
+
+# Run in debug mode
+npx playwright test --debug
+
+# Run with UI
+npx playwright test --ui
+
+# Run tests matching pattern
+npx playwright test --grep @smoke
+
+# Run with specific tag
+npx playwright test --grep @cart
+```
+
+### CI Configuration
+
+```typescript
+// ✅ CORRECT - playwright.config.ts for this project
+import { defineConfig, devices } from '@playwright/test';
+
+export default defineConfig({
+  testDir: './tests/e2e',
+  fullyParallel: true,
+  forbidOnly: !!process.env.CI,
+  retries: process.env.CI ? 2 : 0,
+  workers: process.env.CI ? 1 : undefined,
+  reporter: 'html',
+  
+  use: {
+    baseURL: process.env.NUXT_PUBLIC_SITE_URL || 'http://localhost:3000',
+    trace: 'on-first-retry',
+    screenshot: 'only-on-failure',
+    
+    // CRITICAL: Multi-tenant header required
+    extraHTTPHeaders: {
+      'X-Tenant-Id': process.env.TEST_TENANT_ID || 'demo',
+      'Accept-Language': 'en',
+    },
+  },
+
+  projects: [
+    {
+      name: 'chromium',
+      use: { ...devices['Desktop Chrome'] },
+    },
+    {
+      name: 'Arabic RTL',
+      use: {
+        ...devices['Desktop Chrome'],
+        locale: 'ar-SA',
+        extraHTTPHeaders: {
+          'X-Tenant-Id': 'demo',
+          'Accept-Language': 'ar',
+        },
+      },
+    },
+  ],
+
+  webServer: {
+    command: 'npm run dev',
+    url: 'http://localhost:3000',
+    reuseExistingServer: !process.env.CI,
+  },
+});
+```
+
+
+## Common Patterns Cheatsheet
+
+### Login Pattern
+
+```typescript
+// Setup (fast)
+await loginViaAPI(page, TEST_USERS.customer);
+
+// Testing login flow
+await loginViaUI(page, TEST_USERS.customer);
+```
+
+### Cart Pattern
+
+```typescript
+// Add to cart
+await addToCartViaUI(page, 'product-slug');
+
+// Clear cart
+await clearCartViaAPI(page);
+
+// Check cart count
+const count = await getCartCount(page);
+
+// Get guest cart
+const guestCart = await getGuestCart(page, 'demo');
+```
+
+### Navigation Pattern
+
+```typescript
+// Navigate to page
+await page.goto('/cart');
+await page.waitForLoadState('networkidle');
+
+// Click and navigate
+await page.click('[data-testid="cart-button"]');
+await page.waitForURL('/cart');
+```
+
+### Form Pattern
+
+```typescript
+// Fill form
+await page.fill('input[id="email"]', 'test@example.com');
+await page.fill('input[id="password"]', 'password123');
+await page.click('button[type="submit"]');
+
+// Wait for response
+await page.waitForURL('/');
+```
+
+### Assertion Pattern
+
+```typescript
+// Visibility
+await expect(page.locator('[data-testid="element"]')).toBeVisible();
+
+// Text content
+await expect(page.locator('text=/added to cart/i')).toBeVisible();
+
+// URL
+await page.waitForURL('/cart');
+await expect(page).toHaveURL(/\/shop\/product\//);
+
+// Count
+expect(await page.locator('[data-testid="cart-item"]').count()).toBe(2);
+```
+
+---
+
+## Summary
+
+These rules are derived from the **actual codebase** of JustShop Frontend:
+
+- ✅ Real folder structure: `app/`, `server/`, `shared/`, `types/`
+- ✅ Real naming: camelCase vars, PascalCase classes, kebab-case files
+- ✅ Real patterns: Pinia stores, Nuxt composables, Vue 3 SFC
+- ✅ Real features: Session auth, dual cart, i18n, multi-tenant
+- ✅ Real routes: `/shop/**`, i18n prefixes, legacy redirects
+- ✅ Real API: Nitro proxy to Laravel, GraphQL search
+- ✅ Real types: From `types/**/*.ts` files
+
+**Follow these rules to generate tests that match this project's actual implementation.**
+

@@ -12,7 +12,7 @@
     ">
       <!-- Search Icon -->
       <label
-        for="header-search"
+        :for="inputId"
         class="cursor-pointer text-(--header-search-placeholder) hover:text-(--header-search-text) shrink-0"
       >
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -26,7 +26,7 @@
 
       <!-- Input -->
       <input
-        id="header-search"
+        :id="inputId"
         ref="inputRef"
         v-model="searchQuery"
         type="search"
@@ -86,6 +86,7 @@ import type { Suggestion, AutocompleteResult } from '~~/types/search'
 const { locale } = useI18n()
 const router = useRouter()
 const routes = useStorefrontRoutes()
+const inputId = useId()
 
 // ── Refs ─────────────────────────────────────────
 const containerRef = ref<HTMLElement>()
