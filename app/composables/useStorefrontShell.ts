@@ -21,7 +21,7 @@ export const defaultStorefrontShellConfig = (
   showCart: true,
   showAccount: true,
   showFooter: variant !== 'minimal',
-  showRuntimeNavigation: true,
+  showRuntimeNavigation: variant !== 'minimal',
 })
 
 export function provideStorefrontShell(config: MaybeRefOrGetter<StorefrontShellConfig>) {

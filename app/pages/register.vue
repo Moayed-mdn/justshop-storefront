@@ -53,8 +53,6 @@
       />
     </form>
 
-    <AuthDivider :text="$t('register.or_continue_with')" />
-    <AuthGoogleButton :text="$t('register.sign_up_with_google')" @click="loginWithGoogle" />
     <AuthFooterLink
       :text="$t('register.already_have_account')"
       :link-text="$t('register.log_in')"
@@ -71,8 +69,16 @@ definePageMeta({
   middleware: 'guest',
 })
 
+const { t } = useI18n()
 const routes = useStorefrontRoutes()
-const { register, loading, loginWithGoogle } = useAuth()
+const { register, loading } = useAuth()
+
+useHead({
+  title: t('register.page_title'),
+  meta: [
+    { name: 'description', content: t('register.page_description') },
+  ],
+})
 const errors = ref<ApiError | null>(null)
 const router = useRouter()
 

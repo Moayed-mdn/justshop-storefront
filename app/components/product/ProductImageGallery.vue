@@ -10,6 +10,8 @@
         :src="currentImage.url"
         :alt="currentImage.alt_text ?? $t('product.image_alt', { number: currentIndex + 1 })"
         class="w-full h-full object-contain"
+        loading="lazy"
+        decoding="async"
       >
       <div v-else class="w-full h-full flex items-center justify-center text-gray-300">
         <svg class="w-20 h-20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -47,6 +49,15 @@
           </svg>
         </button>
       </template>
+
+      <!-- Image counter -->
+      <div
+        v-if="images.length > 1"
+        class="absolute top-2 ltr:left-2 rtl:right-2 bg-black/50 text-white text-xs
+               px-2 py-1 rounded-md"
+      >
+        {{ currentIndex + 1 }} / {{ images.length }}
+      </div>
 
       <!-- Zoom hint -->
       <div class="absolute top-2 ltr:right-2 rtl:left-2 bg-black/50 text-white text-xs

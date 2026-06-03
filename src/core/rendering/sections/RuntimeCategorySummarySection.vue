@@ -7,15 +7,25 @@
       <h1 class="mt-3 text-3xl font-bold text-slate-900">
         {{ name }}
       </h1>
-      <p v-if="slug" class="mt-2 text-sm text-slate-500">
-        {{ routes.category(slug) }}
-      </p>
 
-      <ul v-if="crumbs.length" class="mt-6 flex flex-wrap gap-2 text-sm text-slate-600">
-        <li v-for="(crumb, index) in crumbs" :key="`${index}-${crumb}`" class="rounded-full bg-slate-100 px-3 py-1">
-          {{ crumb }}
-        </li>
-      </ul>
+      <nav v-if="crumbs.length" class="mt-6 flex flex-wrap items-center gap-1.5 text-sm text-slate-500">
+        <NuxtLink :to="routes.shop()" class="hover:text-slate-700 transition-colors">
+          Shop
+        </NuxtLink>
+        <template v-for="(crumb, index) in crumbs" :key="`${index}-${crumb.slug || crumb.name}`">
+          <span class="mx-0.5">/</span>
+          <NuxtLink
+            v-if="index < crumbs.length - 1 && crumb.slug"
+            :to="routes.category(crumb.slug)"
+            class="hover:text-slate-700 transition-colors"
+          >
+            {{ crumb.name }}
+          </NuxtLink>
+          <span v-else class="font-medium text-slate-800">
+            {{ crumb.name }}
+          </span>
+        </template>
+      </nav>
     </div>
   </section>
 </template>
@@ -24,29 +34,38 @@
 import type { RuntimeSectionComponentProps } from '../types'
 import { useStorefrontRoutes } from '~/composables/useStorefrontRoutes'
 
+type Crumb = {
+  name: string
+  slug: string | null
+}
+
 const props = defineProps<RuntimeSectionComponentProps>()
 const routes = useStorefrontRoutes()
 
-const crumbs = computed(() => {
+const crumbs = computed<Crumb[]>(() => {
   return (Array.isArray(props.data.breadcrumb) ? props.data.breadcrumb : [])
     .map((item) => {
       if (typeof item === 'string') {
-        return item
+        return { name: item, slug: null }
       }
 
-      if (item && typeof item === 'object' && 'name' in item && typeof item.name === 'string') {
-        return item.name
-      }
+      if (item && typeof item === 'object') {
+        const name = (typeof (item as Record<string, unknown>).name === 'string' ? (item as Record<string, unknown>).name
+          : typeof (item as Record<string, unknown>).label === 'string' ? (item as Record<string, unknown>).label
+          : null)
 
-      if (item && typeof item === 'object' && 'label' in item && typeof item.label === 'string') {
-        return item.label
+        if (!name) return null
+
+        return {
+          name: name as string,
+          slug: typeof (item as Record<string, unknown>).slug === 'string' ? (item as Record<string, unknown>).slug as string : null,
+        }
       }
 
       return null
     })
-    .filter((item): item is string => Boolean(item))
+    .filter((item): item is Crumb => Boolean(item))
 })
 
 const name = computed(() => typeof props.data.name === 'string' ? props.data.name : '')
-const slug = computed(() => typeof props.data.slug === 'string' ? props.data.slug : '')
 </script>

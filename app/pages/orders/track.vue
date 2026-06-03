@@ -236,6 +236,13 @@
   definePageMeta({
     layout: 'default',
   })
+
+  useHead({
+    title: t('orders.track_title'),
+    meta: [
+      { name: 'description', content: t('orders.track_description') },
+    ],
+  })
   
   const routes = useStorefrontRoutes()
   const { guestLookup, loading } = useOrders()

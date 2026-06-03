@@ -74,6 +74,13 @@
   definePageMeta({
     middleware: 'auth',
   })
+
+  useHead({
+    title: t('profile.page_title'),
+    meta: [
+      { name: 'description', content: t('profile.page_description') },
+    ],
+  })
   
   const { t } = useI18n()
   const { user } = useAuth()

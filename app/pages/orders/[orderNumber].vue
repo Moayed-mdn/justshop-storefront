@@ -66,6 +66,13 @@
   definePageMeta({
     middleware: 'auth',
   })
+
+  useHead({
+    title: t('orders.order_title', { number: orderNumber }),
+    meta: [
+      { name: 'description', content: t('orders.order_description') },
+    ],
+  })
   
   const route = useRoute()
   const { fetchOrder, cancelOrder, reorder: reorderFn, loading } = useOrders()

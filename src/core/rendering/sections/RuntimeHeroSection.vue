@@ -1,11 +1,11 @@
 <template>
-  <section class="rounded-3xl bg-[--color-bg-inverse] px-6 py-16 text-[--color-text-inverse] sm:px-10">
+  <section v-if="hasContent" class="rounded-3xl bg-[--color-bg-inverse] px-6 py-16 text-[--color-text-inverse] sm:px-10">
     <div class="mx-auto max-w-4xl">
       <p v-if="resolvedEyebrow" class="text-sm font-semibold uppercase tracking-[0.2em] text-[--color-text-inverse] opacity-90">
         {{ resolvedEyebrow }}
       </p>
       <h1 class="mt-3 text-4xl font-bold tracking-tight text-[--color-text-inverse] sm:text-5xl">
-        {{ resolvedHeadline || 'Storefront Runtime' }}
+        {{ resolvedHeadline }}
       </h1>
       <p v-if="resolvedSubheadline" class="mt-4 max-w-2xl text-base text-[--color-text-inverse] opacity-90 sm:text-lg">
         {{ resolvedSubheadline }}
@@ -116,4 +116,8 @@ const resolvedCtaUrl = computed(() => {
 
   return typeof props.data.ctaUrl === 'string' ? props.data.ctaUrl : ''
 })
+
+const hasContent = computed(() =>
+  Boolean(resolvedEyebrow.value || resolvedHeadline.value || resolvedSubheadline.value)
+)
 </script>

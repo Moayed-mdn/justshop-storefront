@@ -128,30 +128,6 @@ export const useAuth = () => {
     return authStore.user;
   };
 
-  // ── Google OAuth ───────────────────────────────────────────
-  const loginWithGoogle = () => {
-    window.location.href = API_ROUTES.auth.googleRedirect;
-  };
-
-  const handleGoogleCallback = async () => {
-    loading.value = true;
-    try {
-      const currentUser = await fetchUser();
-      if (!currentUser) {
-        throw new Error('Authenticated user was not returned after Google callback.');
-      }
-
-      const cartStore = useCartStore();
-      await cartStore.onLogin();
-
-      return navigateTo(storefrontRoutes.home());
-    } catch (err: any) {
-      authStore.clearAuth();
-      throw err;
-    } finally {
-      loading.value = false;
-    }
-  };
   return {
     user: computed(() => authStore.user),
     isLoggedIn: computed(() => authStore.isLoggedIn),
@@ -160,8 +136,6 @@ export const useAuth = () => {
     register,
     logout,
     fetchUser,
-    loginWithGoogle,
-    handleGoogleCallback,
     resendVerificationEmail,
     forgotPassword,
     resetPassword,

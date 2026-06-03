@@ -1,4 +1,5 @@
 <template>
+  <div class="space-y-2">
     <div class="flex flex-col sm:flex-row gap-3">
       <button
         @click="$emit('add-to-cart')"
@@ -27,7 +28,7 @@
           {{ $t('product.add_to_cart') }}
         </span>
       </button>
-  
+
       <button
         @click="$emit('buy-now')"
         :disabled="!canAddToCart"
@@ -39,17 +40,26 @@
         {{ $t('product.buy_now') }}
       </button>
     </div>
-  </template>
-  
-  <script setup lang="ts">
-  defineProps<{
-    canAddToCart: boolean
-    isAddingToCart: boolean
-    isInCart: boolean
-  }>()
-  
-  defineEmits<{
-    'add-to-cart': []
-    'buy-now': []
-  }>()
-  </script>
+
+    <p
+      v-if="disabledReason && !canAddToCart"
+      class="text-sm text-red-600"
+    >
+      {{ disabledReason }}
+    </p>
+  </div>
+</template>
+
+<script setup lang="ts">
+defineProps<{
+  canAddToCart: boolean
+  isAddingToCart: boolean
+  isInCart: boolean
+  disabledReason?: string
+}>()
+
+defineEmits<{
+  'add-to-cart': []
+  'buy-now': []
+}>()
+</script>

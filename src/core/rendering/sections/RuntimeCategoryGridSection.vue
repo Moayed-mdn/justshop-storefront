@@ -12,14 +12,26 @@
 
       <ul v-if="categories.length" class="runtime-category-grid__list">
         <li v-for="category in categories" :key="category.id">
-          <NuxtLink :to="category.path" class="runtime-category-grid__card">
-            <span class="runtime-category-grid__card-label">{{ category.name }}</span>
-            <span v-if="category.productCount !== null" class="runtime-category-grid__card-meta">
-              {{ category.productCount }} {{ category.productCount === 1 ? 'product' : 'products' }}
-            </span>
+          <NuxtLink :to="category.path" class="runtime-category-grid__card" :class="{ 'runtime-category-grid__card--has-image': !!category.image }">
+            <img
+              v-if="category.image"
+              :src="category.image"
+              :alt="category.name"
+              class="runtime-category-grid__card-image"
+            />
+            <div class="runtime-category-grid__card-body">
+              <span class="runtime-category-grid__card-label">{{ category.name }}</span>
+              <span v-if="category.productCount !== null" class="runtime-category-grid__card-meta">
+                {{ category.productCount }} {{ category.productCount === 1 ? 'product' : 'products' }}
+              </span>
+            </div>
           </NuxtLink>
         </li>
       </ul>
+
+      <div v-else class="runtime-category-grid__empty">
+        <p class="runtime-category-grid__empty-text">No categories available.</p>
+      </div>
     </div>
   </section>
 </template>
@@ -32,6 +44,7 @@ type CategoryCard = {
   name: string
   path: string
   productCount: number | null
+  image: string | null
 }
 
 const props = defineProps<RuntimeSectionComponentProps>()
@@ -51,6 +64,9 @@ const categories = computed<CategoryCard[]>(() => {
       name: typeof item.name === 'string' ? item.name : 'Category',
       path: typeof item.path === 'string' ? item.path : '#',
       productCount: typeof item.productCount === 'number' ? item.productCount : null,
+      image: typeof item.image === 'string' ? item.image
+        : (typeof item.primary_image === 'string' ? item.primary_image
+          : (typeof item.thumbnail === 'string' ? item.thumbnail : null)),
     }))
 })
 </script>
@@ -133,6 +149,28 @@ const categories = computed<CategoryCard[]>(() => {
   box-shadow: 0 14px 30px rgba(0, 61, 41, 0.12);
 }
 
+.runtime-category-grid__card--has-image {
+  padding: 0;
+  overflow: hidden;
+}
+
+.runtime-category-grid__card--has-image .runtime-category-grid__card-body {
+  padding: 1rem 1.25rem 1.25rem;
+}
+
+.runtime-category-grid__card-image {
+  width: 100%;
+  height: 10rem;
+  object-fit: cover;
+}
+
+.runtime-category-grid__card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+}
+
 .runtime-category-grid__card-label {
   font-size: 1.125rem;
   font-weight: 700;
@@ -141,6 +179,21 @@ const categories = computed<CategoryCard[]>(() => {
 
 .runtime-category-grid__card-meta {
   font-size: 0.875rem;
+  color: var(--color-text-secondary, #333333);
+}
+
+.runtime-category-grid__empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 6rem;
+  border: 1px dashed var(--gray-300, #e5e7eb);
+  border-radius: 1rem;
+  background: var(--color-bg-card, #f5f6f6);
+}
+
+.runtime-category-grid__empty-text {
+  font-size: 0.95rem;
   color: var(--color-text-secondary, #333333);
 }
 </style>

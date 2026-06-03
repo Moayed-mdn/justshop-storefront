@@ -55,8 +55,6 @@
     </form>
 
     <template v-if="!isEmailNotVerified">
-      <AuthDivider :text="$t('login.or')" />
-      <AuthGoogleButton :text="$t('login.sign_in_with_google')" @click="loginWithGoogle" />
       <AuthFooterLink
         :text="$t('login.no_account')"
         :link-text="$t('login.sign_up')"
@@ -75,11 +73,19 @@ definePageMeta({
 })
 
 const routes = useStorefrontRoutes()
-const { login, loading, loginWithGoogle, resendVerificationEmail } = useAuth()
+const { login, loading, resendVerificationEmail } = useAuth()
+const { t } = useI18n()
+
+useHead({
+  title: t('login.page_title'),
+  meta: [
+    { name: 'description', content: t('login.page_description') },
+  ],
+})
+
 const errors = ref<ApiError | null>(null)
 const successMessage = ref<string | undefined>(undefined)
 const route = useRoute()
-const { t } = useI18n()
 
 // ✨ New state for email verification flow
 const isEmailNotVerified = ref(false)

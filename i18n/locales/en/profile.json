@@ -1,5 +1,7 @@
 {
   "profile": {
+    "page_title": "My Profile",
+    "page_description": "Manage your account settings, password, and personal information",
     "title": "My Profile",
     "subtitle": "Manage your account settings",
     "avatar": {

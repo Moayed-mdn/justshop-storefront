@@ -25,6 +25,11 @@
       "cancel_order": "Cancel Order",
       "track_order": "Track Order",
   
+      "order_title": "Order #{number}",
+      "order_description": "View details for order #{number}",
+      "track_title": "Track Your Order",
+      "track_description": "Look up an order using your order number and email address",
+
       "detail_title": "Order Details",
       "back_to_orders": "Back to Orders",
       "order_summary": "Order Summary",

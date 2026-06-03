@@ -25,6 +25,11 @@
       "cancel_order": "إلغاء الطلب",
       "track_order": "تتبع الطلب",
   
+      "order_title": "طلب #{number}",
+      "order_description": "عرض تفاصيل الطلب #{number}",
+      "track_title": "تتبع طلبك",
+      "track_description": "ابحث عن طلب باستخدام رقم الطلب والبريد الإلكتروني",
+
       "detail_title": "تفاصيل الطلب",
       "back_to_orders": "العودة للطلبات",
       "order_summary": "ملخص الطلب",

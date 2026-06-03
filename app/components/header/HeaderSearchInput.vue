@@ -137,7 +137,15 @@ async function fetchSuggestions(query: string) {
     highlightedIndex.value = -1
   }
   catch (err) {
-    console.error('[Search] Autocomplete error:', err)
+    const errorInfo = {
+      name: err?.name,
+      message: err?.message,
+      code: err?.code,
+      constructor: err?.constructor?.name,
+      ownKeys: Object.keys(err || {}),
+      stack: err?.stack?.split('\n')?.slice(0, 3)?.join('\n'),
+    }
+    console.error('[Search] Autocomplete error:', err, errorInfo)
     suggestions.value = []
   }
   finally {

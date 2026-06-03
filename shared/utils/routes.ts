@@ -16,8 +16,6 @@ export const API_ROUTES = {
     me: '/api/auth/me',
     emailResend: '/api/auth/email/resend',
     emailVerify: (id: string | number, hash: string) => `/api/auth/email/verify/${id}/${hash}`,
-    googleCallback: '/api/auth/google/callback',
-    googleRedirect: '/api/auth/google/redirect',
     passwordForgot: '/api/auth/password/forgot',
     passwordReset: '/api/auth/password/reset',
   },
@@ -33,8 +31,7 @@ export const API_ROUTES = {
     category: (slug: string) => `/api/products/category/${slug}`,
     detail: (slug: string) => `/api/products/${slug}`,
     related: (slug: string) => `/api/products/${slug}/related`,
-    bestSeller: '/api/best_seller',
-    hero: '/api/hero',
+
   },
   orders: {
     index: '/api/orders',
@@ -59,7 +56,6 @@ export const API_ROUTES = {
       previewValidate: '/api/storefront/runtime/preview/validate',
     },
   },
-  search: '/api/search',
   checkout: {
     session: '/api/checkout/session',
     sessionAuth: '/api/checkout/session/auth',
@@ -98,13 +94,10 @@ export const EXTERNAL_API_ROUTES = {
   },
   checkout: {
     session: (storeId: string | number) => `storefront/stores/${storeId}/checkout`,
-    sessionAuth: (storeId: string | number) => `storefront/stores/${storeId}/checkout/confirm`,
+    sessionAuth: (storeId: string | number) => `storefront/stores/${storeId}/checkout`,
     status: (sessionId: string) => `storefront/checkout/status/${sessionId}`,
   },
-  homepage: {
-    bestSeller: (storeId: string | number) => `storefront/stores/${storeId}/homepage/best-seller`,
-    hero: (storeId: string | number) => `storefront/stores/${storeId}/homepage/hero`,
-  },
+
   orders: {
     index: (storeId: string | number) => `storefront/stores/${storeId}/orders`,
     filters: (storeId: string | number) => `storefront/stores/${storeId}/orders/filters`,

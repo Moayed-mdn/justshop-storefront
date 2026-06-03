@@ -60,6 +60,13 @@ definePageMeta({
   middleware: 'guest',
 })
 
+useHead({
+  title: t('forgot_password.page_title'),
+  meta: [
+    { name: 'description', content: t('forgot_password.page_description') },
+  ],
+})
+
 const email = ref('')
 const success = ref(false)
 const successMessage = ref('')

@@ -10,6 +10,8 @@
     "runtime:contracts:check": "node scripts/check-runtime-contracts.mjs",
     "runtime:verify:phase6": "node scripts/verify-runtime-phase6.mjs",
     "runtime:verify:phase7": "node scripts/verify-runtime-phase7-rollout.mjs",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
@@ -33,6 +35,7 @@
   },
   "devDependencies": {
     "@iconify-json/circle-flags": "^1.2.10",
-    "stylelint-config-tailwindcss": "^1.0.1"
+    "stylelint-config-tailwindcss": "^1.0.1",
+    "vitest": "^3.2.6"
   }
 }

@@ -9,6 +9,8 @@
           class="max-h-full object-contain transition-transform duration-(--card-transition-speed) group-hover:scale-110"
           :src="product.image"
           :alt="product.name"
+          loading="lazy"
+          decoding="async"
         />
       </NuxtLinkLocale>
     </div>

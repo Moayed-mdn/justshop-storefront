@@ -11,11 +11,36 @@
     role="navigation"
     :aria-hidden="showLinks ? 'false' : 'true'"
       >
-    <HeaderLinks mobile/>
+    <template v-if="runtimeHeaderItems.length">
+      <nav class="flex flex-col p-3 gap-(--header-gap-base)">
+        <template v-for="item in runtimeHeaderItems" :key="item.id">
+          <a
+            v-if="item.external"
+            :href="item.path"
+            target="_blank"
+            rel="noreferrer noopener"
+            class="text-(--color-text-secondary) w-fit mx-auto whitespace-nowrap hover:opacity-(--header-opacity) transition-colors duration-(--header-duration) cursor-pointer block text-center"
+          >
+            {{ item.label }}
+          </a>
+          <NuxtLinkLocale
+            v-else
+            :to="item.path"
+            @click="closeMenu"
+            class="text-(--color-text-secondary) w-fit mx-auto whitespace-nowrap hover:opacity-(--header-opacity) transition-colors duration-(--header-duration) cursor-pointer block text-center"
+          >
+            {{ item.label }}
+          </NuxtLinkLocale>
+        </template>
+      </nav>
+    </template>
+    <HeaderLinks v-else mobile/>
   </div>
 </template>
 
 <script setup lang="ts">
+import { useStorefrontContext } from '~~/src/core/tenant/composables'
+
 const props = defineProps({
   showLinks: Boolean,
   burgerButtonRef: {
@@ -36,5 +61,6 @@ onClickOutside(
     }
 )
 
-
+const context = useStorefrontContext()
+const runtimeHeaderItems = computed(() => context.value.navigation?.header ?? [])
 </script>

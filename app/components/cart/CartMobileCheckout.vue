@@ -10,7 +10,7 @@
       <div
         v-if="show"
         class="fixed bottom-0 inset-x-0 bg-white border-t border-gray-200
-               shadow-[0_-4px_12px_rgba(0,0,0,0.08)] p-4 z-40
+               shadow-[0_-4px_12px_rgba(0,0,0,0.08)] p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] z-40
                lg:hidden"
       >
         <div class="flex items-center justify-between mb-3">

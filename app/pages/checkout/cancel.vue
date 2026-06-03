@@ -42,8 +42,16 @@
   
   <script setup lang="ts">
   const routes = useStorefrontRoutes()
+  const { t } = useI18n()
 
   definePageMeta({
     layout: 'default',
+  })
+
+  useHead({
+    title: t('checkout.cancel_title'),
+    meta: [
+      { name: 'description', content: t('checkout.cancel_description') },
+    ],
   })
   </script>

@@ -16,16 +16,22 @@ The foundation program that established multi-tenant SSR rendering, runtime cont
 
 ### 2. Storefront Commerce Consolidation (Active)
 The current program transforming the runtime foundation into a unified, tenant-safe commerce storefront experience.
+- [Shopify-Like Storefront Master Plan](file:///home/leader/projects/laravel/tenant/justshop-frontend/docs/refactoring-plan/shopify-like-storefront-master-plan.md)
 - [Execution Plan](file:///home/leader/projects/laravel/tenant/justshop-frontend/docs/refactoring-plan/storefront-commerce-consolidation-execution-plan.md)
 - [Current Audit](file:///home/leader/projects/laravel/tenant/justshop-frontend/docs/refactoring-plan/audits/storefront-commerce-consolidation-audit.md)
 - [Wave 1 Canonical Route Recovery](file:///home/leader/projects/laravel/tenant/justshop-frontend/docs/refactoring-plan/wave1-canonical-route-recovery.md) — historical recovery attempt, now superseded by the live `/shop/**` route alignment recorded on `2026-05-31`
+- [Phase 1 Execution Backlog](file:///home/leader/projects/laravel/tenant/justshop-frontend/docs/refactoring-plan/storefront-phase-1-execution-backlog.md) — current engineering backlog: route audit, shell unification, navigation hardening with ordered waves and acceptance criteria
+- [Certification Report](file:///home/leader/projects/laravel/tenant/justshop-frontend/docs/refactoring-plan/storefront-certification-report.md) — Phase 9 closeout: final legacy retirement, removal log, and remaining-gap review
 
 ---
 
 ## Active Plan Navigation
 | Document | Phase | Focus |
 |---|---|---|
+| [Shopify-Like Storefront Master Plan](file:///home/leader/projects/laravel/tenant/justshop-frontend/docs/refactoring-plan/shopify-like-storefront-master-plan.md) | North Star | Product vision, architectural direction, scope, and execution order for the Shopify-like storefront target |
 | [Consolidation Plan](file:///home/leader/projects/laravel/tenant/justshop-frontend/docs/refactoring-plan/storefront-commerce-consolidation-execution-plan.md) | Phase 0 | Guardrails, Canonical Contracts, and Route Consolidation |
+| [Phase 1 Execution Backlog](file:///home/leader/projects/laravel/tenant/justshop-frontend/docs/refactoring-plan/storefront-phase-1-execution-backlog.md) | Phase 1 | Route audit, shell unification, navigation hardening — ordered waves with acceptance criteria |
+| [Certification Report](file:///home/leader/projects/laravel/tenant/justshop-frontend/docs/refactoring-plan/storefront-certification-report.md) | Phase 9 | Legacy retirement, removal log, gap review, and storefront certification |
 | [Wave 1 Canonical Route Recovery](file:///home/leader/projects/laravel/tenant/justshop-frontend/docs/refactoring-plan/wave1-canonical-route-recovery.md) | Historical | Superseded route-recovery attempt; see current live `/shop/**` override note |
 | [Runtime Integration](file:///home/leader/projects/laravel/tenant/justshop-frontend/docs/refactoring-plan/storefront-runtime-integration-execution-plan.md) | Phase 8 | Steady-state operations and legacy retirement |
 
@@ -42,6 +48,7 @@ Files under `archive/` are earlier concept and master-plan drafts. They remain u
 
 ## Source Of Truth Rules
 
+- Use `shopify-like-storefront-master-plan.md` for the compact product direction, execution order, and storefront target state.
 - Use `storefront-commerce-consolidation-execution-plan.md` for active program sequence and formal phase intent.
 - Use `storefront-runtime-integration-execution-plan.md` for historical foundation context.
 - Use the Phase 8 documents for steady-state operations and closeout reality.

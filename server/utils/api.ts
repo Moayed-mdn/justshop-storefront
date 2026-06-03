@@ -198,6 +198,15 @@ export const proxySessionAuthRequest = async (event: H3Event, path: string, opti
   const locale = String(getCookie(event, 'i18n_redirected') || getHeader(event, 'accept-language') || 'en')
   const tenantId = String(event.context.tenantId || '')
   const normalizedHost = getNormalizedRequestHost(event)
+  let token: string | null = null
+  try {
+    const authCookie = getCookie(event, 'js_auth') || getCookie(event, 'auth')
+    if (authCookie) {
+      const parsed = JSON.parse(authCookie)
+      token = parsed?.token ?? null
+    }
+  } catch {}
+
   const method = String(options?.method || 'GET').toUpperCase()
   const headers = new Headers(options?.headers)
 
@@ -207,8 +216,22 @@ export const proxySessionAuthRequest = async (event: H3Event, path: string, opti
   headers.set('X-Storefront-Locale', locale)
   headers.set('X-Storefront-Version', STOREFRONT_RUNTIME_CONTRACT_VERSION)
 
+  const origin = getHeader(event, 'origin')
+  if (origin) {
+    headers.set('Origin', origin)
+  }
+
+  const referer = getHeader(event, 'referer')
+  if (referer) {
+    headers.set('Referer', referer)
+  }
+
   if (locale) {
     headers.set('Accept-Language', locale)
+  }
+
+  if (token) {
+    headers.set('Authorization', `Bearer ${token}`)
   }
 
   const incomingCookieHeader = String(getHeader(event, 'cookie') || '')
@@ -216,7 +239,7 @@ export const proxySessionAuthRequest = async (event: H3Event, path: string, opti
   const requiresCsrf = !['GET', 'HEAD', 'OPTIONS'].includes(method)
 
   if (requiresCsrf && !getCookie(event, 'XSRF-TOKEN')) {
-    const csrfResponse = await fetch(`${apiRoot}/sanctum/csrf-cookie`, {
+    const csrfResponse = await fetch(`${apiBase}/sanctum/csrf-cookie`, {
       method: 'GET',
       headers,
     })

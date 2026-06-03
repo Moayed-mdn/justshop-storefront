@@ -9,6 +9,35 @@ import { useStorefrontApi } from '../../api/client'
 import { API_ROUTES } from '../../../../shared/utils/routes'
 import { useStorefrontContext } from '../../tenant/composables'
 
+/**
+ * Normalize a runtime API tenantId for use as the canonical tenant identifier.
+ *
+ * The runtime API returns tenantId in "store_{id}" format (e.g. "store_42").
+ * The canonical tenant identifier expected by Store::find() and all downstream
+ * X-Tenant-Id header generators is the bare numeric ID ("42") or numeric (42).
+ *
+ * Only strips the "store_" prefix when the value matches the exact pattern
+ * /^store_\d+$/. All other values pass through unchanged.
+ *
+ * Accepts:
+ *   "store_1"   -> "1"
+ *   "store_42"  -> "42"
+ *   1           -> 1
+ *   "merchant-store" -> "merchant-store"
+ *   "abc"       -> "abc"
+ *   undefined   -> undefined
+ *   null        -> undefined
+ */
+export function normalizeTenantId(value: string | number | null | undefined): string | number | undefined {
+  if (value === null || value === undefined) {
+    return undefined
+  }
+  if (typeof value === 'string' && /^store_\d+$/.test(value)) {
+    return value.replace(/^store_/, '')
+  }
+  return value
+}
+
 // Plain error factory — no Nuxt composables, safe to call anywhere
 const makeError = (statusCode: number, message: string, data?: any): Error => {
   const err = new Error(message) as any
@@ -147,7 +176,7 @@ export const useStorefrontPayload = () => {
       'Storefront'
 
     context.value.tenant = {
-      id: pageResponse.requestContext?.tenantId || context.value.tenant?.id || 'default',
+      id: normalizeTenantId(pageResponse.requestContext?.tenantId) || context.value.tenant?.id || 'default',
       name: storeName,
       slug: pageResponse.requestContext?.tenantKey || context.value.tenant?.slug || 'default',
       domain: host.split(':')[0] || 'localhost',

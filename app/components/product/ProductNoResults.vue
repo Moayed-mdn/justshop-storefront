@@ -26,6 +26,7 @@
       </p>
   
       <button
+        v-if="canReset"
         class="mt-2 px-6 py-2 rounded border cursor-pointer
                text-sm font-medium
                bg-(--color-accent) text-white
@@ -39,5 +40,16 @@
   
   <script setup lang="ts">
   const { t } = useI18n()
-  const { resetFilters } = useProductFilters()  // ✅ Global reset in action
+
+  let resetFilters: (() => void) | undefined
+  let canReset = false
+
+  try {
+    const filters = useProductFilters()
+    resetFilters = filters.resetFilters
+    canReset = true
+  } catch {
+    // filter context unavailable — hide reset button
+    canReset = false
+  }
   </script>

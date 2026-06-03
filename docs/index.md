@@ -40,6 +40,7 @@ It links the current owner documents, records what has already been created, and
 | `docs/architecture/storefront-runtime-api-contract-specification-v1.md` | Versioned runtime API request and response contract |
 | `docs/architecture/storefront-runtime-dto-mapping-specification-v1.md` | DTO normalization rules between Laravel and Nuxt |
 | `docs/refactoring-plan/README.md` | Navigation hub for the storefront refactoring programs (Runtime Integration & Commerce Consolidation) |
+| `docs/refactoring-plan/shopify-like-storefront-master-plan.md` | Short execution-facing north star for turning the storefront into a Shopify-like unified commerce experience |
 | `docs/refactoring-plan/storefront-commerce-consolidation-execution-plan.md` | Authoritative 12-phase program for unifying routing, shell, auth, and cart into a coherent commerce storefront |
 | `docs/refactoring-plan/wave1-canonical-route-recovery.md` | Historical Wave 1 route-recovery note, now superseded by the live `/shop/**` storefront alignment |
 | `docs/refactoring-plan/PLAN-SUMMARY.md` | Plain-language storefront runtime plan summary for sharing (phases, status, architecture, local demo) |
@@ -56,6 +57,8 @@ It links the current owner documents, records what has already been created, and
 | `docs/refactoring-plan/storefront-runtime-phase-8-support-handover.md` | Support and on-call handover for steady-state runtime operations |
 | `docs/refactoring-plan/storefront-runtime-phase-8-operating-guide.md` | Steady-state operating guide after Phase 8 closeout |
 | `docs/refactoring-plan/audits/storefront-commerce-consolidation-audit.md` | Current-state storefront audit that explains the runtime consolidation and shell/routing gaps |
+| `docs/refactoring-plan/storefront-phase-1-execution-backlog.md` | Phase 1 engineering backlog: route audit, shell unification, navigation hardening with ordered waves and acceptance criteria |
+| `docs/refactoring-plan/storefront-certification-report.md` | Phase 9 closeout: legacy retirement log, gap review, and storefront certification |
 | `docs/development/coding-standards.md` | Current repo coding, naming, SSR, and dependency rules |
 | `docs/development/components.md` | Component namespaces, ownership boundaries, and current API patterns |
 | `docs/development/composables.md` | Composable responsibilities, side-effect rules, and helper overlap notes |
@@ -120,7 +123,7 @@ These code surfaces currently anchor the foundation docs:
 
 The approved target tree is owned by `docs/implementation-plan.md`. The implementation plan phases are complete through Phase 5, and follow-up work now focuses on ADR formalization plus ongoing maintenance updates when code changes.
 
-The storefront runtime transformation program is tracked separately under `docs/refactoring-plan/`, which now includes a dedicated README, an audit subfolder, and an archive for superseded draft plans. Route-recovery history for the consolidation program currently lives in `docs/refactoring-plan/wave1-canonical-route-recovery.md`, with the live override documented in the storefront route owner docs.
+The storefront runtime transformation program is tracked separately under `docs/refactoring-plan/`, which now includes a dedicated README, an audit subfolder, a short Shopify-like storefront master plan, and an archive for superseded draft plans. Route-recovery history for the consolidation program currently lives in `docs/refactoring-plan/wave1-canonical-route-recovery.md`, with the live override documented in the storefront route owner docs.
 
 ## Ownership Rules
 

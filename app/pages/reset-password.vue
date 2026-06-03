@@ -58,6 +58,13 @@ definePageMeta({
   middleware: 'guest',
 })
 
+useHead({
+  title: t('reset_password.page_title'),
+  meta: [
+    { name: 'description', content: t('reset_password.page_description') },
+  ],
+})
+
 const form = reactive({
   token: '',
   email: '',

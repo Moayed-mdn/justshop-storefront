@@ -1,12 +1,23 @@
 <template>
   <section class="runtime-product-grid">
     <header v-if="title || subtitle" class="runtime-product-grid__header">
-      <h2 v-if="title" class="runtime-product-grid__title">
-        {{ title }}
-      </h2>
-      <p v-if="subtitle" class="runtime-product-grid__subtitle">
-        {{ subtitle }}
-      </p>
+      <div class="runtime-product-grid__header-row">
+        <div>
+          <h2 v-if="title" class="runtime-product-grid__title">
+            {{ title }}
+          </h2>
+          <p v-if="subtitle" class="runtime-product-grid__subtitle">
+            {{ subtitle }}
+          </p>
+        </div>
+        <NuxtLink
+          v-if="viewAllLink"
+          :to="viewAllLink"
+          class="runtime-product-grid__view-all"
+        >
+          View all
+        </NuxtLink>
+      </div>
     </header>
     <ProductGrid :products="products" />
   </section>
@@ -23,6 +34,16 @@ provide('pending', ref(false))
 
 const title = computed(() => typeof props.data.title === 'string' ? props.data.title : '')
 const subtitle = computed(() => typeof props.data.subtitle === 'string' ? props.data.subtitle : '')
+
+const viewAllLink = computed(() => {
+  const link = props.data.viewAllLink
+  if (typeof link === 'string' && link.length > 0) return link
+
+  const pagePath = props.data.pagePath
+  if (typeof pagePath === 'string' && pagePath.length > 0) return pagePath
+
+  return null
+})
 
 const products = computed<ProductDto[]>(() => {
   if (!Array.isArray(props.data.products)) {
@@ -58,6 +79,28 @@ const products = computed<ProductDto[]>(() => {
   max-width: 80rem;
   margin: 0 auto;
   padding: 2.5rem 1.5rem 0;
+}
+
+.runtime-product-grid__header-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.runtime-product-grid__view-all {
+  flex-shrink: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-primary, #003d29);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: opacity 0.2s ease;
+}
+
+.runtime-product-grid__view-all:hover {
+  opacity: 0.75;
+  text-decoration: underline;
 }
 
 .runtime-product-grid__title {

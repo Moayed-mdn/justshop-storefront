@@ -6,6 +6,7 @@ import RuntimeFeatureListSection from './sections/RuntimeFeatureListSection.vue'
 import RuntimeHeroSection from './sections/RuntimeHeroSection.vue'
 import RuntimeProductGridSection from './sections/RuntimeProductGridSection.vue'
 import RuntimeProductSummarySection from './sections/RuntimeProductSummarySection.vue'
+import ShopGridSection from './sections/ShopGridSection.vue'
 
 export interface RuntimeSectionRegistryEntry {
   component: Component
@@ -36,6 +37,9 @@ export const sectionRegistry: Record<string, RuntimeSectionRegistryEntry> = {
   ProductSummarySection: {
     component: RuntimeProductSummarySection,
     validate: hasName,
+  },
+  ShopGridSection: {
+    component: ShopGridSection,
   },
 }
 

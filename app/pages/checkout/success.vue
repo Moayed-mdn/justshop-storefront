@@ -134,12 +134,19 @@
   definePageMeta({
     layout: 'default',
   })
-  
+
   const routes = useStorefrontRoutes()
   const route = useRoute()
   const { isLoggedIn } = useAuth()
   const { getCheckoutStatus, clearCartAfterCheckout } = useCheckout()
   const { t } = useI18n()
+
+  useHead({
+    title: t('checkout.success_title'),
+    meta: [
+      { name: 'description', content: t('checkout.success_description') },
+    ],
+  })
   
   const status = ref<'loading' | 'success' | 'error'>('loading')
   const orderData = ref<{

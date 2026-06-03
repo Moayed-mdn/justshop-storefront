@@ -1,11 +1,32 @@
-<!-- app/pages/search.vue -->
-
 <template>
-  <div class="w-full max-w-7xl mx-auto px-(--search-page-gutter) py-8">
+  <div class="w-full max-w-7xl mx-auto px-(--site-gutter) py-8">
+
+    <!-- ── Breadcrumbs ────────────────────── -->
+    <nav class="mb-6 flex flex-wrap items-center gap-1.5 text-sm text-(--color-text-secondary)">
+      <NuxtLinkLocale
+        :to="routes.home()"
+        class="hover:text-(--color-primary) transition-colors"
+      >
+        {{ $t('header.links.home') }}
+      </NuxtLinkLocale>
+      <span class="mx-0.5">/</span>
+      <NuxtLinkLocale
+        :to="routes.search()"
+        class="hover:text-(--color-primary) transition-colors"
+      >
+        {{ $t('search.page_title') }}
+      </NuxtLinkLocale>
+      <template v-if="searchTerm">
+        <span class="mx-0.5">/</span>
+        <span class="font-medium text-(--color-text-primary) truncate max-w-[200px] sm:max-w-[400px]">
+          "{{ searchTerm }}"
+        </span>
+      </template>
+    </nav>
 
     <!-- ── Empty Query State ──────────────── -->
     <div v-if="!searchTerm" class="flex flex-col items-center justify-center py-20 text-center">
-      <svg class="w-16 h-16 text-(--gray-400) mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+      <svg class="w-16 h-16 text-(--color-text-muted) mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
         <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
       </svg>
       <p class="text-lg text-(--color-text-secondary)">{{ $t('search.enter_search') }}</p>
@@ -13,7 +34,6 @@
 
     <!-- ── Results ────────────────────────── -->
     <template v-else>
-
       <!-- Header -->
       <div class="mb-8">
         <h1 class="text-2xl lg:text-3xl font-bold text-(--color-text-primary)">
@@ -26,17 +46,8 @@
       </div>
 
       <!-- Loading State -->
-      <div v-if="pending" class="space-y-8">
-        <div class="flex gap-3">
-          <div v-for="i in 3" :key="i" class="h-9 w-28 bg-(--gray-200) rounded-full animate-pulse" />
-        </div>
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          <div v-for="i in 8" :key="i" class="space-y-3">
-            <div class="h-48 bg-(--gray-200) rounded-lg animate-pulse" />
-            <div class="h-4 bg-(--gray-200) rounded animate-pulse w-3/4" />
-            <div class="h-4 bg-(--gray-200) rounded animate-pulse w-1/2" />
-          </div>
-        </div>
+      <div v-if="pending" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-(--product-grid-gap)">
+        <ProductCardSkeleton v-for="i in 6" :key="i" />
       </div>
 
       <!-- No Results -->
@@ -44,7 +55,7 @@
         v-else-if="results && results.total_count === 0"
         class="flex flex-col items-center justify-center py-16 text-center"
       >
-        <svg class="w-20 h-20 text-(--gray-400) mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+        <svg class="w-20 h-20 text-(--color-text-muted) mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
           <path stroke-linecap="round" stroke-linejoin="round" d="M15.182 16.318A4.486 4.486 0 0 0 12.016 15a4.486 4.486 0 0 0-3.198 1.318M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0ZM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Z" />
         </svg>
         <h2 class="text-xl font-semibold text-(--color-text-primary) mb-2">
@@ -55,7 +66,6 @@
 
       <!-- Actual Results -->
       <template v-else-if="results && results.total_count > 0">
-
         <!-- ── Matching Categories ─────────── -->
         <section v-if="results.categories.length" class="mb-8">
           <h2 class="text-sm font-semibold text-(--color-text-secondary) uppercase tracking-wider mb-3">
@@ -68,11 +78,11 @@
               :to="routes.category(cat.slug)"
               class="
                 inline-flex items-center gap-2 px-4 py-2 rounded-full
-                bg-(--search-badge-category-bg) text-(--search-badge-category-text)
+                bg-(--color-bg-elevated) text-(--color-text-secondary)
+                border border-(--color-border-default)
                 text-sm font-medium hover:opacity-80 transition-opacity
               "
             >
-              <span>📁</span>
               <span>{{ cat.name }}</span>
               <span class="text-xs opacity-70">({{ cat.products_count }})</span>
             </NuxtLinkLocale>
@@ -91,11 +101,11 @@
               :to="routes.search(brand.name)"
               class="
                 inline-flex items-center gap-2 px-4 py-2 rounded-full
-                bg-(--search-badge-brand-bg) text-(--search-badge-brand-text)
+                bg-(--color-bg-elevated) text-(--color-text-secondary)
+                border border-(--color-border-default)
                 text-sm font-medium hover:opacity-80 transition-opacity
               "
             >
-              <span>🏷️</span>
               <span>{{ brand.name }}</span>
               <span class="text-xs opacity-70">({{ brand.products_count }})</span>
             </NuxtLinkLocale>
@@ -108,9 +118,9 @@
             {{ $t('search.products') }}
           </h2>
 
-          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-8">
-            <SearchProductCard
-              v-for="product in results.products"
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-(--product-grid-gap)">
+            <ProductCard
+              v-for="product in mappedProducts"
               :key="product.id"
               :product="product"
             />
@@ -123,7 +133,8 @@
 
 <script setup lang="ts">
 import { SEARCH_QUERY } from '~/graphql/queries/search'
-import type { SearchResult } from '~~/types/search'
+import type { SearchResult, ProductSearchResult } from '~~/types/search'
+import type { ProductDto } from '~~/src/core/api/dto/storefront'
 
 const route = useRoute()
 const { locale, t } = useI18n()
@@ -133,7 +144,7 @@ const routes = useStorefrontRoutes()
 const searchTerm = computed(() => ((route.query.q as string) ?? '').trim())
 
 // ─── Fetch logic (SSR-safe) ────────────────────
-const { data, pending, error: fetchError } = await useAsyncData(
+const { data, pending } = await useAsyncData(
   `search-${searchTerm.value}-${locale.value}`,
   async () => {
     if (!searchTerm.value) return null
@@ -159,6 +170,24 @@ const { data, pending, error: fetchError } = await useAsyncData(
 )
 
 const results = computed(() => data.value)
+
+// ── Map search results to ProductDto for consistent rendering ──
+function toProductDto(p: ProductSearchResult): ProductDto {
+  return {
+    id: p.id,
+    variantId: p.product_variant_id ?? p.id,
+    name: p.name,
+    slug: p.slug,
+    price: p.price ?? 0,
+    currency: 'USD',
+    image: p.image_url ?? '',
+    description: p.description ?? '',
+  }
+}
+
+const mappedProducts = computed(() =>
+  (results.value?.products ?? []).map(toProductDto)
+)
 
 // ── SEO ──────────────────────────────────────────
 useHead({
