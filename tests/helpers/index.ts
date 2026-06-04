@@ -24,3 +24,6 @@ export * from './profile';
 
 // Types
 export * from './types';
+
+// API mock helpers (Playwright route interception)
+export * from './mocks';

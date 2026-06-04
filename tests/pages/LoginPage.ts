@@ -1,7 +1,7 @@
 /**
  * Login Page Object Model
  * 
- * Page Object for /auth/login
+ * Page Object for /login
  * Based on actual auth implementation
  */
 
@@ -31,9 +31,9 @@ export class LoginPage extends BasePage {
     super(page);
 
     // Form elements
-    // NOTE: Update these selectors to match actual implementation
-    this.emailInput = page.locator('[name="email"]');
-    this.passwordInput = page.locator('[name="password"]');
+    // Using actual selectors from login.vue
+    this.emailInput = page.locator('input[id="email"]');
+    this.passwordInput = page.locator('input[id="password"]');
     this.rememberCheckbox = page.locator('[name="remember"]');
     this.submitButton = page.locator('button[type="submit"]');
 
@@ -55,7 +55,7 @@ export class LoginPage extends BasePage {
    * Navigate to login page
    */
   async goto() {
-    await this.page.goto('/auth/login');
+    await this.page.goto('/login');
     await this.page.waitForLoadState('networkidle');
   }
 
@@ -90,7 +90,7 @@ export class LoginPage extends BasePage {
    * Wait for successful login (redirect away from login page)
    */
   async waitForSuccess() {
-    await this.page.waitForURL((url) => !url.pathname.includes('/auth/login'), {
+    await this.page.waitForURL((url) => !url.pathname.includes('/login'), {
       timeout: 10000,
     });
   }

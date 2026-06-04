@@ -1,11 +1,12 @@
 <template>
-  <div class="w-full">
+  <div class="w-full" data-testid="product-card">
     <div
       class="bg-(--card-bg-light) rounded-(--radius-md) flex items-center justify-center
              h-(--card-img-height-mobile) lg:h-(--card-img-height-desktop) overflow-hidden group"
     >
       <NuxtLinkLocale :to="routes.product(product.slug)" class="cursor-pointer">
         <img
+          data-testid="product-card-image"
           class="max-h-full object-contain transition-transform duration-(--card-transition-speed) group-hover:scale-110"
           :src="product.image"
           :alt="product.name"
@@ -17,9 +18,10 @@
 
     <div class="flex flex-col px-2 mt-3">
       <div class="flex justify-between w-full mb-1 font-bold">
-        <h3 class="line-clamp-1">{{ product.name }}</h3>
+        <h3 class="line-clamp-1" data-testid="product-card-name">{{ product.name }}</h3>
         <ClientOnly>
           <UiPrice
+            data-testid="product-card-price"
             :price="product.price"
             :currency="product.currency || 'USD'"
             integerClass="text-lg"
@@ -35,6 +37,7 @@
         <ClientOnly>
           <UiCartButton
             class="cart-fade-in"
+            data-testid="product-card-add-to-cart"
             :product-id="Number(product.id)"
             :product-variant-id="Number(product.variantId)"
             :name="product.name"

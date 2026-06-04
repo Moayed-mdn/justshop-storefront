@@ -3,6 +3,7 @@
   <div class="relative" ref="dropdownRef">
     <button
       @click="toggleDropdown"
+      data-testid="user-menu-trigger"
       class="group flex font-semibold gap-(--header-gap-tight) items-center transition-all duration-(--header-duration) hover:text-(--header-action-hover-color) cursor-pointer"
     >
       <!-- Avatar or Initials -->
@@ -45,6 +46,7 @@
     >
       <div
         v-if="isOpen"
+        data-testid="profile-dropdown-trigger"
         class="header-profile-dropdown absolute ltr:right-0 rtl:left-0 mt-2 w-56 rounded-lg shadow-lg z-50 py-1"
         :style="{ background: 'var(--color-bg-elevated)', border: '1px solid var(--color-border-default)' }"
       >
@@ -88,6 +90,7 @@
 
         <button
           @click="handleLogout"
+          data-testid="logout-button"
           class="header-profile-logout flex items-center gap-3 w-full px-4 py-2.5 text-sm transition-colors cursor-pointer"
           :style="{ color: 'var(--color-error)' }"
         >

@@ -41,6 +41,7 @@
           <button
             @click="handleRemove"
             :disabled="isRemoving"
+            data-testid="confirm-remove"
             class="flex-shrink-0 p-1 text-(--color-text-muted) hover:text-red-500
                    transition-colors cursor-pointer disabled:opacity-50"
             :title="$t('cart.remove')"
@@ -113,6 +114,7 @@
             <button
               @click="handleIncrement"
               :disabled="isUpdating || atMax"
+              data-testid="update-cart-button"
               class="w-8 h-8 flex items-center justify-center text-gray-600
                      hover:bg-gray-100 transition-colors disabled:opacity-40 cursor-pointer"
             >

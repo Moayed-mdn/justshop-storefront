@@ -1,5 +1,7 @@
 <template>
-    <div class="space-y-4">
+    <div
+      data-testid="orders-list"
+      class="space-y-4">
       <OrderCard
         v-for="order in orders"
         :key="order.id"

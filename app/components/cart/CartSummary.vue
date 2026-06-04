@@ -1,6 +1,6 @@
 <!-- components/cart/CartSummary.vue -->
 <template>
-  <div class="bg-(--color-bg-elevated) rounded-lg border border-(--color-border-default) p-6 space-y-4">
+  <div data-testid="cart-summary" class="bg-(--color-bg-elevated) rounded-lg border border-(--color-border-default) p-6 space-y-4">
     <h2 class="text-lg font-bold text-(--color-text-primary)">
       {{ $t('cart.order_summary') }}
     </h2>
@@ -10,7 +10,7 @@
       <span class="text-(--color-text-secondary)">
         {{ $t('cart.subtotal') }} ({{ itemsCount }} {{ $t('cart.items') }})
       </span>
-      <span class="font-semibold text-(--color-text-primary)">{{ formatPrice(total) }}</span>
+      <span data-testid="cart-summary-subtotal" class="font-semibold text-(--color-text-primary)">{{ formatPrice(total) }}</span>
     </div>
 
     <!-- Shipping placeholder -->
@@ -23,7 +23,7 @@
     <div class="border-t border-(--color-border-default) pt-4">
       <div class="flex justify-between">
         <span class="text-base font-bold text-(--color-text-primary)">{{ $t('cart.total') }}</span>
-        <span class="text-base font-bold text-(--color-text-primary)">{{ formatPrice(total) }}</span>
+        <span data-testid="cart-summary-total" class="text-base font-bold text-(--color-text-primary)">{{ formatPrice(total) }}</span>
       </div>
       <p class="text-xs text-(--color-text-muted) mt-1 ltr:text-right rtl:text-left">
         {{ $t('cart.tax_note') }}
@@ -75,7 +75,7 @@
     </div>
 
     <!-- Checkout Error -->
-    <div v-if="checkoutError" class="p-3 text-sm text-red-600 bg-red-50 rounded-md">
+    <div v-if="checkoutError" data-testid="checkout-error" class="p-3 text-sm text-red-600 bg-red-50 rounded-md">
       {{ checkoutError }}
     </div>
 
@@ -83,6 +83,7 @@
     <button
       @click="handleCheckout"
       :disabled="checkoutLoading"
+      data-testid="cart-checkout-button"
       class="w-full py-3 px-4 bg-(--color-primary) text-white font-semibold rounded-md
              hover:bg-(--green-950) transition-colors text-sm sm:text-base cursor-pointer
              disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"

@@ -48,8 +48,8 @@ export async function trackGuestOrder(
   email: string
 ): Promise<void> {
   // Fill tracking form
-  await page.fill('[name="order_number"], input[placeholder*="order"]', orderNumber);
-  await page.fill('[name="email"], input[type="email"]', email);
+  await page.fill('input[placeholder*="order"], input[id="order_number"]', orderNumber);
+  await page.fill('input[type="email"], input[id="email"]', email);
   
   // Submit
   await page.click('button[type="submit"]');

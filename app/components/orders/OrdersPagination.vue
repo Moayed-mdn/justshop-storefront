@@ -3,6 +3,7 @@
       <button
         @click="$emit('update:page', currentPage - 1)"
         :disabled="currentPage <= 1"
+        data-testid="orders-pagination-prev"
         class="orders-pagination__btn px-3 py-1.5 text-sm border rounded-md
                disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-colors"
         :style="{
@@ -14,13 +15,14 @@
         ←
       </button>
   
-      <span class="text-sm px-3" :style="{ color: 'var(--color-text-muted)' }">
+      <span data-testid="orders-pagination-info" class="text-sm px-3" :style="{ color: 'var(--color-text-muted)' }">
         {{ currentPage }} / {{ totalPages }}
       </span>
   
       <button
         @click="$emit('update:page', currentPage + 1)"
         :disabled="currentPage >= totalPages"
+        data-testid="orders-pagination-next"
         class="orders-pagination__btn px-3 py-1.5 text-sm border rounded-md
                disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-colors"
         :style="{

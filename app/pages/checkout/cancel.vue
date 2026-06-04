@@ -1,7 +1,7 @@
 <!-- pages/checkout/cancel.vue -->
 <template>
     <div class="min-h-[60vh] bg-gray-50">
-      <div class="max-w-lg mx-auto px-4 py-12 sm:py-20 text-center space-y-6">
+      <div class="max-w-lg mx-auto px-4 py-12 sm:py-20 text-center space-y-6" data-testid="checkout-cancel-container">
   
         <!-- Icon -->
         <div class="flex justify-center">
@@ -22,6 +22,7 @@
         <div class="flex flex-col sm:flex-row gap-3 pt-2 justify-center">
           <NuxtLinkLocale
             :to="routes.cart()"
+            data-testid="checkout-return-to-cart"
             class="py-3 px-6 text-sm font-semibold text-white bg-(--color-primary)
                    rounded-md hover:bg-(--green-950) transition-colors"
           >
@@ -30,6 +31,7 @@
   
           <NuxtLinkLocale
             :to="routes.home()"
+            data-testid="checkout-cancel-continue-shopping"
             class="py-3 px-6 text-sm font-semibold text-gray-700 border border-gray-300
                    rounded-md hover:bg-gray-50 transition-colors"
           >

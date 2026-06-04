@@ -2,6 +2,8 @@ import type { Component } from 'vue'
 import type { RuntimeSectionData } from './types'
 import RuntimeCategoryGridSection from './sections/RuntimeCategoryGridSection.vue'
 import RuntimeCategorySummarySection from './sections/RuntimeCategorySummarySection.vue'
+import RuntimeContentSection from './sections/RuntimeContentSection.vue'
+import RuntimeCtaSection from './sections/RuntimeCtaSection.vue'
 import RuntimeFeatureListSection from './sections/RuntimeFeatureListSection.vue'
 import RuntimeHeroSection from './sections/RuntimeHeroSection.vue'
 import RuntimeProductGridSection from './sections/RuntimeProductGridSection.vue'
@@ -21,6 +23,12 @@ export const sectionRegistry: Record<string, RuntimeSectionRegistryEntry> = {
   },
   FeatureListSection: {
     component: RuntimeFeatureListSection,
+  },
+  ContentSection: {
+    component: RuntimeContentSection,
+  },
+  CtaSection: {
+    component: RuntimeCtaSection,
   },
   CategoryGridSection: {
     component: RuntimeCategoryGridSection,

@@ -36,9 +36,9 @@ export async function getProfileData(page: Page): Promise<{
   email: string;
   phone?: string;
 }> {
-  const nameElement = page.locator('[data-profile-name], [name="name"]').first();
-  const emailElement = page.locator('[data-profile-email], [name="email"]').first();
-  const phoneElement = page.locator('[data-profile-phone], [name="phone"]').first();
+  const nameElement = page.locator('[data-profile-name], input[id="name"]').first();
+  const emailElement = page.locator('[data-profile-email], input[id="email"]').first();
+  const phoneElement = page.locator('[data-profile-phone], input[id="phone"]').first();
   
   const name = await nameElement.inputValue().catch(() => nameElement.textContent());
   const email = await emailElement.inputValue().catch(() => emailElement.textContent());
@@ -63,15 +63,15 @@ export async function updateProfile(
   }
 ): Promise<void> {
   if (data.name) {
-    await page.fill('[name="name"], input[placeholder*="name"]', data.name);
+    await page.fill('input[id="name"], input[placeholder*="name"]', data.name);
   }
   
   if (data.email) {
-    await page.fill('[name="email"], input[type="email"]', data.email);
+    await page.fill('input[id="email"], input[type="email"]', data.email);
   }
   
   if (data.phone) {
-    await page.fill('[name="phone"], input[placeholder*="phone"]', data.phone);
+    await page.fill('input[id="phone"], input[placeholder*="phone"]', data.phone);
   }
   
   // Submit form
@@ -145,9 +145,9 @@ export async function changePassword(
   }
   
   // Fill password form
-  await page.fill('[name="current_password"], input[placeholder*="Current"]', currentPassword);
-  await page.fill('[name="password"], [name="new_password"]', newPassword);
-  await page.fill('[name="password_confirmation"], [name="confirm_password"]', confirmPassword || newPassword);
+  await page.fill('input[id="current_password"], input[placeholder*="Current"]', currentPassword);
+  await page.fill('input[id="password"], input[id="new_password"]', newPassword);
+  await page.fill('input[id="password_confirmation"], input[id="confirm_password"]', confirmPassword || newPassword);
   
   // Submit
   const submitButton = page.locator('button[type="submit"]:has-text("Change"), button:has-text("Update")').first();
@@ -168,7 +168,7 @@ export async function deleteAccount(
   await deleteButton.click();
   
   // Fill password confirmation (usually in a modal)
-  const passwordInput = page.locator('[name="password"], input[type="password"]').last();
+  const passwordInput = page.locator('input[id="password"], input[type="password"]').last();
   await passwordInput.fill(password);
   
   // Confirm deletion

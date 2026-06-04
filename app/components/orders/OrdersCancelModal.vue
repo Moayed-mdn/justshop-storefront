@@ -11,6 +11,7 @@
       <div class="flex justify-end gap-3 mt-6">
         <button
           @click="$emit('close')"
+          data-testid="orders-cancel-keep-button"
           class="orders-cancel-keep px-4 py-2 text-sm font-medium border rounded-md cursor-pointer"
           :style="{
             color: 'var(--color-text-secondary)',
@@ -23,6 +24,7 @@
         <button
           @click="$emit('confirm')"
           :disabled="cancelling"
+          data-testid="orders-cancel-confirm-button"
           class="orders-cancel-confirm px-4 py-2 text-sm font-medium rounded-md disabled:opacity-50 cursor-pointer"
           :style="{
             color: 'var(--color-text-inverse)',

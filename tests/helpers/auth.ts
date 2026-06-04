@@ -19,7 +19,7 @@ export const AUTH_COOKIES = {
 
 /**
  * Login via UI
- * Uses actual login page route: /auth/login
+ * Uses actual login page route: /login
  */
 export async function loginViaUI(
   page: Page,
@@ -33,11 +33,11 @@ export async function loginViaUI(
   const { rememberMe = false, waitForRedirect = true } = options || {};
 
   // Navigate to login page
-  await page.goto('/auth/login');
+  await page.goto('/login');
 
-  // Fill login form (adjust selectors based on actual component)
-  await page.fill('[name="email"]', email);
-  await page.fill('[name="password"]', password);
+  // Fill login form (using actual selectors from login.vue)
+  await page.fill('input[id="email"]', email);
+  await page.fill('input[id="password"]', password);
 
   if (rememberMe) {
     await page.check('[name="remember"]');
@@ -49,7 +49,7 @@ export async function loginViaUI(
 
   if (waitForRedirect) {
     // Wait for redirect after successful login
-    await page.waitForURL((url) => !url.pathname.includes('/auth/login'));
+    await page.waitForURL((url) => !url.pathname.includes('/login'));
   }
 
   // Verify session cookies exist
@@ -81,8 +81,9 @@ export async function loginViaAPI(
   const data = await response.json();
 
   // Verify response structure (from actual API)
-  expect(data).toHaveProperty('user');
-  expect(data.user).toHaveProperty('email', email);
+  expect(data).toHaveProperty('data');
+  expect(data.data).toHaveProperty('user');
+  expect(data.data.user).toHaveProperty('email', email);
 
   // Session cookies are set automatically by Set-Cookie header
   // Verify they exist
@@ -92,7 +93,7 @@ export async function loginViaAPI(
 
   return {
     isAuthenticated: true,
-    user: data.user,
+    user: data.data.user,
   };
 }
 

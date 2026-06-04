@@ -1,5 +1,6 @@
 <template>
   <div
+    data-testid="order-detail-summary"
     class="rounded-lg border p-6 space-y-3"
     :style="{
       background: 'var(--color-bg-page)',
@@ -31,7 +32,7 @@
         <span :style="{ color: 'var(--color-success)' }">-{{ formatPrice(discountAmount) }}</span>
       </div>
 
-      <div class="border-t pt-2 flex justify-between" :style="{ borderColor: 'var(--color-border-default)' }">
+      <div data-testid="order-detail-total" class="border-t pt-2 flex justify-between" :style="{ borderColor: 'var(--color-border-default)' }">
         <span class="font-bold" :style="{ color: 'var(--color-text-primary)' }">{{ $t('orders.total') }}</span>
         <span class="font-bold" :style="{ color: 'var(--color-text-primary)' }">{{ formatPrice(total) }}</span>
       </div>

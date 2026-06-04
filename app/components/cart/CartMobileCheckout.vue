@@ -15,11 +15,12 @@
       >
         <div class="flex items-center justify-between mb-3">
           <span class="text-sm text-gray-600">{{ $t('cart.total') }}</span>
-          <span class="text-lg font-bold text-gray-900">{{ formatPrice(total) }}</span>
+          <span data-testid="cart-mobile-total" class="text-lg font-bold text-gray-900">{{ formatPrice(total) }}</span>
         </div>
         <button
           @click="$emit('checkout')"
           :disabled="loading"
+          data-testid="cart-mobile-checkout-button"
           class="w-full py-3 bg-(--color-primary) text-white font-semibold rounded-md
                  hover:bg-(--green-950) transition-colors cursor-pointer
                  disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"

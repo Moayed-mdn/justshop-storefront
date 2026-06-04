@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-(--color-bg-elevated) rounded-lg border border-(--color-border-default) overflow-hidden hover:shadow-sm transition-shadow">
+    <div data-testid="order-card" class="bg-(--color-bg-elevated) rounded-lg border border-(--color-border-default) overflow-hidden hover:shadow-sm transition-shadow">
       <!-- Header -->
       <div class="flex flex-wrap items-center justify-between gap-3 px-4 sm:px-6 py-4 bg-(--color-bg-surface) border-b border-(--color-border-default)">
         <div class="flex flex-wrap items-center gap-x-4 gap-y-1">
@@ -75,6 +75,7 @@
             v-if="order.status === 'delivered'"
             @click="$emit('reorder', order.order_number)"
             :disabled="reordering"
+            data-testid="order-reorder-button"
             class="px-3 py-1.5 text-xs font-semibold text-(--color-primary) border border-(--color-primary)
                    rounded-md hover:bg-(--color-primary)/5 transition-colors disabled:opacity-50 cursor-pointer"
           >
@@ -84,6 +85,7 @@
           <button
             v-if="order.can_cancel"
             @click="$emit('cancel', order.order_number)"
+            data-testid="order-cancel-button"
             class="px-3 py-1.5 text-xs font-semibold text-red-600 border border-red-200
                    rounded-md hover:bg-red-50 transition-colors cursor-pointer"
           >
@@ -92,6 +94,7 @@
   
           <NuxtLinkLocale
             :to="routes.orderDetail(order.order_number)"
+            data-testid="order-view-details-link"
             class="px-3 py-1.5 text-xs font-semibold text-white bg-(--color-primary)
                    rounded-md hover:bg-(--green-950) transition-colors"
           >

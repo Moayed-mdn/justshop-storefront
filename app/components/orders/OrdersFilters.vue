@@ -1,5 +1,6 @@
 <template>
     <div
+      data-testid="orders-filters"
       class="rounded-lg border p-4 mb-6"
       :style="{
         background: 'var(--color-bg-page)',
@@ -13,6 +14,8 @@
             v-for="statusFilter in statusFilters"
             :key="statusFilter.label"
             @click="$emit('update:status', statusFilter.value)"
+            data-testid="orders-status-filter-button"
+            :data-status="statusFilter.value"
             class="px-3 py-1.5 text-xs font-semibold rounded-full border transition-colors cursor-pointer"
             :class="selectedStatus === statusFilter.value
               ? 'bg-(--color-primary) text-white border-(--color-primary)'
@@ -36,6 +39,7 @@
               :value="fromDate"
               @input="$emit('update:fromDate', ($event.target as HTMLInputElement).value)"
               type="date"
+              data-testid="orders-from-date"
               class="orders-date-input px-2 py-1 text-xs border rounded-md focus:ring-(--color-primary) focus:border-(--color-primary)"
             >
           </div>
@@ -45,12 +49,14 @@
               :value="toDate"
               @input="$emit('update:toDate', ($event.target as HTMLInputElement).value)"
               type="date"
+              data-testid="orders-to-date"
               class="orders-date-input px-2 py-1 text-xs border rounded-md focus:ring-(--color-primary) focus:border-(--color-primary)"
             >
           </div>
           <button
             v-if="hasActiveFilters"
             @click="$emit('clear')"
+            data-testid="orders-clear-filters"
             class="text-xs hover:underline cursor-pointer whitespace-nowrap"
             :style="{ color: 'var(--color-error)' }"
           >

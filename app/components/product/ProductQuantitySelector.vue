@@ -1,10 +1,11 @@
 <template>
-    <div class="flex items-center gap-4">
+    <div class="flex items-center gap-4" data-testid="product-quantity-selector">
       <label class="text-sm font-medium text-gray-700">
         {{ $t('product.quantity') }}:
       </label>
       <div class="flex items-center border border-gray-300 rounded-lg overflow-hidden">
         <button
+          data-testid="product-quantity-decrease"
           @click="decreaseQuantity"
           :disabled="modelValue <= 1"
           class="px-3 py-2 hover:bg-gray-100 transition-colors disabled:opacity-40 cursor-pointer"
@@ -16,6 +17,7 @@
         </button>
   
         <input
+          data-testid="product-quantity-input"
           :value="modelValue"
           @input="updateQuantity"
           type="number"
@@ -25,6 +27,7 @@
         >
   
         <button
+          data-testid="product-quantity-increase"
           @click="increaseQuantity"
           :disabled="modelValue >= maxQuantity"
           class="px-3 py-2 hover:bg-gray-100 transition-colors disabled:opacity-40 cursor-pointer"

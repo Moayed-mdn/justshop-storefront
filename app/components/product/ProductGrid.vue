@@ -22,6 +22,7 @@ const pending = inject('pending', ref(false))
     <ProductNoResults v-else-if="products.length === 0" />
     <div
       v-else
+      data-testid="product-grid"
       class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-(--product-grid-gap) p-(--product-grid-padding)"
     >
       <template v-for="product in products" :key="product.id">

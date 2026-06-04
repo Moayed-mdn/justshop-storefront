@@ -11,6 +11,8 @@ Use this file together with:
 - `docs/implementation-plan.md` for the authoritative documentation roadmap
 - `docs/refactoring-plan/README.md` for the storefront refactoring program map
 - `README.md` for repository entry points and setup commands
+- `PLAYWRIGHT_CONTEXT.md` for Playwright E2E testing context and status
+- `PLAYWRIGHT_COMPLETION_SUMMARY.md` for completed test infrastructure overview
 
 ## Current Program Context
 

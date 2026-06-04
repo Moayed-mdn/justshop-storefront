@@ -1,6 +1,7 @@
 <template>
   <button
     type="button"
+    data-testid="google-login-button"
     class="auth-google-btn w-full flex items-center justify-center px-4 py-2 text-sm font-medium border rounded-md shadow-sm focus:outline-none focus:ring-2 transition-colors"
     :style="{
       color: 'var(--color-text-secondary)',

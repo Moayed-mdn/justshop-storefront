@@ -1,6 +1,6 @@
 <!-- app/components/product/ProductNoResults.vue -->
 <template>
-    <div class="flex flex-col items-center justify-center gap-4 py-20 text-center">
+    <div class="flex flex-col items-center justify-center gap-4 py-20 text-center" data-testid="product-no-results">
       <!-- Icon -->
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -27,6 +27,7 @@
   
       <button
         v-if="canReset"
+        data-testid="product-no-results-reset"
         class="mt-2 px-6 py-2 rounded border cursor-pointer
                text-sm font-medium
                bg-(--color-accent) text-white

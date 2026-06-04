@@ -4,6 +4,7 @@
       v-if="status === 'delivered'"
       @click="$emit('reorder')"
       :disabled="reordering"
+      data-testid="order-detail-reorder-button"
       class="w-full py-2.5 px-4 text-sm font-semibold text-(--color-primary) border border-(--color-primary)
              rounded-md hover:bg-(--color-primary)/5 transition-colors disabled:opacity-50 cursor-pointer
              flex items-center justify-center gap-2"
@@ -15,6 +16,7 @@
     <button
       v-if="canCancel"
       @click="$emit('cancel')"
+      data-testid="order-detail-cancel-button"
       class="w-full py-2.5 px-4 text-sm font-semibold text-red-600 border border-red-200
              rounded-md hover:bg-red-50 transition-colors cursor-pointer"
     >

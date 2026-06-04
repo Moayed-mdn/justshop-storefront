@@ -28,11 +28,11 @@
           </div>
   
           <!-- Error -->
-          <div v-if="lookupError" class="p-3 mb-4 text-sm rounded-md" :style="{ color: 'var(--color-error)', backgroundColor: 'color-mix(in srgb, var(--color-error) 12%, transparent)' }">
+          <div v-if="lookupError" data-testid="track-lookup-error" class="p-3 mb-4 text-sm rounded-md" :style="{ color: 'var(--color-error)', backgroundColor: 'color-mix(in srgb, var(--color-error) 12%, transparent)' }">
             {{ lookupError }}
           </div>
   
-          <form @submit.prevent="handleLookup" class="space-y-4">
+          <form @submit.prevent="handleLookup" data-testid="track-lookup-form" class="space-y-4">
             <div>
               <label for="order_number" class="block text-sm font-medium" :style="{ color: 'var(--color-text-secondary)' }">
                 {{ $t('orders.guest_order_number') }}
@@ -42,6 +42,7 @@
                 v-model="form.order_number"
                 type="text"
                 required
+                data-testid="track-order-number-input"
                 :placeholder="$t('orders.guest_order_placeholder')"
                 class="mt-1 block w-full px-3 py-2 border rounded-md shadow-sm
                        focus:ring-(--color-primary) focus:border-(--color-primary) sm:text-sm"
@@ -58,6 +59,7 @@
                 v-model="form.email"
                 type="email"
                 required
+                data-testid="track-email-input"
                 :placeholder="$t('orders.guest_email_placeholder')"
                 class="mt-1 block w-full px-3 py-2 border rounded-md shadow-sm
                        focus:ring-(--color-primary) focus:border-(--color-primary) sm:text-sm"
@@ -68,6 +70,7 @@
             <button
               type="submit"
               :disabled="loading"
+              data-testid="track-lookup-submit"
               class="orders-track__submit w-full py-3 px-4 bg-(--color-primary) font-semibold rounded-md
                      transition-colors disabled:opacity-60
                      disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
@@ -88,10 +91,11 @@
         </div>
   
         <!-- ═══ Found Order ═══ -->
-        <div v-else class="space-y-6">
+        <div v-else data-testid="track-found-order" class="space-y-6">
           <!-- Back button -->
           <button
             @click="foundOrder = null"
+            data-testid="track-new-search-button"
             class="text-sm text-(--color-primary) hover:underline cursor-pointer"
           >
             ← {{ $t('orders.guest_new_search') }}

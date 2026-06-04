@@ -1,5 +1,5 @@
 <template>
-    <div class="text-center py-16">
+    <div data-testid="orders-empty" class="text-center py-16">
       <div class="w-20 h-20 mx-auto mb-4" :style="{ color: 'var(--color-text-muted)' }">
         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-full h-full">
           <path 

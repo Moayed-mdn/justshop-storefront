@@ -2,6 +2,7 @@
   <div class="space-y-2">
     <div class="flex flex-col sm:flex-row gap-3">
       <button
+        data-testid="product-add-to-cart-button"
         @click="$emit('add-to-cart')"
         :disabled="!canAddToCart || isAddingToCart"
         class="flex-1 py-3 px-6 bg-(--color-primary) text-white font-semibold rounded-md
@@ -30,6 +31,7 @@
       </button>
 
       <button
+        data-testid="product-buy-now-button"
         @click="$emit('buy-now')"
         :disabled="!canAddToCart"
         class="flex-1 sm:flex-initial py-3 px-6 border-2 border-(--color-primary) text-(--color-primary)
@@ -44,6 +46,7 @@
     <p
       v-if="disabledReason && !canAddToCart"
       class="text-sm text-red-600"
+      data-testid="product-action-error"
     >
       {{ disabledReason }}
     </p>

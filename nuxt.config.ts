@@ -6,27 +6,31 @@ export default defineNuxtConfig({
     compatibilityVersion: 4,
   },
   compatibilityDate: '2025-07-15',
-  devtools: {
-    enabled: true,
 
+  // ✅ تعطيل devtools و debug في بيئة الاختبار
+  devtools: {
+    enabled: process.env.NODE_ENV !== 'test',
     timeline: {
-      enabled: true
-    }
+      enabled: false,
+    },
   },
-  css:['@/assets/css/main.css'], 
+
+  // ✅ تقليل الـ logs المزعجة
+  debug: false,
+
+  css: ['@/assets/css/main.css'],
   vite: {
     plugins: [
       tailwindcss(),
     ],
     server: {
-      allowedHosts: ['demo.justshop.test'],
+      allowedHosts: ['.justshop.test'],
     },
     optimizeDeps: {
       include: ['@apollo/client/core', 'graphql-tag'],
     },
   },
   runtimeConfig: {
-    // Server-side API base (defaults to public if NUXT_API_BASE is not set)
     apiBase: process.env.NUXT_API_BASE || process.env.NUXT_PUBLIC_API_BASE,
     storefrontRuntimeRollout: {
       mode: (process.env.NUXT_STOREFRONT_RUNTIME_ROLLOUT_MODE
@@ -43,16 +47,19 @@ export default defineNuxtConfig({
         || '',
     },
     public: {
-      // Client-side API base
       apiBase: process.env.NUXT_PUBLIC_API_BASE,
       graphqlUrl: process.env.NUXT_PUBLIC_GRAPHQL_URL,
     },
   },
-  modules: ['@vueuse/nuxt', '@nuxtjs/i18n', 'nuxt-ssr-api-logger',
-     '@pinia/nuxt','@nuxt/ui','pinia-plugin-persistedstate/nuxt', 
-     '@nuxt/icon',
-     
-    ],
+  modules: [
+    '@vueuse/nuxt',
+    '@nuxtjs/i18n',
+    'nuxt-ssr-api-logger',
+    '@pinia/nuxt',
+    '@nuxt/ui',
+    'pinia-plugin-persistedstate/nuxt',
+    '@nuxt/icon',
+  ],
 
   components: [
     { path: '~/components/ui', prefix: 'Ui', pathPrefix: false },
@@ -90,40 +97,47 @@ export default defineNuxtConfig({
     defaultLocale: 'en',
     strategy: 'prefix_except_default',
     baseUrl: process.env.NUXT_PUBLIC_SITE_URL || 'http://localhost:3000',
-    langDir: 'locales',
-      detectBrowserLanguage: {
+    detectBrowserLanguage: {
       useCookie: true,
-      cookieKey: "i18n_redirected",
-      redirectOn: "root",
+      cookieKey: 'i18n_redirected',
+      redirectOn: 'root',
       alwaysRedirect: true,
     },
-      locales: [
+    locales: [
       {
         code: 'en',
         language: 'en-US',
         dir: 'ltr',
         name: 'English',
-        icon: 'i-circle-flags-gb' ,
-        files: ['en/header.json', 'en/cart.json', 'en/best-seller.json','en/product.json','en/search.json',
-           'en/filter.json', 'en/topbar.json','en/footer.json', 'en/checkout.json','en/orders.json',
-           'en/login.json', 'en/register.json', 'en/profile.json', 'en/auth.json']
+        icon: 'i-circle-flags-gb',
+        files: [
+          'en/header.json', 'en/cart.json', 'en/best-seller.json',
+          'en/product.json', 'en/search.json', 'en/filter.json',
+          'en/topbar.json', 'en/footer.json', 'en/checkout.json',
+          'en/orders.json', 'en/login.json', 'en/register.json',
+          'en/profile.json', 'en/auth.json',
+        ],
       },
       {
         code: 'ar',
         language: 'ar-SA',
         dir: 'rtl',
         name: 'العربية',
-        icon: 'i-circle-flags-sa' ,
-        files: ['ar/header.json', 'ar/cart.json', 'ar/best-seller.json','ar/product.json', 'ar/search.json',
-           'ar/filter.json', 'ar/topbar.json','ar/footer.json', 'ar/checkout.json','ar/orders.json',
-           'ar/login.json', 'ar/register.json', 'ar/profile.json', 'ar/auth.json']
+        icon: 'i-circle-flags-sa',
+        files: [
+          'ar/header.json', 'ar/cart.json', 'ar/best-seller.json',
+          'ar/product.json', 'ar/search.json', 'ar/filter.json',
+          'ar/topbar.json', 'ar/footer.json', 'ar/checkout.json',
+          'ar/orders.json', 'ar/login.json', 'ar/register.json',
+          'ar/profile.json', 'ar/auth.json',
+        ],
       },
-      
-    ]
+    ],
   },
+
   typescript: {
     tsConfig: {
-      include: ['../src/**/*', '../types/**/*.d.ts']
-    }
-  }
+      include: ['../src/**/*', '../types/**/*.d.ts'],
+    },
+  },
 })

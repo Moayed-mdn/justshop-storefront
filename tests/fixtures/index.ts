@@ -28,9 +28,11 @@ export * from './users';
  */
 export async function setupAuthenticatedContext(
   page: Page,
-  authState: Partial<AuthState>
+  authState: Partial<AuthState>,
+  domain?: string,
 ): Promise<void> {
-  // Set js_auth cookie (actual auth state persistence)
+  const cookieDomain = domain || extractDomain(page.url()) || 'localhost';
+
   await page.context().addCookies([
     {
       name: 'js_auth',
@@ -39,39 +41,39 @@ export async function setupAuthenticatedContext(
         user: authState.user,
         ...authState,
       })),
-      domain: 'localhost',
+      domain: cookieDomain,
       path: '/',
       httpOnly: false,
       secure: false,
       sameSite: 'Lax',
     },
-  ]);
-
-  // Set session cookie (backend session)
-  await page.context().addCookies([
     {
       name: 'ecommerce_session',
       value: 'test-session-' + Date.now(),
-      domain: 'localhost',
+      domain: cookieDomain,
       path: '/',
       httpOnly: true,
       secure: false,
       sameSite: 'Lax',
     },
-  ]);
-
-  // Set XSRF token (CSRF protection)
-  await page.context().addCookies([
     {
       name: 'XSRF-TOKEN',
       value: 'test-xsrf-token-' + Date.now(),
-      domain: 'localhost',
+      domain: cookieDomain,
       path: '/',
       httpOnly: false,
       secure: false,
       sameSite: 'Lax',
     },
   ]);
+}
+
+function extractDomain(url: string): string | null {
+  try {
+    return new URL(url).hostname;
+  } catch {
+    return null;
+  }
 }
 
 /**

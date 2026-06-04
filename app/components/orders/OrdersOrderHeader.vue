@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-wrap items-start justify-between gap-4 mb-6">
+  <div data-testid="order-detail-header" class="flex flex-wrap items-start justify-between gap-4 mb-6">
     <div>
       <NuxtLinkLocale
         :to="routes.orders()"
@@ -14,6 +14,7 @@
         {{ $t('orders.detail_title') }}
       </h1>
       <p
+        data-testid="order-detail-number"
         class="text-sm mt-1 font-mono"
         :style="{ color: 'var(--color-text-muted)' }"
       >

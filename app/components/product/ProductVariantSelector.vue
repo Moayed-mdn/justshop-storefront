@@ -1,5 +1,5 @@
 <template>
-    <div class="space-y-6">
+    <div class="space-y-6" data-testid="product-variant-selector">
       <!-- Attribute Selectors -->
       <div
         v-for="(values, attrName) in attributes"
@@ -14,6 +14,7 @@
           <button
             v-for="value in values"
             :key="value"
+            data-testid="product-variant-option"
             @click="selectAttribute(attrName as string, value)"
             :disabled="!isValueAvailable(attrName as string, value)"
             class="px-4 py-2 border-2 rounded-md text-sm font-medium transition-all cursor-pointer"
@@ -26,12 +27,12 @@
   
       <!-- Variant Info -->
       <div v-if="selectedVariant" class="space-y-2 text-sm">
-        <div v-if="selectedVariant.sku" class="flex items-center gap-2">
+        <div v-if="selectedVariant.sku" class="flex items-center gap-2" data-testid="product-sku">
           <span class="text-gray-500">{{ $t('product.sku') }}:</span>
           <span class="font-mono">{{ selectedVariant.sku }}</span>
         </div>
   
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-2" data-testid="product-stock-status">
           <span
             v-if="selectedVariant.stock > 0"
             class="text-green-600 font-medium"
@@ -48,6 +49,7 @@
           <span
             v-if="selectedVariant.stock > 0 && selectedVariant.stock <= 5"
             class="text-amber-600 text-xs"
+            data-testid="product-stock-warning"
           >
             ({{ $t('product.only_x_left', { count: selectedVariant.stock }) }})
           </span>
@@ -58,6 +60,7 @@
       <div
         v-if="errorMessage"
         class="text-sm text-red-600 bg-red-50 px-3 py-2 rounded-md"
+        data-testid="product-variant-error"
       >
         {{ errorMessage }}
       </div>

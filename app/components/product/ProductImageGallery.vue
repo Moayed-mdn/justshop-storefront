@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-4">
+  <div class="space-y-4" data-testid="product-image-gallery">
     <!-- Main Image -->
     <div
       class="relative aspect-square bg-gray-50 rounded-lg overflow-hidden cursor-zoom-in"
@@ -7,6 +7,7 @@
     >
       <img
         v-if="currentImage"
+        data-testid="product-image-main"
         :src="currentImage.url"
         :alt="currentImage.alt_text ?? $t('product.image_alt', { number: currentIndex + 1 })"
         class="w-full h-full object-contain"
@@ -26,6 +27,7 @@
       <!-- Navigation Arrows (if multiple images) -->
       <template v-if="images.length > 1">
         <button
+          data-testid="product-image-prev"
           @click.stop="previousImage"
           class="absolute ltr:left-2 rtl:right-2 top-1/2 -translate-y-1/2 w-10 h-10
                  bg-white/90 rounded-full shadow-md flex items-center justify-center
@@ -38,6 +40,7 @@
         </button>
 
         <button
+          data-testid="product-image-next"
           @click.stop="nextImage"
           class="absolute ltr:right-2 rtl:left-2 top-1/2 -translate-y-1/2 w-10 h-10
                  bg-white/90 rounded-full shadow-md flex items-center justify-center
@@ -53,6 +56,7 @@
       <!-- Image counter -->
       <div
         v-if="images.length > 1"
+        data-testid="product-image-counter"
         class="absolute top-2 ltr:left-2 rtl:right-2 bg-black/50 text-white text-xs
                px-2 py-1 rounded-md"
       >
@@ -71,6 +75,7 @@
       <button
         v-for="(img, idx) in images"
         :key="img.id"
+        data-testid="product-image-thumbnail"
         @click="currentIndex = idx"
         class="flex-shrink-0 w-20 h-20 rounded-md overflow-hidden border-2 transition-colors cursor-pointer"
         :class="currentIndex === idx
@@ -89,6 +94,7 @@
     <Teleport to="body">
       <div
         v-if="showZoom"
+        data-testid="product-image-zoom-modal"
         class="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
         @click="showZoom = false"
       >

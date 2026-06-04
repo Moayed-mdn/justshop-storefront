@@ -4,7 +4,7 @@
       <div class="max-w-lg mx-auto px-4 py-12 sm:py-20">
   
         <!-- ── Loading / Processing ── -->
-        <div v-if="status === 'loading'" class="text-center space-y-4">
+        <div v-if="status === 'loading'" data-testid="checkout-success-loading" class="text-center space-y-4">
           <div class="flex justify-center">
             <svg class="animate-spin h-12 w-12 text-(--color-primary)" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
@@ -16,7 +16,7 @@
         </div>
   
         <!-- ── Success ── -->
-        <div v-else-if="status === 'success'" class="text-center space-y-6">
+        <div v-else-if="status === 'success'" data-testid="checkout-success-container" class="text-center space-y-6">
           <!-- Checkmark -->
           <div class="flex justify-center">
             <div class="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center">
@@ -32,17 +32,18 @@
           </div>
   
           <!-- Order Details Card -->
-          <div class="bg-white rounded-lg border border-gray-200 p-6 text-left space-y-4">
+          <div data-testid="checkout-success-order" class="bg-white rounded-lg border border-gray-200 p-6 text-left space-y-4">
             <!-- Order Number -->
             <div class="flex justify-between items-center">
               <span class="text-sm text-gray-500">{{ $t('checkout.order_number') }}</span>
-              <span class="text-sm font-bold text-gray-900 font-mono">{{ orderData?.order_number }}</span>
+              <span data-testid="checkout-order-number" class="text-sm font-bold text-gray-900 font-mono">{{ orderData?.order_number }}</span>
             </div>
   
             <!-- Payment Status -->
             <div class="flex justify-between items-center">
               <span class="text-sm text-gray-500">{{ $t('checkout.payment_status') }}</span>
               <span
+                data-testid="checkout-payment-status"
                 class="text-sm font-semibold px-2.5 py-0.5 rounded-full"
                 :class="paymentStatusClasses"
               >
@@ -85,6 +86,7 @@
             <NuxtLinkLocale
               v-if="isLoggedIn"
               :to="routes.orders()"
+              data-testid="checkout-view-orders"
               class="flex-1 py-3 px-4 text-center text-sm font-semibold text-white bg-(--color-primary)
                      rounded-md hover:bg-(--green-950) transition-colors"
             >
@@ -93,6 +95,7 @@
   
             <NuxtLinkLocale
               :to="routes.home()"
+              data-testid="checkout-continue-shopping"
               class="flex-1 py-3 px-4 text-center text-sm font-semibold border border-gray-300
                      rounded-md hover:bg-gray-50 transition-colors"
               :class="isLoggedIn ? 'text-gray-700' : 'text-white bg-(--color-primary) hover:bg-(--green-950) border-transparent'"
@@ -103,7 +106,7 @@
         </div>
   
         <!-- ── Error ── -->
-        <div v-else-if="status === 'error'" class="text-center space-y-6">
+        <div v-else-if="status === 'error'" data-testid="checkout-error-container" class="text-center space-y-6">
           <div class="flex justify-center">
             <div class="w-20 h-20 rounded-full bg-red-100 flex items-center justify-center">
               <svg class="w-10 h-10 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
