@@ -49,6 +49,7 @@ export default defineNuxtConfig({
     public: {
       apiBase: process.env.NUXT_PUBLIC_API_BASE,
       graphqlUrl: process.env.NUXT_PUBLIC_GRAPHQL_URL,
+      dashboardUrl: process.env.NUXT_PUBLIC_DASHBOARD_URL || '/',
     },
   },
   modules: [
@@ -95,7 +96,7 @@ export default defineNuxtConfig({
 
   i18n: {
     defaultLocale: 'en',
-    strategy: 'prefix_except_default',
+    strategy: 'prefix',
     baseUrl: process.env.NUXT_PUBLIC_SITE_URL || 'http://localhost:3000',
     detectBrowserLanguage: {
       useCookie: true,
@@ -115,7 +116,7 @@ export default defineNuxtConfig({
           'en/product.json', 'en/search.json', 'en/filter.json',
           'en/topbar.json', 'en/footer.json', 'en/checkout.json',
           'en/orders.json', 'en/login.json', 'en/register.json',
-          'en/profile.json', 'en/auth.json',
+          'en/profile.json', 'en/auth.json', 'en/error.json',
         ],
       },
       {
@@ -129,7 +130,7 @@ export default defineNuxtConfig({
           'ar/product.json', 'ar/search.json', 'ar/filter.json',
           'ar/topbar.json', 'ar/footer.json', 'ar/checkout.json',
           'ar/orders.json', 'ar/login.json', 'ar/register.json',
-          'ar/profile.json', 'ar/auth.json',
+          'ar/profile.json', 'ar/auth.json', 'ar/error.json',
         ],
       },
     ],

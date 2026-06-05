@@ -1,0 +1,29 @@
+{
+  "store_not_found": {
+    "title": "Store not found",
+    "headline": "This store doesn't exist.",
+    "description": "The store you're looking for hasn't been created yet, or the address may have changed.",
+    "cta_home": "Go to JustShop",
+    "cta_create": "Start your own store",
+    "hint": "Looking to build your own online store?"
+  },
+  "store_inactive": {
+    "title": "Store unavailable",
+    "headline": "This store is currently unavailable.",
+    "description": "The store you're trying to reach is paused or under maintenance. Please check back later.",
+    "cta_home": "Go to JustShop"
+  },
+  "generic": {
+    "title": "Something went wrong",
+    "headline": "An unexpected error occurred.",
+    "description": "We couldn't load this page. Please try again or return to the homepage.",
+    "cta_home": "Go to JustShop",
+    "cta_retry": "Try again"
+  },
+  "not_found": {
+    "title": "Page not found",
+    "headline": "We can't find that page.",
+    "description": "The page you're looking for may have moved or no longer exists.",
+    "cta_home": "Go to homepage"
+  }
+}

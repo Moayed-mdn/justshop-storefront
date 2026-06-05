@@ -31,6 +31,7 @@ export default defineEventHandler(async (event) => {
     throw createError({
       statusCode: 404,
       statusMessage: 'Tenant not found',
+      data: { runtimeCode: 'runtime.tenant_not_found' },
     })
   }
 

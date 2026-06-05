@@ -103,6 +103,7 @@ const toRuntimePageError = (error: unknown) => {
       statusCode: error.statusCode,
       statusMessage: error.message,
       data: {
+        runtimeCode: error.isNotFound ? 'runtime.page_not_found' : undefined,
         originalStack: error.stack,
       },
     }
@@ -119,6 +120,8 @@ const toRuntimePageError = (error: unknown) => {
     statusMessage: isRolloutDisabled ? 'Page not found' : normalized.message,
     data: {
       ...normalized,
+      // Preserve the runtime code so error.vue can render the right variant
+      runtimeCode: normalized.code,
       originalStack: (error as Error)?.stack,
     },
   }

@@ -1,5 +1,10 @@
 <template>
-  <section v-if="hasContent" class="rounded-3xl bg-[--color-bg-inverse] px-6 py-16 text-[--color-text-inverse] sm:px-10">
+  <section 
+    v-if="hasContent" 
+    ref="heroSection"
+    class="rounded-3xl px-6 py-16 text-[--color-text-inverse] sm:px-10"
+    :style="sectionStyle"
+  >
     <div class="mx-auto max-w-4xl">
       <p v-if="resolvedEyebrow" class="text-sm font-semibold uppercase tracking-[0.2em] text-[--color-text-inverse] opacity-90">
         {{ resolvedEyebrow }}
@@ -30,9 +35,33 @@ type HeroBannerItem = {
   subheadline?: string
   ctaText?: string
   ctaUrl?: string
+  visualType?: string
+  imageUrl?: string | null
+  gradientFrom?: string | null
+  gradientTo?: string | null
 }
 
 const props = defineProps<RuntimeSectionComponentProps>()
+
+// Template ref for direct DOM manipulation if needed
+const heroSection = ref<HTMLElement | null>(null)
+
+// Track client-side hydration state
+const isHydrated = ref(false)
+
+// Ensure client-side hydration is complete
+onMounted(() => {
+  isHydrated.value = true
+  
+  // Force re-apply styles after hydration to fix any SSR mismatch
+  if (heroSection.value && sectionStyle.value) {
+    nextTick(() => {
+      if (heroSection.value) {
+        Object.assign(heroSection.value.style, sectionStyle.value)
+      }
+    })
+  }
+})
 
 const heroItems = computed<HeroBannerItem[]>(() => {
   if (!Array.isArray(props.data.items)) {
@@ -46,6 +75,10 @@ const heroItems = computed<HeroBannerItem[]>(() => {
       subheadline: typeof item.subheadline === 'string' ? item.subheadline : undefined,
       ctaText: typeof item.ctaText === 'string' ? item.ctaText : undefined,
       ctaUrl: typeof item.ctaUrl === 'string' ? item.ctaUrl : undefined,
+      visualType: typeof item.visualType === 'string' ? item.visualType : 'image',
+      imageUrl: typeof item.imageUrl === 'string' ? item.imageUrl : null,
+      gradientFrom: typeof item.gradientFrom === 'string' ? item.gradientFrom : null,
+      gradientTo: typeof item.gradientTo === 'string' ? item.gradientTo : null,
     }))
 })
 
@@ -56,6 +89,41 @@ const content = computed(() => {
   return value && typeof value === 'object' && !Array.isArray(value)
     ? value as Record<string, unknown>
     : {}
+})
+
+// Memoized and stable style computation
+const sectionStyle = computed(() => {
+  const item = primaryHeroItem.value
+  
+  if (!item) {
+    return { background: 'var(--color-bg-inverse)' }
+  }
+
+  // Gradient type - ensure values are sanitized and stable
+  if (item.visualType === 'gradient' && item.gradientFrom && item.gradientTo) {
+    const from = String(item.gradientFrom).trim()
+    const to = String(item.gradientTo).trim()
+    
+    // Return stable object structure
+    return {
+      background: `linear-gradient(135deg, ${from}, ${to})`,
+      backgroundImage: `linear-gradient(135deg, ${from}, ${to})` // Fallback for some browsers
+    }
+  }
+
+  // Image type
+  if (item.visualType === 'image' && item.imageUrl) {
+    const url = String(item.imageUrl).trim()
+    return {
+      backgroundImage: `url(${url})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat'
+    }
+  }
+
+  // Fallback
+  return { background: 'var(--color-bg-inverse)' }
 })
 
 const resolvedEyebrow = computed(() => {
