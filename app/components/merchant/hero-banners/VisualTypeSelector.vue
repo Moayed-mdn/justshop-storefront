@@ -25,10 +25,11 @@
 
     <!-- Image Upload (shown when visual_type is 'image') -->
     <div v-if="localVisualType === 'image'" class="space-y-2">
-      <ImageUploader
+      <GenericImageUploader
         v-model="localImagePath"
         label="Hero Banner Image"
         :store-id="storeId"
+        context="hero"
         @update:model-value="emitValues"
       />
     </div>
@@ -116,7 +117,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import type { VisualType } from '~/types/heroBanner'
-import ImageUploader from './ImageUploader.vue'
+import GenericImageUploader from '~/components/merchant/shared/GenericImageUploader.vue'
 
 const props = defineProps<{
   visualType: VisualType
