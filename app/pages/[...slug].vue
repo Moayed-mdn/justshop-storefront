@@ -233,23 +233,42 @@ const runtimeShellStyle = computed<Record<string, string>>(() => {
   }
 })
 
-useHead(() => ({
-  htmlAttrs: {
-    lang: runtimePage.value?.locale || storefrontContext.value.locale,
-    dir: runtimeBundle.value?.theme?.settings?.direction || 'ltr',
-  },
-  bodyAttrs: {
-    style: runtimeBundle.value?.theme?.tokens?.fontBody
-      ? `font-family:${runtimeBundle.value.theme.tokens.fontBody};`
-      : undefined,
-  },
-  meta: runtimeBundle.value?.theme?.tokens?.colorPrimary
-    ? [{ name: 'theme-color', content: runtimeBundle.value.theme.tokens.colorPrimary }]
-    : [],
-  link: runtimeBundle.value?.theme?.assets?.faviconUrl
-    ? [{ rel: 'icon', href: runtimeBundle.value.theme.assets.faviconUrl }]
-    : [],
-}))
+useHead(() => {
+  const theme = runtimeBundle.value?.theme
+  const styleVars = theme ? Object.entries({
+    '--color-primary': theme.tokens.colorPrimary,
+    '--color-secondary': theme.tokens.colorSecondary,
+    '--color-accent': theme.tokens.colorAccent,
+    '--color-bg-page': theme.tokens.colorSurface,
+    '--color-bg-surface': theme.tokens.colorSurface,
+    '--color-bg-elevated': theme.tokens.colorSurface,
+    '--color-bg-card': theme.tokens.colorSurface,
+    '--color-bg-secondary': theme.tokens.colorSurface,
+    '--color-bg-hover': `color-mix(in srgb, ${theme.tokens.colorSurface} 90%, #000)`,
+    '--color-border-default': `color-mix(in srgb, ${theme.tokens.colorSurface} 80%, #000)`,
+    '--color-background': theme.tokens.colorSurface,
+    '--color-text-primary': theme.tokens.colorText,
+    '--color-text': theme.tokens.colorText,
+    '--color-text-secondary': theme.tokens.colorText,
+    '--color-text-muted': theme.tokens.colorText,
+  }).map(([key, value]) => `${key}:${value}`).join(';') : undefined
+
+  return {
+    htmlAttrs: {
+      lang: runtimePage.value?.locale || storefrontContext.value.locale,
+      dir: theme?.settings?.direction || 'ltr',
+    },
+    bodyAttrs: {
+      style: styleVars || (theme?.tokens?.fontBody ? `font-family:${theme.tokens.fontBody};` : undefined),
+    },
+    meta: theme?.tokens?.colorPrimary
+      ? [{ name: 'theme-color', content: theme.tokens.colorPrimary }]
+      : [],
+    link: theme?.assets?.faviconUrl
+      ? [{ rel: 'icon', href: theme.assets.faviconUrl }]
+      : [],
+  }
+})
 
 watchEffect(() => {
   if (runtimePage.value?.seo) {
