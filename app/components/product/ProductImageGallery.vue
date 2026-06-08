@@ -14,7 +14,7 @@
         loading="lazy"
         decoding="async"
       >
-      <div v-else class="w-full h-full flex items-center justify-center text-gray-300">
+      <div v-else class="w-full h-full flex items-center justify-center text-(--color-text-disabled)">
         <svg class="w-20 h-20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
             d="M4 16l4.586-4.586a2 2 0 012.828 0L16
@@ -80,7 +80,7 @@
         class="flex-shrink-0 w-20 h-20 rounded-md overflow-hidden border-2 transition-colors cursor-pointer"
         :class="currentIndex === idx
           ? 'border-(--color-primary)'
-          : 'border-gray-200 hover:border-gray-300'"
+          : 'border-(--color-border-default) hover:border-(--color-border-hover)'"
       >
         <img
           :src="img.url"

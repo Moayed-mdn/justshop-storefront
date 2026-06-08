@@ -42,7 +42,7 @@
             @click="handleRemove"
             :disabled="isRemoving"
             data-testid="confirm-remove"
-            class="flex-shrink-0 p-1 text-(--color-text-muted) hover:text-red-500
+            class="flex-shrink-0 p-1 text-(--color-text-muted) hover:text-(--color-error)
                    transition-colors cursor-pointer disabled:opacity-50"
             :title="$t('cart.remove')"
           >
@@ -89,7 +89,7 @@
               class="w-8 h-8 flex items-center justify-center text-(--color-text-secondary)
                      hover:bg-(--color-bg-hover) transition-colors disabled:opacity-40 cursor-pointer"
             >
-              <svg v-if="item.quantity === 1" class="w-4 h-4 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg v-if="item.quantity === 1" class="w-4 h-4 text-(--color-error)" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M19 7l-.867 12.142A2 2 0
                      0116.138 21H7.862a2 2 0

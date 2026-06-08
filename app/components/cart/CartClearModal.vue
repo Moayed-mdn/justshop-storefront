@@ -35,8 +35,8 @@
                 <button
                   @click="$emit('confirm')"
                   data-testid="confirm-clear"
-                  class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md
-                         hover:bg-red-700 cursor-pointer transition-colors"
+                  class="px-4 py-2 text-sm font-medium text-white bg-(--color-error) rounded-md
+                         hover:bg-(--color-error-hover) cursor-pointer transition-colors"
                 >
                   {{ $t('cart.clear_cart') }}
                 </button>

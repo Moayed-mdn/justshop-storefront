@@ -1,6 +1,6 @@
 <template>
   <div class="space-y-0.5" data-testid="product-price">
-    <div v-if="showPriceRange" class="text-xs font-medium uppercase tracking-wider text-gray-500">
+    <div v-if="showPriceRange" class="text-xs font-medium uppercase tracking-wider text-(--color-text-secondary)">
       {{ $t('product.price_from') }}
     </div>
     <div class="flex items-baseline gap-3">

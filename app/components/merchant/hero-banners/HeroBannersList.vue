@@ -2,16 +2,16 @@
   <div>
     <!-- Loading State -->
     <div v-if="loading" class="flex items-center justify-center py-12">
-      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-(--color-primary)"></div>
     </div>
 
     <!-- Empty State -->
     <div
       v-else-if="!banners || banners.length === 0"
-      class="text-center py-12 bg-gray-50 rounded-lg"
+      class="text-center py-12 bg-(--color-bg-secondary) rounded-lg"
     >
       <svg
-        class="mx-auto h-12 w-12 text-gray-400"
+        class="mx-auto h-12 w-12 text-(--color-text-secondary)"
         fill="none"
         viewBox="0 0 24 24"
         stroke="currentColor"
@@ -23,14 +23,14 @@
           d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
         />
       </svg>
-      <h3 class="mt-2 text-sm font-medium text-gray-900">No hero banners</h3>
-      <p class="mt-1 text-sm text-gray-500">
+      <h3 class="mt-2 text-sm font-medium text-(--color-text-primary)">No hero banners</h3>
+      <p class="mt-1 text-sm text-(--color-text-secondary)">
         Get started by creating a new hero banner.
       </p>
       <div class="mt-6">
         <NuxtLink
           to="/merchant/hero-banners/create"
-          class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-(--color-primary) hover:bg-(--color-primary-hover) focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-(--color-primary)"
         >
           <svg class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
@@ -42,22 +42,22 @@
 
     <!-- Banners Table -->
     <div v-else class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 rounded-lg">
-      <table class="min-w-full divide-y divide-gray-300">
-        <thead class="bg-gray-50">
+      <table class="min-w-full divide-y divide-(--color-border-default)">
+        <thead class="bg-(--color-bg-secondary)">
           <tr>
-            <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">
+            <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-(--color-text-primary) sm:pl-6">
               Position
             </th>
-            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-(--color-text-primary)">
               Title
             </th>
-            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-(--color-text-primary)">
               Visual Type
             </th>
-            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-(--color-text-primary)">
               Status
             </th>
-            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-(--color-text-primary)">
               Created
             </th>
             <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
@@ -65,19 +65,19 @@
             </th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-gray-200 bg-white">
+        <tbody class="divide-y divide-(--color-border-default) bg-white">
           <tr v-for="banner in banners" :key="banner.id" :class="{ 'opacity-50': banner.deleted_at }">
             <!-- Position -->
-            <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
+            <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-(--color-text-primary) sm:pl-6">
               {{ banner.position }}
             </td>
 
             <!-- Title -->
-            <td class="px-3 py-4 text-sm text-gray-900">
+            <td class="px-3 py-4 text-sm text-(--color-text-primary)">
               <div class="font-medium">
                 {{ getTranslation(banner, 'en')?.title || 'No title' }}
               </div>
-              <div class="text-gray-500 text-xs mt-1">
+              <div class="text-(--color-text-secondary) text-xs mt-1">
                 {{ getTranslation(banner, 'ar')?.title || 'بدون عنوان' }}
               </div>
             </td>
@@ -87,9 +87,9 @@
               <span
                 :class="[
                   'inline-flex rounded-full px-2 py-1 text-xs font-semibold',
-                  banner.visual_type === 'image' ? 'bg-blue-100 text-blue-800' :
+                  banner.visual_type === 'image' ? 'bg-(--color-info-bg) text-(--color-info)' :
                   banner.visual_type === 'gradient' ? 'bg-purple-100 text-purple-800' :
-                  'bg-green-100 text-green-800'
+                  'bg-(--color-success-bg) text-(--color-success)'
                 ]"
               >
                 {{ banner.visual_type }}
@@ -100,26 +100,26 @@
             <td class="whitespace-nowrap px-3 py-4 text-sm">
               <span
                 v-if="banner.deleted_at"
-                class="inline-flex rounded-full bg-red-100 px-2 py-1 text-xs font-semibold text-red-800"
+                class="inline-flex rounded-full bg-(--color-error-bg) px-2 py-1 text-xs font-semibold text-(--color-error)"
               >
                 Deleted
               </span>
               <span
                 v-else-if="banner.is_active"
-                class="inline-flex rounded-full bg-green-100 px-2 py-1 text-xs font-semibold text-green-800"
+                class="inline-flex rounded-full bg-(--color-success-bg) px-2 py-1 text-xs font-semibold text-(--color-success)"
               >
                 Active
               </span>
               <span
                 v-else
-                class="inline-flex rounded-full bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800"
+                class="inline-flex rounded-full bg-(--color-bg-secondary) px-2 py-1 text-xs font-semibold text-(--color-text-secondary)"
               >
                 Inactive
               </span>
             </td>
 
             <!-- Created Date -->
-            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+            <td class="whitespace-nowrap px-3 py-4 text-sm text-(--color-text-secondary)">
               {{ formatDate(banner.created_at) }}
             </td>
 
@@ -130,7 +130,7 @@
                 <NuxtLink
                   v-if="!banner.deleted_at"
                   :to="`/merchant/hero-banners/${banner.id}/edit`"
-                  class="text-blue-600 hover:text-blue-900"
+                  class="text-(--color-primary) hover:text-(--color-primary-hover)"
                 >
                   Edit
                 </NuxtLink>
@@ -139,7 +139,7 @@
                 <button
                   v-if="!banner.deleted_at"
                   type="button"
-                  class="text-red-600 hover:text-red-900"
+                  class="text-(--color-error) hover:text-(--color-error-hover)"
                   @click="$emit('delete', banner.id)"
                 >
                   Delete
@@ -149,7 +149,7 @@
                 <button
                   v-if="banner.deleted_at"
                   type="button"
-                  class="text-green-600 hover:text-green-900"
+                  class="text-(--color-success) hover:text-(--color-success-hover)"
                   @click="$emit('restore', banner.id)"
                 >
                   Restore

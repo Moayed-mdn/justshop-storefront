@@ -2,7 +2,7 @@
   <div class="space-y-4">
     <!-- Visual Type Selector -->
     <div>
-      <label class="block text-sm font-medium text-gray-700 mb-2">
+      <label class="block text-sm font-medium text-(--color-text-primary) mb-2">
         Visual Type *
       </label>
       <div class="flex gap-4">
@@ -15,10 +15,10 @@
             type="radio"
             :value="type.value"
             :checked="localVisualType === type.value"
-            class="h-4 w-4 text-blue-600 focus:ring-blue-500"
+            class="h-4 w-4 text-(--color-primary) focus:ring-(--color-primary)"
             @change="handleVisualTypeChange(type.value)"
           />
-          <span class="text-sm text-gray-700">{{ type.label }}</span>
+          <span class="text-sm text-(--color-text-primary)">{{ type.label }}</span>
         </label>
       </div>
     </div>
@@ -38,7 +38,7 @@
     <div v-if="localVisualType === 'gradient'" class="space-y-4">
       <div class="grid grid-cols-2 gap-4">
         <div>
-          <label for="gradient-from" class="block text-sm font-medium text-gray-700 mb-2">
+          <label for="gradient-from" class="block text-sm font-medium text-(--color-text-primary) mb-2">
             Gradient Start Color
           </label>
           <div class="flex items-center gap-2">
@@ -53,14 +53,14 @@
               v-model="localGradientFrom"
               type="text"
               placeholder="#000000"
-              class="flex-1 rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              class="flex-1 rounded-md border border-(--color-border-default) px-3 py-2 text-sm focus:border-(--color-primary) focus:outline-none focus:ring-1 focus:ring-(--color-primary)"
               @input="emitValues"
             />
           </div>
         </div>
         
         <div>
-          <label for="gradient-to" class="block text-sm font-medium text-gray-700 mb-2">
+          <label for="gradient-to" class="block text-sm font-medium text-(--color-text-primary) mb-2">
             Gradient End Color
           </label>
           <div class="flex items-center gap-2">
@@ -75,7 +75,7 @@
               v-model="localGradientTo"
               type="text"
               placeholder="#ffffff"
-              class="flex-1 rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              class="flex-1 rounded-md border border-(--color-border-default) px-3 py-2 text-sm focus:border-(--color-primary) focus:outline-none focus:ring-1 focus:ring-(--color-primary)"
               @input="emitValues"
             />
           </div>
@@ -84,7 +84,7 @@
       
       <!-- Gradient Preview -->
       <div class="mt-4">
-        <p class="text-sm font-medium text-gray-700 mb-2">Preview:</p>
+        <p class="text-sm font-medium text-(--color-text-primary) mb-2">Preview:</p>
         <div
           class="h-32 rounded-lg"
           :style="{
@@ -96,7 +96,7 @@
 
     <!-- Video URL Input (shown when visual_type is 'video') -->
     <div v-if="localVisualType === 'video'" class="space-y-2">
-      <label for="video-url" class="block text-sm font-medium text-gray-700">
+      <label for="video-url" class="block text-sm font-medium text-(--color-text-primary)">
         Video URL
       </label>
       <input
@@ -104,10 +104,10 @@
         v-model="localVideoUrl"
         type="url"
         placeholder="https://example.com/video.mp4"
-        class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+        class="w-full rounded-md border border-(--color-border-default) px-3 py-2 text-sm focus:border-(--color-primary) focus:outline-none focus:ring-1 focus:ring-(--color-primary)"
         @input="emitValues"
       />
-      <p class="text-xs text-gray-500">
+      <p class="text-xs text-(--color-text-secondary)">
         Enter a full URL to the video file
       </p>
     </div>

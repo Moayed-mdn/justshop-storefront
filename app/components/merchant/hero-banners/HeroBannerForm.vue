@@ -1,15 +1,15 @@
 <template>
   <form @submit.prevent="handleSubmit" class="space-y-6">
     <!-- Error Message -->
-    <div v-if="errorMessage" class="rounded-md bg-red-50 p-4">
+    <div v-if="errorMessage" class="rounded-md bg-(--color-error-bg) p-4">
       <div class="flex">
         <div class="flex-shrink-0">
-          <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+          <svg class="h-5 w-5 text-(--color-error)" viewBox="0 0 20 20" fill="currentColor">
             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
           </svg>
         </div>
         <div class="ml-3">
-          <p class="text-sm font-medium text-red-800">{{ errorMessage }}</p>
+          <p class="text-sm font-medium text-(--color-error)">{{ errorMessage }}</p>
         </div>
       </div>
     </div>
@@ -26,7 +26,7 @@
 
     <!-- Translation Fields -->
     <div>
-      <h3 class="text-lg font-medium text-gray-900 mb-4">Content Translations</h3>
+      <h3 class="text-lg font-medium text-(--color-text-primary) mb-4">Content Translations</h3>
       <TranslationTabs v-model:translations="formData.translations" />
     </div>
 
@@ -34,7 +34,7 @@
     <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
       <!-- Category URL -->
       <div>
-        <label for="cat-url" class="block text-sm font-medium text-gray-700 mb-2">
+        <label for="cat-url" class="block text-sm font-medium text-(--color-text-primary) mb-2">
           Category URL *
         </label>
         <input
@@ -43,13 +43,13 @@
           type="text"
           required
           placeholder="/shop"
-          class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          class="w-full rounded-md border border-(--color-border-default) px-3 py-2 text-sm focus:border-(--color-primary) focus:outline-none focus:ring-1 focus:ring-(--color-primary)"
         />
       </div>
 
       <!-- Position -->
       <div>
-        <label for="position" class="block text-sm font-medium text-gray-700 mb-2">
+        <label for="position" class="block text-sm font-medium text-(--color-text-primary) mb-2">
           Position *
         </label>
         <input
@@ -58,19 +58,19 @@
           type="number"
           required
           min="0"
-          class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          class="w-full rounded-md border border-(--color-border-default) px-3 py-2 text-sm focus:border-(--color-primary) focus:outline-none focus:ring-1 focus:ring-(--color-primary)"
         />
       </div>
     </div>
 
     <!-- Link Configuration -->
     <div class="space-y-4">
-      <h3 class="text-lg font-medium text-gray-900">Link Configuration (Optional)</h3>
+      <h3 class="text-lg font-medium text-(--color-text-primary)">Link Configuration (Optional)</h3>
       
       <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
         <!-- Link URL -->
         <div>
-          <label for="link-url" class="block text-sm font-medium text-gray-700 mb-2">
+          <label for="link-url" class="block text-sm font-medium text-(--color-text-primary) mb-2">
             Link URL
           </label>
           <input
@@ -78,13 +78,13 @@
             v-model="formData.link_url"
             type="text"
             placeholder="/shop/category"
-            class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            class="w-full rounded-md border border-(--color-border-default) px-3 py-2 text-sm focus:border-(--color-primary) focus:outline-none focus:ring-1 focus:ring-(--color-primary)"
           />
         </div>
 
         <!-- Link Text -->
         <div>
-          <label for="link-text" class="block text-sm font-medium text-gray-700 mb-2">
+          <label for="link-text" class="block text-sm font-medium text-(--color-text-primary) mb-2">
             Link Text
           </label>
           <input
@@ -92,14 +92,14 @@
             v-model="formData.link_text"
             type="text"
             placeholder="Shop Now"
-            class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            class="w-full rounded-md border border-(--color-border-default) px-3 py-2 text-sm focus:border-(--color-primary) focus:outline-none focus:ring-1 focus:ring-(--color-primary)"
           />
         </div>
       </div>
 
       <!-- Link Target -->
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">
+        <label class="block text-sm font-medium text-(--color-text-primary) mb-2">
           Link Target
         </label>
         <div class="flex gap-4">
@@ -108,18 +108,18 @@
               v-model="formData.link_target"
               type="radio"
               value="_self"
-              class="h-4 w-4 text-blue-600 focus:ring-blue-500"
+              class="h-4 w-4 text-(--color-primary) focus:ring-(--color-primary)"
             />
-            <span class="text-sm text-gray-700">Same Tab (_self)</span>
+            <span class="text-sm text-(--color-text-primary)">Same Tab (_self)</span>
           </label>
           <label class="flex items-center gap-2 cursor-pointer">
             <input
               v-model="formData.link_target"
               type="radio"
               value="_blank"
-              class="h-4 w-4 text-blue-600 focus:ring-blue-500"
+              class="h-4 w-4 text-(--color-primary) focus:ring-(--color-primary)"
             />
-            <span class="text-sm text-gray-700">New Tab (_blank)</span>
+            <span class="text-sm text-(--color-text-primary)">New Tab (_blank)</span>
           </label>
         </div>
       </div>
@@ -127,32 +127,32 @@
 
     <!-- Schedule -->
     <div class="space-y-4">
-      <h3 class="text-lg font-medium text-gray-900">Schedule (Optional)</h3>
+      <h3 class="text-lg font-medium text-(--color-text-primary)">Schedule (Optional)</h3>
       
       <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
         <!-- Start Date -->
         <div>
-          <label for="starts-at" class="block text-sm font-medium text-gray-700 mb-2">
+          <label for="starts-at" class="block text-sm font-medium text-(--color-text-primary) mb-2">
             Start Date
           </label>
           <input
             id="starts-at"
             v-model="formData.starts_at"
             type="datetime-local"
-            class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            class="w-full rounded-md border border-(--color-border-default) px-3 py-2 text-sm focus:border-(--color-primary) focus:outline-none focus:ring-1 focus:ring-(--color-primary)"
           />
         </div>
 
         <!-- End Date -->
         <div>
-          <label for="ends-at" class="block text-sm font-medium text-gray-700 mb-2">
+          <label for="ends-at" class="block text-sm font-medium text-(--color-text-primary) mb-2">
             End Date
           </label>
           <input
             id="ends-at"
             v-model="formData.ends_at"
             type="datetime-local"
-            class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            class="w-full rounded-md border border-(--color-border-default) px-3 py-2 text-sm focus:border-(--color-primary) focus:outline-none focus:ring-1 focus:ring-(--color-primary)"
           />
         </div>
       </div>
@@ -164,9 +164,9 @@
         id="is-active"
         v-model="formData.is_active"
         type="checkbox"
-        class="h-4 w-4 rounded text-blue-600 focus:ring-blue-500"
+        class="h-4 w-4 rounded text-(--color-primary) focus:ring-(--color-primary)"
       />
-      <label for="is-active" class="text-sm font-medium text-gray-700">
+      <label for="is-active" class="text-sm font-medium text-(--color-text-primary)">
         Active (visible on storefront)
       </label>
     </div>
@@ -175,14 +175,14 @@
     <div class="flex justify-end gap-3 pt-6 border-t">
       <NuxtLink
         to="/merchant/hero-banners"
-        class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+        class="px-4 py-2 text-sm font-medium text-(--color-text-primary) bg-white border border-(--color-border-default) rounded-md hover:bg-(--color-bg-hover) focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-(--color-primary)"
       >
         Cancel
       </NuxtLink>
       <button
         type="submit"
         :disabled="loading"
-        class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+        class="px-4 py-2 text-sm font-medium text-white bg-(--color-primary) border border-transparent rounded-md hover:bg-(--color-primary-hover) focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-(--color-primary) disabled:opacity-50 disabled:cursor-not-allowed"
       >
         <span v-if="loading" class="flex items-center gap-2">
           <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">

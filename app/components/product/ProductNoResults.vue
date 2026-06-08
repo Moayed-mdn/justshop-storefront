@@ -4,7 +4,7 @@
       <!-- Icon -->
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        class="w-16 h-16 text-gray-300"
+        class="w-16 h-16 text-(--color-text-muted)"
         fill="none"
         viewBox="0 0 24 24"
         stroke="currentColor"
@@ -17,11 +17,11 @@
         />
       </svg>
   
-      <h3 class="text-xl font-semibold text-gray-600">
+      <h3 class="text-xl font-semibold text-(--color-text-secondary)">
         {{ t('product.no_results_title') }}
       </h3>
   
-      <p class="text-sm text-gray-400 max-w-xs">
+      <p class="text-sm text-(--color-text-muted) max-w-xs">
         {{ t('product.no_results_description') }}
       </p>
   

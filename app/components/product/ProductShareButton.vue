@@ -2,7 +2,7 @@
     <div class="flex items-center gap-4 pt-4">
       <button
         @click="handleShare"
-        class="flex items-center gap-2 text-sm text-gray-600 hover:text-(--color-primary)
+        class="flex items-center gap-2 text-sm text-(--color-text-secondary) hover:text-(--color-primary)
                transition-colors cursor-pointer"
         type="button"
       >

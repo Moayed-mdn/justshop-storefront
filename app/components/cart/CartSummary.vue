@@ -16,7 +16,7 @@
     <!-- Shipping placeholder -->
     <div class="flex justify-between text-sm">
       <span class="text-(--color-text-secondary)">{{ $t('cart.shipping') }}</span>
-      <span class="text-green-600 font-medium">{{ $t('cart.calculated_at_checkout') }}</span>
+      <span class="text-(--color-success) font-medium">{{ $t('cart.calculated_at_checkout') }}</span>
     </div>
 
     <!-- Divider -->
@@ -75,7 +75,7 @@
     </div>
 
     <!-- Checkout Error -->
-    <div v-if="checkoutError" data-testid="checkout-error" class="p-3 text-sm text-red-600 bg-red-50 rounded-md">
+    <div v-if="checkoutError" data-testid="checkout-error" class="p-3 text-sm text-(--color-error) bg-(--color-error-bg) rounded-md">
       {{ checkoutError }}
     </div>
 
@@ -113,7 +113,7 @@
     <!-- Trust Badges -->
     <div class="border-t border-(--color-border-default) pt-4 space-y-3">
       <div class="flex items-center gap-2 text-xs text-(--color-text-secondary)">
-        <svg class="w-4 h-4 text-green-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg class="w-4 h-4 text-(--color-success) flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
             d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2
                0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002
@@ -138,7 +138,7 @@
       </div>
 
       <div class="flex items-center gap-2 text-xs text-(--color-text-secondary)">
-        <svg class="w-4 h-4 text-green-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg class="w-4 h-4 text-(--color-success) flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
             d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955
                0 0112 2.944a11.955 11.955 0 01-8.618

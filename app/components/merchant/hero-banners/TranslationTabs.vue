@@ -1,6 +1,6 @@
 <template>
   <div class="space-y-4">
-    <div class="border-b border-gray-200">
+    <div class="border-b border-(--color-border-default)">
       <nav class="-mb-px flex space-x-8" aria-label="Tabs">
         <button
           v-for="locale in locales"
@@ -8,8 +8,8 @@
           type="button"
           :class="[
             activeLocale === locale.code
-              ? 'border-blue-500 text-blue-600'
-              : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700',
+              ? 'border-(--color-primary) text-(--color-primary)'
+              : 'border-transparent text-(--color-text-secondary) hover:border-(--color-border-hover) hover:text-(--color-text-primary)',
             'whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium'
           ]"
           @click="activeLocale = locale.code"
@@ -17,7 +17,7 @@
           {{ locale.label }}
           <span
             v-if="!isLocaleValid(locale.code)"
-            class="ml-2 inline-flex items-center rounded-full bg-red-100 px-2 py-0.5 text-xs font-medium text-red-800"
+            class="ml-2 inline-flex items-center rounded-full bg-(--color-error-bg) px-2 py-0.5 text-xs font-medium text-(--color-error)"
           >
             Required
           </span>
@@ -28,7 +28,7 @@
     <!-- English Translation -->
     <div v-show="activeLocale === 'en'" class="space-y-4">
       <div>
-        <label for="title-en" class="block text-sm font-medium text-gray-700 mb-2">
+        <label for="title-en" class="block text-sm font-medium text-(--color-text-primary) mb-2">
           Title (EN) *
         </label>
         <input
@@ -37,13 +37,13 @@
           type="text"
           required
           placeholder="Enter English title"
-          class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          class="w-full rounded-md border border-(--color-border-default) px-3 py-2 text-sm focus:border-(--color-primary) focus:outline-none focus:ring-1 focus:ring-(--color-primary)"
           @input="emitTranslations"
         />
       </div>
 
       <div>
-        <label for="subtitle-en" class="block text-sm font-medium text-gray-700 mb-2">
+        <label for="subtitle-en" class="block text-sm font-medium text-(--color-text-primary) mb-2">
           Subtitle (EN)
         </label>
         <textarea
@@ -51,13 +51,13 @@
           v-model="localTranslations.en.subtitle"
           rows="3"
           placeholder="Enter English subtitle"
-          class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          class="w-full rounded-md border border-(--color-border-default) px-3 py-2 text-sm focus:border-(--color-primary) focus:outline-none focus:ring-1 focus:ring-(--color-primary)"
           @input="emitTranslations"
         />
       </div>
 
       <div>
-        <label for="cta-text-en" class="block text-sm font-medium text-gray-700 mb-2">
+        <label for="cta-text-en" class="block text-sm font-medium text-(--color-text-primary) mb-2">
           CTA Text (EN)
         </label>
         <input
@@ -65,7 +65,7 @@
           v-model="localTranslations.en.cta_text"
           type="text"
           placeholder="e.g., Shop Now"
-          class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          class="w-full rounded-md border border-(--color-border-default) px-3 py-2 text-sm focus:border-(--color-primary) focus:outline-none focus:ring-1 focus:ring-(--color-primary)"
           @input="emitTranslations"
         />
       </div>
@@ -74,7 +74,7 @@
     <!-- Arabic Translation -->
     <div v-show="activeLocale === 'ar'" class="space-y-4">
       <div>
-        <label for="title-ar" class="block text-sm font-medium text-gray-700 mb-2">
+        <label for="title-ar" class="block text-sm font-medium text-(--color-text-primary) mb-2">
           Title (AR) *
         </label>
         <input
@@ -84,13 +84,13 @@
           required
           dir="rtl"
           placeholder="أدخل العنوان بالعربية"
-          class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          class="w-full rounded-md border border-(--color-border-default) px-3 py-2 text-sm focus:border-(--color-primary) focus:outline-none focus:ring-1 focus:ring-(--color-primary)"
           @input="emitTranslations"
         />
       </div>
 
       <div>
-        <label for="subtitle-ar" class="block text-sm font-medium text-gray-700 mb-2">
+        <label for="subtitle-ar" class="block text-sm font-medium text-(--color-text-primary) mb-2">
           Subtitle (AR)
         </label>
         <textarea
@@ -99,13 +99,13 @@
           rows="3"
           dir="rtl"
           placeholder="أدخل العنوان الفرعي بالعربية"
-          class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          class="w-full rounded-md border border-(--color-border-default) px-3 py-2 text-sm focus:border-(--color-primary) focus:outline-none focus:ring-1 focus:ring-(--color-primary)"
           @input="emitTranslations"
         />
       </div>
 
       <div>
-        <label for="cta-text-ar" class="block text-sm font-medium text-gray-700 mb-2">
+        <label for="cta-text-ar" class="block text-sm font-medium text-(--color-text-primary) mb-2">
           CTA Text (AR)
         </label>
         <input
@@ -114,7 +114,7 @@
           type="text"
           dir="rtl"
           placeholder="مثال: تسوق الآن"
-          class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          class="w-full rounded-md border border-(--color-border-default) px-3 py-2 text-sm focus:border-(--color-primary) focus:outline-none focus:ring-1 focus:ring-(--color-primary)"
           @input="emitTranslations"
         />
       </div>

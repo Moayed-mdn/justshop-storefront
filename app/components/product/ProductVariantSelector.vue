@@ -6,7 +6,7 @@
         :key="attrName"
         class="space-y-2"
       >
-        <label class="block text-sm font-medium text-gray-700">
+        <label class="block text-sm font-medium text-(--color-text-primary)">
           {{ attrName }}
         </label>
   
@@ -28,20 +28,20 @@
       <!-- Variant Info -->
       <div v-if="selectedVariant" class="space-y-2 text-sm">
         <div v-if="selectedVariant.sku" class="flex items-center gap-2" data-testid="product-sku">
-          <span class="text-gray-500">{{ $t('product.sku') }}:</span>
+          <span class="text-(--color-text-secondary)">{{ $t('product.sku') }}:</span>
           <span class="font-mono">{{ selectedVariant.sku }}</span>
         </div>
   
         <div class="flex items-center gap-2" data-testid="product-stock-status">
           <span
             v-if="selectedVariant.stock > 0"
-            class="text-green-600 font-medium"
+            class="text-(--color-success) font-medium"
           >
             {{ $t('product.in_stock') }}
           </span>
           <span
             v-else
-            class="text-red-600 font-medium"
+            class="text-(--color-error) font-medium"
           >
             {{ $t('product.out_of_stock') }}
           </span>
@@ -59,7 +59,7 @@
       <!-- Error Message -->
       <div
         v-if="errorMessage"
-        class="text-sm text-red-600 bg-red-50 px-3 py-2 rounded-md"
+        class="text-sm text-(--color-error) bg-(--color-error-bg) px-3 py-2 rounded-md"
         data-testid="product-variant-error"
       >
         {{ errorMessage }}
@@ -116,14 +116,14 @@ import type { ProductVariant } from '~~/types/productDetail';
     const isAvailable = isValueAvailable(attrName, value)
   
     if (!isAvailable) {
-      return 'border-gray-200 text-gray-300 cursor-not-allowed line-through'
+      return 'border-(--color-border-default) text-(--color-text-disabled) cursor-not-allowed line-through'
     }
   
     if (isSelected) {
       return 'border-(--color-primary) bg-(--color-primary) text-white'
     }
   
-    return 'border-gray-300 text-gray-700 hover:border-(--color-primary)'
+    return 'border-(--color-border-default) text-(--color-text-primary) hover:border-(--color-primary)'
   }
   
   // Handle attribute selection

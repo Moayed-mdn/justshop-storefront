@@ -9,7 +9,7 @@
   
       <button
         @click="$emit('clear')"
-        class="text-sm text-red-500 hover:text-red-700 hover:underline
+        class="text-sm text-(--color-error) hover:text-(--color-error-hover) hover:underline
                transition-colors cursor-pointer"
       >
         {{ $t('cart.clear_cart') }}

@@ -3,13 +3,13 @@
     <div class="flex flex-col gap-4 sm:flex-row sm:items-center">
       <!-- Status Filter -->
       <div class="flex items-center gap-2">
-        <label for="status-filter" class="text-sm font-medium text-gray-700">
+        <label for="status-filter" class="text-sm font-medium text-(--color-text-primary)">
           Status:
         </label>
         <select
           id="status-filter"
           v-model="localFilters.status"
-          class="rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          class="rounded-md border border-(--color-border-default) px-3 py-2 text-sm focus:border-(--color-primary) focus:outline-none focus:ring-1 focus:ring-(--color-primary)"
           @change="handleFilterChange"
         >
           <option value="all">All</option>
@@ -21,7 +21,7 @@
 
       <!-- Search Input -->
       <div class="flex items-center gap-2">
-        <label for="search-filter" class="text-sm font-medium text-gray-700">
+        <label for="search-filter" class="text-sm font-medium text-(--color-text-primary)">
           Search:
         </label>
         <input
@@ -29,7 +29,7 @@
           v-model="localFilters.search"
           type="text"
           placeholder="Search by title..."
-          class="rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          class="rounded-md border border-(--color-border-default) px-3 py-2 text-sm focus:border-(--color-primary) focus:outline-none focus:ring-1 focus:ring-(--color-primary)"
           @input="handleSearchDebounced"
         />
       </div>
@@ -38,7 +38,7 @@
       <button
         v-if="hasActiveFilters"
         type="button"
-        class="text-sm text-blue-600 hover:text-blue-800"
+        class="text-sm text-(--color-primary) hover:text-(--color-primary-hover)"
         @click="clearFilters"
       >
         Clear filters

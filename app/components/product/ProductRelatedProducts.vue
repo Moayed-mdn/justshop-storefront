@@ -1,6 +1,6 @@
 <template>
-  <div v-if="products.length > 0" class="mt-16 border-t border-gray-200 pt-12">
-    <h2 class="text-xl font-bold text-gray-900 mb-6">
+  <div v-if="products.length > 0" class="mt-16 border-t border-(--color-border-default) pt-12">
+    <h2 class="text-xl font-bold text-(--color-text-primary) mb-6">
       {{ $t('product.related_products') }}
     </h2>
 

@@ -1,14 +1,14 @@
 <template>
     <div class="flex items-center gap-4" data-testid="product-quantity-selector">
-      <label class="text-sm font-medium text-gray-700">
+      <label class="text-sm font-medium text-(--color-text-primary)">
         {{ $t('product.quantity') }}:
       </label>
-      <div class="flex items-center border border-gray-300 rounded-lg overflow-hidden">
+      <div class="flex items-center border border-(--color-border-default) rounded-lg overflow-hidden">
         <button
           data-testid="product-quantity-decrease"
           @click="decreaseQuantity"
           :disabled="modelValue <= 1"
-          class="px-3 py-2 hover:bg-gray-100 transition-colors disabled:opacity-40 cursor-pointer"
+          class="px-3 py-2 hover:bg-(--color-bg-hover) transition-colors disabled:opacity-40 cursor-pointer"
           type="button"
         >
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -23,14 +23,14 @@
           type="number"
           min="1"
           :max="maxQuantity"
-          class="w-16 py-2 text-center border-x border-gray-300 focus:outline-none"
+          class="w-16 py-2 text-center border-x border-(--color-border-default) focus:outline-none"
         >
   
         <button
           data-testid="product-quantity-increase"
           @click="increaseQuantity"
           :disabled="modelValue >= maxQuantity"
-          class="px-3 py-2 hover:bg-gray-100 transition-colors disabled:opacity-40 cursor-pointer"
+          class="px-3 py-2 hover:bg-(--color-bg-hover) transition-colors disabled:opacity-40 cursor-pointer"
           type="button"
         >
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

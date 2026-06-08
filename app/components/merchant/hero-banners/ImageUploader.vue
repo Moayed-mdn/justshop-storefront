@@ -1,14 +1,14 @@
 <template>
   <div class="space-y-3">
-    <label class="block text-sm font-medium text-gray-700">
+    <label class="block text-sm font-medium text-(--color-text-primary)">
       {{ label }}
     </label>
 
     <!-- Upload Area -->
     <div
       v-if="!previewUrl"
-      class="relative border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-gray-400 transition-colors cursor-pointer"
-      :class="{ 'border-blue-500 bg-blue-50': isDragging }"
+      class="relative border-2 border-dashed border-(--color-border-default) rounded-lg p-6 text-center hover:border-(--color-border-hover) transition-colors cursor-pointer"
+      :class="{ 'border-(--color-primary) bg-(--color-primary-bg)': isDragging }"
       @dragover.prevent="isDragging = true"
       @dragleave.prevent="isDragging = false"
       @drop.prevent="handleDrop"
@@ -24,7 +24,7 @@
 
       <div class="flex flex-col items-center">
         <svg
-          class="w-12 h-12 text-gray-400 mb-3"
+          class="w-12 h-12 text-(--color-text-secondary) mb-3"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -36,35 +36,35 @@
             d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
           />
         </svg>
-        <p class="text-sm text-gray-600 mb-1">
-          <span class="font-semibold text-blue-600">Click to upload</span>
+        <p class="text-sm text-(--color-text-secondary) mb-1">
+          <span class="font-semibold text-(--color-primary)">Click to upload</span>
           or drag and drop
         </p>
-        <p class="text-xs text-gray-500">
+        <p class="text-xs text-(--color-text-secondary)">
           PNG, JPG, GIF, WEBP up to 5MB
         </p>
       </div>
 
       <!-- Upload Progress -->
       <div v-if="uploading" class="mt-4">
-        <div class="w-full bg-gray-200 rounded-full h-2">
+        <div class="w-full bg-(--color-bg-secondary) rounded-full h-2">
           <div
-            class="bg-blue-600 h-2 rounded-full transition-all duration-300"
+            class="bg-(--color-primary) h-2 rounded-full transition-all duration-300"
             :style="{ width: `${uploadProgress}%` }"
           />
         </div>
-        <p class="text-xs text-gray-600 mt-1">Uploading... {{ uploadProgress }}%</p>
+        <p class="text-xs text-(--color-text-secondary) mt-1">Uploading... {{ uploadProgress }}%</p>
       </div>
 
       <!-- Error Message -->
-      <div v-if="error" class="mt-4 text-sm text-red-600">
+      <div v-if="error" class="mt-4 text-sm text-(--color-error)">
         {{ error }}
       </div>
     </div>
 
     <!-- Preview Area -->
     <div v-else class="relative">
-      <div class="relative border-2 border-gray-200 rounded-lg overflow-hidden">
+      <div class="relative border-2 border-(--color-border-default) rounded-lg overflow-hidden">
         <img
           :src="previewUrl"
           alt="Preview"
@@ -72,7 +72,7 @@
         />
         <button
           type="button"
-          class="absolute top-2 right-2 p-2 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors shadow-lg"
+          class="absolute top-2 right-2 p-2 bg-(--color-error) text-white rounded-full hover:bg-(--color-error-hover) transition-colors shadow-lg"
           @click="handleRemove"
         >
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -85,7 +85,7 @@
           </svg>
         </button>
       </div>
-      <p class="text-xs text-gray-500 mt-2">
+      <p class="text-xs text-(--color-text-secondary) mt-2">
         Path: {{ modelValue }}
       </p>
     </div>

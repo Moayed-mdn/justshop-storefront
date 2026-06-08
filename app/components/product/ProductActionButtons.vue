@@ -45,7 +45,7 @@
 
     <p
       v-if="disabledReason && !canAddToCart"
-      class="text-sm text-red-600"
+      class="text-sm text-(--color-error)"
       data-testid="product-action-error"
     >
       {{ disabledReason }}

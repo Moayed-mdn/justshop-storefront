@@ -35,7 +35,7 @@
               : 'heroicons:minus'"
             
             class="w-5 h-5 hover:text-(--color-primary) hover:scale-125"
-            :class="cartItem.quantity === 1 ? 'hover:text-red-500' : 'hover:text-(--color-primary)'"
+            :class="cartItem.quantity === 1 ? 'hover:text-(--color-error)' : 'hover:text-(--color-primary)'"
           />
         </button>
 
