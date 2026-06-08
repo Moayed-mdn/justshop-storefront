@@ -13,9 +13,6 @@
   --header-bg: var(--color-bg-elevated);
   --header-z: var(--z-header);
 
-  /* Input Search */
-  --header-input-search-bg: var(--transparent);
-
   /* Logo */
   /* --header-logo-text-color: var(--color-primary);
   --header-logo-icon-color: var(--color-accent); */
@@ -34,7 +31,10 @@
   --header-burger-top: var(--header-total-height);
   --header-burger-top-mobile: var(--header-total-height-mobile);
 
-  /* Serach bar */
+  /* Search bar */
+  --header-search-bg: transparent;
+  --header-search-text: var(--color-text-primary);
+  --header-search-placeholder: var(--color-text-muted);
   --header-search-border: var(--color-border-default);
   --header-search-focus: var(--color-primary);
   --header-search-radius: var(--radius-full);

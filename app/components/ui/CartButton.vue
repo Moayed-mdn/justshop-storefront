@@ -22,7 +22,7 @@
         key="counter"
         class="flex w-fit min-w-[125px] items-center justify-between
                mt-2 px-3 py-1 rounded-full border
-               border-(--card-btn-border) bg-[--test]"
+               border-(--card-btn-border) bg-transparent"
       >
         <button
           @click="handle(decrement)"

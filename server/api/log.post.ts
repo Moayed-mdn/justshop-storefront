@@ -1,4 +1,5 @@
 import fs from 'node:fs'
+import path from 'node:path'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
@@ -8,7 +9,11 @@ export default defineEventHandler(async (event) => {
 
   const logEntry = `[${new Date().toISOString()}] [${level.toUpperCase()}] ${message}\n${stack ? stack + '\n' : ''}\n`
   
-  const logPath = '/home/leader/projects/laravel/tenant/justshop-frontend/logs/client.log'
+  const logDir = path.resolve('./logs')
+  if (!fs.existsSync(logDir)) {
+    fs.mkdirSync(logDir, { recursive: true })
+  }
+  const logPath = path.resolve('./logs/client.log')
   
   try {
     fs.appendFileSync(logPath, logEntry)

@@ -44,14 +44,31 @@ const DEFAULT_THEME_VALUES = {
  * Converts theme settings into CSS custom property format
  */
 export const extractThemeTokens = (theme: Theme | null): ThemeTokens => {
-  if (!theme?.settings) {
-    return flattenThemeSettings(DEFAULT_THEME_VALUES);
-  }
-
   const tokens: ThemeTokens = {};
 
-  // Extract colors
-  if (theme.settings.colors) {
+  if (!theme) {
+    const merged = flattenThemeSettings(DEFAULT_THEME_VALUES);
+    applyAliases(merged);
+    return merged;
+  }
+
+  // Handle runtime API format: theme.tokens.colorPrimary, theme.settings.radius
+  // The runtime endpoint returns a compact format without nested settings.colors.
+  const runtime = theme as unknown as Record<string, unknown>;
+  const runtimeTokens = runtime.tokens as Record<string, string> | undefined;
+
+  if (runtimeTokens) {
+    tokens['--color-primary'] = runtimeTokens.colorPrimary;
+    tokens['--color-secondary'] = runtimeTokens.colorSecondary;
+    tokens['--color-accent'] = runtimeTokens.colorAccent;
+    tokens['--color-background'] = runtimeTokens.colorSurface ?? runtimeTokens.colorBackground;
+    tokens['--color-text'] = runtimeTokens.colorText;
+    tokens['--runtime-font-body'] = runtimeTokens.fontBody ?? '';
+    tokens['--runtime-font-heading'] = runtimeTokens.fontHeading ?? '';
+  }
+
+  // Handle legacy format: theme.settings.colors.primary
+  if (theme.settings?.colors) {
     Object.entries(theme.settings.colors).forEach(([key, value]) => {
       if (value) {
         tokens[`--color-${kebabCase(key)}`] = value;
@@ -60,7 +77,7 @@ export const extractThemeTokens = (theme: Theme | null): ThemeTokens => {
   }
 
   // Extract typography
-  if (theme.settings.typography) {
+  if (theme.settings?.typography) {
     Object.entries(theme.settings.typography).forEach(([key, value]) => {
       if (value) {
         tokens[`--font-${kebabCase(key)}`] = value;
@@ -69,7 +86,7 @@ export const extractThemeTokens = (theme: Theme | null): ThemeTokens => {
   }
 
   // Extract layout settings
-  if (theme.settings.layout) {
+  if (theme.settings?.layout) {
     Object.entries(theme.settings.layout).forEach(([key, value]) => {
       if (value) {
         tokens[`--layout-${kebabCase(key)}`] = value;
@@ -79,8 +96,40 @@ export const extractThemeTokens = (theme: Theme | null): ThemeTokens => {
 
   // Merge with defaults (defaults only used if not set)
   const defaultTokens = flattenThemeSettings(DEFAULT_THEME_VALUES);
-  return { ...defaultTokens, ...tokens };
+  const merged = { ...defaultTokens, ...tokens };
+  applyAliases(merged);
+
+  return merged;
 };
+
+/**
+ * Apply alias mappings so component-used variables (--color-bg-page, --color-text-primary)
+ * are derived from API-returned variables (--color-background, --color-text).
+ * Handles both --color-* (from API) and --colors-* (from DEFAULT_THEME_VALUES fallback).
+ */
+function applyAliases(tokens: ThemeTokens): void {
+  const bgColor = tokens['--color-background'] || tokens['--colors-background'];
+  if (bgColor) {
+    tokens['--color-bg-page'] = bgColor;
+    tokens['--color-bg-surface'] = bgColor;
+    tokens['--color-bg-elevated'] = bgColor;
+    tokens['--color-bg-card'] = bgColor;
+  }
+  const textColor = tokens['--color-text'] || tokens['--colors-text'];
+  if (textColor) {
+    tokens['--color-text-primary'] = textColor;
+    tokens['--color-text-secondary'] = textColor;
+    tokens['--color-text-muted'] = textColor;
+  }
+  const primaryColor = tokens['--color-primary'] || tokens['--colors-primary'];
+  if (primaryColor) {
+    tokens['--color-primary-dark'] = primaryColor;
+  }
+  const errorColor = tokens['--color-error'] || tokens['--colors-error'];
+  if (errorColor) {
+    tokens['--red-error'] = errorColor;
+  }
+}
 
 /**
  * Flatten nested theme settings into CSS variables

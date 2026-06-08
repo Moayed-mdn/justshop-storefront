@@ -189,6 +189,8 @@ export interface RuntimeThemeResponse {
     }
     tokens: {
       colorPrimary: string
+      colorSecondary: string
+      colorAccent: string
       colorSurface: string
       colorText: string
       fontBody: string

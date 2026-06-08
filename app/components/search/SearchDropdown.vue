@@ -17,9 +17,9 @@
           <!-- ── Loading Skeleton ──────────────── -->
           <div v-if="loading && suggestions.length === 0" class="p-3 space-y-2">
             <div v-for="i in 4" :key="i" class="flex items-center gap-3 py-2 px-2">
-              <div class="w-7 h-7 bg-(--gray-200) rounded animate-pulse shrink-0" />
-              <div class="flex-1 h-4 bg-(--gray-200) rounded animate-pulse" />
-              <div class="w-14 h-4 bg-(--gray-200) rounded animate-pulse shrink-0" />
+              <div class="w-7 h-7 bg-(--color-bg-hover) rounded animate-pulse shrink-0" />
+              <div class="flex-1 h-4 bg-(--color-bg-hover) rounded animate-pulse" />
+              <div class="w-14 h-4 bg-(--color-bg-hover) rounded animate-pulse shrink-0" />
             </div>
           </div>
   
@@ -75,7 +75,7 @@
           class="
             w-full px-4 py-3 text-sm font-medium
             text-(--color-primary) bg-(--color-bg-page)
-            hover:bg-(--gray-200) transition-colors
+            hover:bg-(--search-item-hover) transition-colors
             border-t border-(--search-dropdown-border)
             cursor-pointer text-center
           "
