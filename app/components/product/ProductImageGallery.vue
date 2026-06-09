@@ -2,7 +2,7 @@
   <div class="space-y-4" data-testid="product-image-gallery">
     <!-- Main Image -->
     <div
-      class="relative aspect-square bg-gray-50 rounded-lg overflow-hidden cursor-zoom-in"
+      class="relative aspect-square bg-(--color-bg-surface) rounded-lg overflow-hidden cursor-zoom-in"
       @click="showZoom = true"
     >
       <img
@@ -30,8 +30,9 @@
           data-testid="product-image-prev"
           @click.stop="previousImage"
           class="absolute ltr:left-2 rtl:right-2 top-1/2 -translate-y-1/2 w-10 h-10
-                 bg-white/90 rounded-full shadow-md flex items-center justify-center
-                 hover:bg-white transition-colors cursor-pointer"
+                 rounded-full shadow-md flex items-center justify-center
+                 hover:bg-(--color-bg-card) transition-colors cursor-pointer"
+          :style="{ backgroundColor: 'color-mix(in srgb, var(--color-bg-elevated) 90%, transparent)' }"
           :aria-label="$t('product.previous_image')"
         >
           <svg class="w-5 h-5 rtl:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -43,8 +44,9 @@
           data-testid="product-image-next"
           @click.stop="nextImage"
           class="absolute ltr:right-2 rtl:left-2 top-1/2 -translate-y-1/2 w-10 h-10
-                 bg-white/90 rounded-full shadow-md flex items-center justify-center
-                 hover:bg-white transition-colors cursor-pointer"
+                 rounded-full shadow-md flex items-center justify-center
+                 hover:bg-(--color-bg-card) transition-colors cursor-pointer"
+          :style="{ backgroundColor: 'color-mix(in srgb, var(--color-bg-elevated) 90%, transparent)' }"
           :aria-label="$t('product.next_image')"
         >
           <svg class="w-5 h-5 rtl:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -57,15 +59,17 @@
       <div
         v-if="images.length > 1"
         data-testid="product-image-counter"
-        class="absolute top-2 ltr:left-2 rtl:right-2 bg-black/50 text-white text-xs
+        class="absolute top-2 ltr:left-2 rtl:right-2 text-white text-xs
                px-2 py-1 rounded-md"
+        :style="{ backgroundColor: 'var(--color-overlay-medium)' }"
       >
         {{ currentIndex + 1 }} / {{ images.length }}
       </div>
 
       <!-- Zoom hint -->
-      <div class="absolute top-2 ltr:right-2 rtl:left-2 bg-black/50 text-white text-xs
-                  px-2 py-1 rounded-md opacity-0 hover:opacity-100 transition-opacity">
+      <div class="absolute top-2 ltr:right-2 rtl:left-2 text-white text-xs
+                  px-2 py-1 rounded-md opacity-0 hover:opacity-100 transition-opacity"
+           :style="{ backgroundColor: 'var(--color-overlay-medium)' }">
         {{ $t('product.zoom') }}
       </div>
     </div>
@@ -95,7 +99,8 @@
       <div
         v-if="showZoom"
         data-testid="product-image-zoom-modal"
-        class="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
+        class="fixed inset-0 z-50 flex items-center justify-center p-4"
+        :style="{ backgroundColor: 'var(--color-overlay-heavy)' }"
         @click="showZoom = false"
       >
         <img
@@ -108,9 +113,10 @@
 
         <button
           @click="showZoom = false"
-          class="absolute top-4 ltr:right-4 rtl:left-4 w-10 h-10 bg-white/10
+          class="absolute top-4 ltr:right-4 rtl:left-4 w-10 h-10
                  text-white rounded-full flex items-center justify-center
-                 hover:bg-white/20 transition-colors cursor-pointer"
+                 hover:bg-(--color-overlay-light) transition-colors cursor-pointer"
+          :style="{ backgroundColor: 'var(--color-overlay-light)' }"
         >
           <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />

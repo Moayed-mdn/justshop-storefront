@@ -3,7 +3,7 @@
     {{ text }}
     <NuxtLinkLocale
       :to="to"
-      class="font-medium text-(--color-primary) hover:text-(--green-950)"
+      class="font-medium text-(--color-primary) hover:text-(--color-primary-hover)"
     >
       {{ linkText }}
     </NuxtLinkLocale>

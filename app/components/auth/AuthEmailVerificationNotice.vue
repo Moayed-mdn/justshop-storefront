@@ -13,9 +13,9 @@
       type="button"
       @click="onResend"
       :disabled="loading || !email"
-      class="w-full px-4 py-2 text-sm font-medium text-white
+      class="w-full px-4 py-2 text-sm font-medium text-(--color-on-primary)
              bg-(--color-primary) border border-transparent rounded-md
-             hover:bg-(--green-950) focus:outline-none focus:ring-2
+             hover:bg-(--color-primary-hover) focus:outline-none focus:ring-2
              focus:ring-(--color-primary)/30 disabled:opacity-50 transition-colors"
     >
       {{ loading ? sendingText : resendText }}

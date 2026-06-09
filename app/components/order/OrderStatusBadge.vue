@@ -1,9 +1,12 @@
 <template>
     <span
       class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-full"
-      :class="classes"
+      :style="{
+        backgroundColor: `var(--status-${normalizedStatus}-bg)`,
+        color: `var(--status-${normalizedStatus}-text)`
+      }"
     >
-      <span class="w-1.5 h-1.5 rounded-full" :class="dotClass"></span>
+      <span class="w-1.5 h-1.5 rounded-full bg-current opacity-70"></span>
       {{ label }}
     </span>
   </template>
@@ -21,31 +24,23 @@
     return t(`${prefix}${props.status}`)
   })
   
-  const classes = computed(() => {
-    const map: Record<string, string> = {
-      pending:    'bg-yellow-50 text-yellow-700',
-      processing: 'bg-blue-50 text-blue-700',
-      shipped:    'bg-purple-50 text-purple-700',
-      delivered:  'bg-green-50 text-green-700',
-      cancelled:  'bg-red-50 text-red-700',
-      paid:       'bg-green-50 text-green-700',
-      failed:     'bg-red-50 text-red-700',
-      refunded:   'bg-orange-50 text-orange-700',
-    }
-    return map[props.status] || 'bg-gray-50 text-gray-700'
-  })
+  // Map backend status values to token names
+  const statusTokenMap: Record<string, string> = {
+    'pending': 'pending',
+    'processing': 'processing',
+    'in_transit': 'shipped',
+    'shipped': 'shipped',
+    'delivered': 'delivered',
+    'completed': 'delivered',
+    'cancelled': 'cancelled',
+    'canceled': 'cancelled',
+    'refunded': 'refunded',
+    'paid': 'delivered',  // Use delivered (green) for paid status
+    'failed': 'cancelled',  // Use cancelled (red) for failed
+    'unpaid': 'pending',  // Use pending for unpaid
+  }
   
-  const dotClass = computed(() => {
-    const map: Record<string, string> = {
-      pending:    'bg-yellow-500',
-      processing: 'bg-blue-500',
-      shipped:    'bg-purple-500',
-      delivered:  'bg-green-500',
-      cancelled:  'bg-red-500',
-      paid:       'bg-green-500',
-      failed:     'bg-red-500',
-      refunded:   'bg-orange-500',
-    }
-    return map[props.status] || 'bg-gray-500'
-  })
+  const normalizedStatus = computed(() => 
+    statusTokenMap[props.status] ?? 'pending'
+  )
   </script>

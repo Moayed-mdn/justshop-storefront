@@ -86,8 +86,8 @@
             v-if="order.can_cancel"
             @click="$emit('cancel', order.order_number)"
             data-testid="order-cancel-button"
-            class="px-3 py-1.5 text-xs font-semibold text-red-600 border border-red-200
-                   rounded-md hover:bg-red-50 transition-colors cursor-pointer"
+            class="px-3 py-1.5 text-xs font-semibold text-(--color-error) border border-(--color-border-default)
+                   rounded-md hover:bg-(--color-error-bg) transition-colors cursor-pointer"
           >
             {{ $t('orders.cancel_order') }}
           </button>
@@ -95,8 +95,8 @@
           <NuxtLinkLocale
             :to="routes.orderDetail(order.order_number)"
             data-testid="order-view-details-link"
-            class="px-3 py-1.5 text-xs font-semibold text-white bg-(--color-primary)
-                   rounded-md hover:bg-(--green-950) transition-colors"
+            class="px-3 py-1.5 text-xs font-semibold text-(--color-on-primary) bg-(--color-primary)
+                   rounded-md hover:bg-(--color-primary-hover) transition-colors"
           >
             {{ $t('orders.view_details') }}
           </NuxtLinkLocale>

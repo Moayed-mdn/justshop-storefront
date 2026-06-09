@@ -1,12 +1,12 @@
 <template>
-  <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
-    <div class="px-6 py-4 border-b border-gray-100">
-      <h2 class="font-semibold text-gray-900">
+  <div class="bg-(--color-bg-card) rounded-lg border border-(--color-border-default) overflow-hidden">
+    <div class="px-6 py-4 border-b border-(--color-border-subtle)">
+      <h2 class="font-semibold text-(--color-text-primary)">
         {{ items.length }} {{ items.length === 1 ? $t('cart.item') : $t('cart.items') }}
       </h2>
     </div>
 
-    <div class="divide-y divide-gray-100">
+    <div class="divide-y divide-(--color-border-subtle)">
       <OrderItem
         v-for="item in items"
         :key="item.id"

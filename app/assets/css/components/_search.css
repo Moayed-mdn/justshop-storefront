@@ -14,14 +14,14 @@
     --search-item-secondary: var(--color-text-secondary);
   
     /* ── Type Badges ──────────────────────── */
-    --search-badge-category-bg: var(--green-100);
-    --search-badge-category-text: var(--green-800);
-    --search-badge-brand-bg: var(--amber-100);
-    --search-badge-brand-text: var(--amber-800);
+    --search-badge-category-bg: color-mix(in srgb, var(--color-primary) 12%, transparent);
+    --search-badge-category-text: var(--color-primary);
+    --search-badge-brand-bg: color-mix(in srgb, var(--color-text-muted) 12%, transparent);
+    --search-badge-brand-text: var(--color-text-muted);
   
     /* ── Rating Stars ─────────────────────── */
-    --search-star-filled: var(--orange-500);
-    --search-star-empty: var(--gray-400);
+    --search-star-filled: var(--color-accent);
+    --search-star-empty: var(--color-text-muted);
   
   }
   

@@ -1,10 +1,10 @@
 <template>
-  <section class="rounded-3xl border border-slate-200 bg-white px-6 py-10 shadow-sm">
+  <section class="rounded-3xl border border-(--color-border-default) bg-(--color-bg-page) px-6 py-10 shadow-sm">
     <div class="mx-auto max-w-5xl">
-      <h2 v-if="title" class="text-2xl font-semibold text-slate-900">
+      <h2 v-if="title" class="text-2xl font-semibold text-(--color-text-primary)">
         {{ title }}
       </h2>
-      <p v-if="subtitle" class="mt-3 text-base text-slate-600">
+      <p v-if="subtitle" class="mt-3 text-base text-(--color-text-secondary)">
         {{ subtitle }}
       </p>
 
@@ -16,10 +16,10 @@
         <li
           v-for="(item, index) in cardItems"
           :key="index"
-          class="rounded-2xl bg-slate-50 p-5 border border-slate-100"
+          class="rounded-2xl bg-(--color-bg-card) p-5 border border-(--color-border-default)"
         >
-          <p class="text-sm font-bold text-slate-900">{{ item.title }}</p>
-          <p class="mt-1 text-sm text-slate-600 leading-relaxed">{{ item.body }}</p>
+          <p class="text-sm font-bold text-(--color-text-primary)">{{ item.title }}</p>
+          <p class="mt-1 text-sm text-(--color-text-secondary) leading-relaxed">{{ item.body }}</p>
         </li>
       </ul>
 
@@ -31,13 +31,13 @@
         <li
           v-for="(item, index) in featureItems"
           :key="`${index}-${item}`"
-          class="rounded-2xl bg-slate-50 p-4 text-slate-700"
+          class="rounded-2xl bg-(--color-bg-card) p-4 text-(--color-text-primary)"
         >
           {{ item }}
         </li>
       </ul>
 
-      <pre v-else-if="content" class="mt-6 overflow-x-auto rounded-2xl bg-slate-50 p-4 text-sm text-slate-700">{{ content }}</pre>
+      <pre v-else-if="content" class="mt-6 overflow-x-auto rounded-2xl bg-(--color-bg-card) p-4 text-sm text-(--color-text-primary)">{{ content }}</pre>
     </div>
   </section>
 </template>

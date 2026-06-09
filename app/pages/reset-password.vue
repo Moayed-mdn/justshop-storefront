@@ -9,7 +9,7 @@
       </p>
       <NuxtLinkLocale
         :to="routes.login()"
-        class="inline-block mt-4 px-6 py-2 text-sm font-medium text-white bg-(--color-primary) rounded-md hover:bg-(--green-950)"
+        class="inline-block mt-4 px-6 py-2 text-sm font-medium text-(--color-on-primary) bg-(--color-primary) rounded-md hover:bg-(--color-primary-hover)"
       >
         {{ $t('auth.go_to_login') }}
       </NuxtLinkLocale>

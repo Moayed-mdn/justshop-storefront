@@ -9,7 +9,7 @@
       </p>
       <NuxtLinkLocale
         :to="routes.login()"
-        class="inline-block mt-4 text-sm font-medium text-(--color-primary) hover:text-(--green-950)"
+        class="inline-block mt-4 text-sm font-medium text-(--color-primary) hover:text-(--color-primary-hover)"
       >
         {{ $t('auth.back_to_login') }}
       </NuxtLinkLocale>
@@ -41,7 +41,7 @@
       <div class="text-center">
         <NuxtLinkLocale
           :to="routes.login()"
-          class="text-sm font-medium text-(--color-primary) hover:text-(--green-950)"
+          class="text-sm font-medium text-(--color-primary) hover:text-(--color-primary-hover)"
         >
           {{ $t('auth.back_to_login') }}
         </NuxtLinkLocale>

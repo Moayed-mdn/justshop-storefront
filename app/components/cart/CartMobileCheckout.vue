@@ -9,20 +9,20 @@
     >
       <div
         v-if="show"
-        class="fixed bottom-0 inset-x-0 bg-white border-t border-gray-200
+        class="fixed bottom-0 inset-x-0 bg-(--color-bg-elevated) border-t border-(--color-border-default)
                shadow-[0_-4px_12px_rgba(0,0,0,0.08)] p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] z-40
                lg:hidden"
       >
         <div class="flex items-center justify-between mb-3">
-          <span class="text-sm text-gray-600">{{ $t('cart.total') }}</span>
-          <span data-testid="cart-mobile-total" class="text-lg font-bold text-gray-900">{{ formatPrice(total) }}</span>
+          <span class="text-sm text-(--color-text-secondary)">{{ $t('cart.total') }}</span>
+          <span data-testid="cart-mobile-total" class="text-lg font-bold text-(--color-text-primary)">{{ formatPrice(total) }}</span>
         </div>
         <button
           @click="$emit('checkout')"
           :disabled="loading"
           data-testid="cart-mobile-checkout-button"
-          class="w-full py-3 bg-(--color-primary) text-white font-semibold rounded-md
-                 hover:bg-(--green-950) transition-colors cursor-pointer
+          class="w-full py-3 bg-(--color-primary) text-(--color-on-primary) font-semibold rounded-md
+                 hover:bg-(--color-primary-hover) transition-colors cursor-pointer
                  disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
           <svg

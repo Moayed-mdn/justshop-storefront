@@ -42,7 +42,7 @@
       />
 
       <div class="flex items-center justify-between">
-        <NuxtLinkLocale :to="routes.forgotPassword()" class="text-sm font-medium text-(--color-primary) hover:text-(--green-950)">
+        <NuxtLinkLocale :to="routes.forgotPassword()" class="text-sm font-medium text-(--color-primary) hover:text-(--color-primary-hover)">
           {{ $t('login.forgot_password') }}
         </NuxtLinkLocale>
       </div>

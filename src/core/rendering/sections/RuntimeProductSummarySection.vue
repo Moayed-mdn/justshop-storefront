@@ -100,12 +100,12 @@
     <!-- Mobile Sticky Add-to-Cart (visible below md breakpoint) -->
     <div
       v-if="product"
-      class="fixed bottom-0 left-0 right-0 z-40 border-t bg-white p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] shadow-lg md:hidden"
-      :style="{ borderColor: 'var(--product-divider, #e5e7eb)' }"
+      class="fixed bottom-0 left-0 right-0 z-40 border-t bg-(--color-bg-page) p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] shadow-lg md:hidden"
+      :style="{ borderColor: 'var(--product-divider)' }"
     >
       <div class="flex items-center justify-between gap-3">
         <div class="min-w-0 flex-1">
-          <p class="truncate text-sm font-medium text-gray-900">{{ product.name }}</p>
+          <p class="truncate text-sm font-medium text-(--color-text-primary)">{{ product.name }}</p>
           <UiPrice
             :price="currentPrice"
             currency="USD"
@@ -115,7 +115,7 @@
         <button
           @click="handleAddToCart"
           :disabled="!canAddToCart || addingToCart"
-          class="flex-shrink-0 rounded-md bg-(--color-primary) px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-(--green-950) disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+          class="flex-shrink-0 rounded-md bg-(--color-primary) px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:brightness-90 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           type="button"
         >
           <svg
@@ -215,19 +215,19 @@ const lowStockCount = computed(() => {
 })
 
 const stockBadgeClass = computed(() => {
-  if (!activeVariant.value) return 'bg-gray-100 text-gray-500'
+  if (!activeVariant.value) return 'bg-(--color-bg-hover) text-(--color-text-muted)'
   return activeVariant.value.stock > 0
-    ? 'bg-green-50 text-green-700'
-    : 'bg-red-50 text-red-700'
+    ? 'bg-(--color-bg-hover) text-(--color-success)'
+    : 'bg-(--color-bg-hover) text-(--color-error)'
 })
 
 const stockDotClass = computed(() => {
-  if (!activeVariant.value) return 'bg-gray-400'
-  return activeVariant.value.stock > 0 ? 'bg-green-500' : 'bg-red-500'
+  if (!activeVariant.value) return 'bg-(--color-text-muted)'
+  return activeVariant.value.stock > 0 ? 'bg-(--color-success)' : 'bg-(--color-error)'
 })
 
 const lowStockClass = computed(() => {
-  return 'text-amber-600'
+  return 'text-(--color-text-muted)'
 })
 
 const disabledReason = computed(() => {

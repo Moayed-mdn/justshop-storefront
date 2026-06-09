@@ -143,12 +143,12 @@ export const loadCustomFont = (
   // Check if already loaded
   if (document.getElementById(styleId)) return;
 
-  const style = document.createElement('style');
-  style.id = styleId;
-  style.textContent = fontFace;
-  style.setAttribute('data-theme-fonts', 'custom');
+  const styleEl = document.createElement('style');
+  styleEl.id = styleId;
+  styleEl.textContent = fontFace;
+  styleEl.setAttribute('data-theme-fonts', 'custom');
 
-  document.head.appendChild(style);
+  document.head.appendChild(styleEl);
 
   console.info(`Loaded custom font: ${family} (${weight}, ${style})`);
 };
@@ -264,5 +264,100 @@ export const getSystemFonts = (): string[] => {
     'sans-serif',
     'serif',
     'monospace',
+  ];
+};
+
+/**
+ * Generate font link objects for Nuxt useHead (SSR-compatible)
+ * Creates preconnect and stylesheet links for Google Fonts
+ * 
+ * @param theme - Theme object with fonts property
+ * @param weights - Font weights to load (default: 400,500,600,700)
+ * @param display - Font display strategy (default: 'swap')
+ * @returns Array of link objects for useHead
+ */
+export const generateFontLinks = (
+  theme: { fonts?: { body?: string; heading?: string } } | null,
+  weights: number[] = [400, 500, 600, 700],
+  display: 'auto' | 'block' | 'swap' | 'fallback' | 'optional' = 'swap'
+): Array<{ rel: string; href: string; crossorigin?: string }> => {
+  if (!theme || !theme.fonts) {
+    return [];
+  }
+
+  const { body, heading } = theme.fonts;
+
+  // Collect font names
+  const fontNames: string[] = [];
+  if (body) fontNames.push(body);
+  if (heading && heading !== body) fontNames.push(heading);
+
+  if (!fontNames.length) {
+    return [];
+  }
+
+  // Filter out system fonts
+  const systemFonts = [
+    'system-ui',
+    '-apple-system',
+    'sans-serif',
+    'serif',
+    'monospace',
+    'cursive',
+    'fantasy',
+    'arial',
+    'helvetica',
+    'verdana',
+    'tahoma',
+    'trebuchet ms',
+    'segoe ui',
+    'georgia',
+    'times new roman',
+    'times',
+    'palatino',
+    'garamond',
+    'courier new',
+    'courier',
+    'monaco',
+    'consolas',
+    'menlo',
+  ];
+
+  const googleFonts = fontNames.filter((font) => {
+    const normalized = font.toLowerCase().trim();
+    return !systemFonts.includes(normalized);
+  });
+
+  if (!googleFonts.length) {
+    return [];
+  }
+
+  // Build Google Fonts URL
+  const fontParams = googleFonts
+    .map((font) => {
+      // URL-encode spaces as +
+      const family = font.replace(/\s+/g, '+');
+      const wght = weights.join(';');
+      return `family=${family}:wght@${wght}`;
+    })
+    .join('&');
+
+  const googleFontsUrl = `https://fonts.googleapis.com/css2?${fontParams}&display=${display}`;
+
+  // Return array of link objects for useHead
+  return [
+    {
+      rel: 'preconnect',
+      href: 'https://fonts.googleapis.com',
+    },
+    {
+      rel: 'preconnect',
+      href: 'https://fonts.gstatic.com',
+      crossorigin: '',
+    },
+    {
+      rel: 'stylesheet',
+      href: googleFontsUrl,
+    },
   ];
 };

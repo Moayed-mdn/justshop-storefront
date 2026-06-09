@@ -47,11 +47,11 @@ const stepSize = props.step ?? 1
     <!-- Slider Container -->
     <div class="relative h-9">
       <!-- Background track -->
-      <div class="absolute top-1/2 -translate-y-1/2 h-2 w-full bg-zinc-200 rounded-full" />
+      <div class="absolute top-1/2 -translate-y-1/2 h-2 w-full bg-(--color-border-default) rounded-full" />
 
-      <!-- Filled range (blue bar between thumbs) -->
+      <!-- Filled range (between thumbs) -->
       <div
-        class="absolute top-1/2 -translate-y-1/2 h-2 bg-blue-600 rounded-full transition-all"
+        class="absolute top-1/2 -translate-y-1/2 h-2 bg-(--color-primary) rounded-full transition-all"
         :style="{
           left: `${minPercent}%`,
           width: `${maxPercent - minPercent}%`
@@ -70,12 +70,12 @@ const stepSize = props.step ?? 1
                [&::-webkit-slider-thumb]:appearance-none
                [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:w-5
                [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-4
-               [&::-webkit-slider-thumb]:border-blue-600 [&::-webkit-slider-thumb]:rounded-full
+               [&::-webkit-slider-thumb]:border-[var(--color-primary)] [&::-webkit-slider-thumb]:rounded-full
                [&::-webkit-slider-thumb]:shadow-md [&::-webkit-slider-thumb]:cursor-pointer
                [&::-webkit-slider-thumb]:pointer-events-auto
                [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:w-5
                [&::-moz-range-thumb]:bg-white [&::-moz-range-thumb]:border-4
-               [&::-moz-range-thumb]:border-blue-600 [&::-moz-range-thumb]:rounded-full
+               [&::-moz-range-thumb]:border-[var(--color-primary)] [&::-moz-range-thumb]:rounded-full
                [&::-moz-range-thumb]:shadow-md [&::-moz-range-thumb]:cursor-pointer
                [&::-moz-range-thumb]:pointer-events-auto"
       />
@@ -92,19 +92,19 @@ const stepSize = props.step ?? 1
                [&::-webkit-slider-thumb]:appearance-none
                [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:w-5
                [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-4
-               [&::-webkit-slider-thumb]:border-blue-600 [&::-webkit-slider-thumb]:rounded-full
+               [&::-webkit-slider-thumb]:border-[var(--color-primary)] [&::-webkit-slider-thumb]:rounded-full
                [&::-webkit-slider-thumb]:shadow-md [&::-webkit-slider-thumb]:cursor-pointer
                [&::-webkit-slider-thumb]:pointer-events-auto
                [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:w-5
                [&::-moz-range-thumb]:bg-white [&::-moz-range-thumb]:border-4
-               [&::-moz-range-thumb]:border-blue-600 [&::-moz-range-thumb]:rounded-full
+               [&::-moz-range-thumb]:border-[var(--color-primary)] [&::-moz-range-thumb]:rounded-full
                [&::-moz-range-thumb]:shadow-md [&::-moz-range-thumb]:cursor-pointer
                [&::-moz-range-thumb]:pointer-events-auto"
       />
     </div>
 
     <!-- Value labels -->
-    <div class="mt-6 flex justify-between text-sm font-medium text-zinc-700">
+    <div class="mt-6 flex justify-between text-sm font-medium text-(--color-text-secondary)">
       <span class="tabular-nums">{{ minVal }}</span>
       <span class="tabular-nums">{{ maxVal }}</span>
     </div>

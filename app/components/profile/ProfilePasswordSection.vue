@@ -35,7 +35,7 @@
         <button
           type="submit"
           :disabled="loading"
-          class="px-6 py-2 text-sm font-medium text-white bg-(--color-primary) rounded-md hover:bg-(--green-950) disabled:opacity-50 transition-colors"
+          class="px-6 py-2 text-sm font-medium text-(--color-on-primary) bg-(--color-primary) rounded-md hover:bg-(--color-primary-hover) disabled:opacity-50 transition-colors"
         >
           {{ loading ? savingButtonText : submitButtonText }}
         </button>

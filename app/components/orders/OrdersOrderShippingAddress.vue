@@ -1,11 +1,11 @@
 <template>
   <div
     v-if="addressData"
-    class="bg-white rounded-lg border border-gray-200 p-6"
+    class="bg-(--color-bg-card) rounded-lg border border-(--color-border-default) p-6"
   >
-    <h2 class="font-semibold text-gray-900 mb-3">{{ $t('orders.shipping_address') }}</h2>
-    <div class="text-sm text-gray-600 space-y-1">
-      <p v-if="addressData.name" class="font-medium text-gray-900">
+    <h2 class="font-semibold text-(--color-text-primary) mb-3">{{ $t('orders.shipping_address') }}</h2>
+    <div class="text-sm text-(--color-text-secondary) space-y-1">
+      <p v-if="addressData.name" class="font-medium text-(--color-text-primary)">
         {{ addressData.name }}
       </p>
       <p v-if="addressData.address?.line1">

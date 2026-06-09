@@ -26,8 +26,8 @@
           v-if="banner.ctaText"
           :to="banner.ctaUrl || '#'"
           class="inline-block mt-8 px-8 py-3 text-sm font-semibold transition-all duration-200
-                 rounded-(--radius-md) bg-(--hero-btn-bg) text-(--hero-btn-text)  cursor-pointer
-                 hover:bg-gray-100 shadow-(--shadow-sm) hover:shadow-(--shadow-md)"
+                 rounded-(--radius-md) bg-(--hero-btn-bg) text-(--hero-btn-text) cursor-pointer
+                 hover:bg-(--hero-btn-hover) shadow-(--shadow-sm) hover:shadow-(--shadow-md)"
         >
           {{ banner.ctaText }}
         </NuxtLinkLocale>

@@ -133,10 +133,11 @@
 /**
  * Dark Mode Overrides
  * 
- * Note: These override the light mode values when [data-theme="dark"] is set.
+ * Note: These override the light mode values when [data-theme="dark"] is set,
+ * but ONLY when merchant hasn't chosen a dark theme (to prevent conflicts).
  * The dynamic theme colors still apply, but with dark mode adjustments.
  */
-[data-theme="dark"] {
+:root:not([data-merchant-dark-theme])[data-theme="dark"] {
   /* Adjust theme colors for dark mode if needed */
   --color-background: #0b0b0b;
   --color-text: #f5f5f5;

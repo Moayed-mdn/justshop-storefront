@@ -62,8 +62,8 @@ const trustBadges = computed<string[]>(() => {
 <style scoped>
 .runtime-cta-section {
   width: 100%;
-  background: linear-gradient(135deg, var(--color-primary, #003d29) 0%, #005c3e 100%);
-  color: #fff;
+  background:  var(--color-bg-page, #003d29);
+  color: var(--color-text-inverse, #fff);
 }
 
 .runtime-cta-section__inner {
@@ -78,14 +78,14 @@ const trustBadges = computed<string[]>(() => {
   font-size: clamp(1.75rem, 3vw, 2.5rem);
   font-weight: 800;
   letter-spacing: -0.02em;
-  color: #fff;
+  color: var(--color-text-primary, #fff);
 }
 
 .runtime-cta-section__subtitle {
   margin: 0 0 2.5rem;
   font-size: 1.0625rem;
   line-height: 1.65;
-  color: rgba(255,255,255,0.85);
+  color: color-mix(in srgb, var(--color-text-primary, #fff) 85%, transparent);
   max-width: 36rem;
   margin-left: auto;
   margin-right: auto;
@@ -116,20 +116,20 @@ const trustBadges = computed<string[]>(() => {
 }
 
 .runtime-cta-section__btn--primary {
-  background: #fff;
+  background: var(--color-bg-card, #fff);
   color: var(--color-primary, #003d29);
 }
 
 .runtime-cta-section__btn--secondary {
-  background: rgba(255,255,255,0.15);
-  color: #fff;
-  border: 1px solid rgba(255,255,255,0.4);
+  background: color-mix(in srgb, var(--color-text-inverse, #fff) 15%, transparent);
+  color: var(--color-text-inverse, #fff);
+  border: 1px solid color-mix(in srgb, var(--color-text-inverse, #fff) 40%, transparent);
 }
 
 .runtime-cta-section__btn--outline {
   background: transparent;
-  color: #fff;
-  border: 2px solid rgba(255,255,255,0.6);
+  color: var(--color-text-inverse, #fff);
+  border: 2px solid color-mix(in srgb, var(--color-text-inverse, #fff) 60%, transparent);
 }
 
 /* Trust badges */
@@ -148,12 +148,12 @@ const trustBadges = computed<string[]>(() => {
   align-items: center;
   gap: 0.375rem;
   font-size: 0.875rem;
-  color: rgba(255,255,255,0.8);
+  color: color-mix(in srgb, var(--color-text-inverse, #fff) 80%, transparent);
 }
 
 .runtime-cta-section__badge-icon {
   font-size: 0.8125rem;
-  color: #6ee7b7;
+  color: var(--color-success, #6ee7b7);
   font-weight: 700;
 }
 </style>

@@ -10,7 +10,7 @@ const pending = inject('pending', ref(false))
 </script>
 
 <template>
-  <div class="bg-(--product-grid-bg) h-full flex flex-col">
+  <div class="bg-(--color-bg-page) h-full flex flex-col">
     <div
       v-if="pending"
       class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-(--product-grid-gap) p-(--product-grid-padding)"

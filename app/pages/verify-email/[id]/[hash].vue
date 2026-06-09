@@ -60,16 +60,16 @@ onMounted(async () => {
       <p class="animate-pulse">Checking your email...</p>
     </div>
 
-    <div v-else-if="error" class="text-center text-red-500">
+    <div v-else-if="error" class="text-center text-(--color-error)">
       <p class="mb-4">{{ error }}</p>
-      <NuxtLink :to="routes.register()" class="text-blue-500 underline">
+      <NuxtLink :to="routes.register()" class="text-(--color-info) underline">
         Resend Verification Email
       </NuxtLink>
     </div>
 
-    <div v-else-if="success" class="text-center text-green-500">
+    <div v-else-if="success" class="text-center text-(--color-success)">
       <p class="mb-4">Your email has been successfully verified!</p>
-      <NuxtLinkLocale :to="routes.login()" class="bg-blue-600 text-white px-4 py-2 rounded inline-block">
+      <NuxtLinkLocale :to="routes.login()" class="bg-(--color-primary) text-(--color-on-primary) px-4 py-2 rounded inline-block">
         Go to Login
       </NuxtLinkLocale>
     </div>

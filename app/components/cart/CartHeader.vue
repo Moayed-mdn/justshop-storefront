@@ -1,8 +1,8 @@
 <template>
     <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
-      <h1 class="text-xl sm:text-2xl font-bold text-gray-900">
+      <h1 class="text-xl sm:text-2xl font-bold text-(--color-text-primary)">
         {{ $t('cart.title') }}
-        <span class="text-gray-400 font-normal text-base">
+        <span class="text-(--color-text-muted) font-normal text-base">
           ({{ itemsCount }} {{ itemsCount === 1 ? $t('cart.item') : $t('cart.items') }})
         </span>
       </h1>

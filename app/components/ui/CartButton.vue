@@ -8,9 +8,9 @@
         @click="handle(add)"
         :disabled="isLoading"
         class="py-2 px-4 mt-2 rounded-full border font-bold transition-all duration-300
-               border-(--card-btn-border) text-(--card-btn-text) cursor-pointer
-               hover:bg-(--card-btn-hover) hover:border-(--card-btn-hover)
-               hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
+               border-(--color-primary) text-(--color-primary) cursor-pointer
+               hover:bg-(--color-primary) hover:border-(--color-primary)
+               hover:text-(--color-on-primary) disabled:opacity-50 disabled:cursor-not-allowed"
       >
         <span v-if="!isLoading">{{ $t('cart.add_to_cart') }}</span>
         <span v-else class="animate-pulse">...</span>
@@ -22,7 +22,7 @@
         key="counter"
         class="flex w-fit min-w-[125px] items-center justify-between
                mt-2 px-3 py-1 rounded-full border
-               border-(--card-btn-border) bg-transparent"
+               border-(--color-primary) bg-transparent"
       >
         <button
           @click="handle(decrement)"

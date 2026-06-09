@@ -1,15 +1,15 @@
 <template>
-  <section class="rounded-3xl border border-slate-200 bg-white px-6 py-10 shadow-sm">
+  <section class="rounded-3xl border border-(--color-border-default) bg-(--color-bg-page) px-6 py-10 shadow-sm">
     <div class="mx-auto max-w-4xl">
-      <p class="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
+      <p class="text-sm font-semibold uppercase tracking-[0.2em] text-(--color-text-muted)">
         Category
       </p>
-      <h1 class="mt-3 text-3xl font-bold text-slate-900">
+      <h1 class="mt-3 text-3xl font-bold text-(--color-text-primary)">
         {{ name }}
       </h1>
 
-      <nav v-if="crumbs.length" class="mt-6 flex flex-wrap items-center gap-1.5 text-sm text-slate-500">
-        <NuxtLink :to="routes.shop()" class="hover:text-slate-700 transition-colors">
+      <nav v-if="crumbs.length" class="mt-6 flex flex-wrap items-center gap-1.5 text-sm text-(--color-text-muted)">
+        <NuxtLink :to="routes.shop()" class="hover:text-(--color-text-primary) transition-colors">
           Shop
         </NuxtLink>
         <template v-for="(crumb, index) in crumbs" :key="`${index}-${crumb.slug || crumb.name}`">
@@ -17,11 +17,11 @@
           <NuxtLink
             v-if="index < crumbs.length - 1 && crumb.slug"
             :to="routes.category(crumb.slug)"
-            class="hover:text-slate-700 transition-colors"
+            class="hover:text-(--color-text-primary) transition-colors"
           >
             {{ crumb.name }}
           </NuxtLink>
-          <span v-else class="font-medium text-slate-800">
+          <span v-else class="font-medium text-(--color-text-primary)">
             {{ crumb.name }}
           </span>
         </template>

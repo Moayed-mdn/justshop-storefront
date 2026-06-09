@@ -18,7 +18,7 @@
       <div v-if="resolvedCtaText && resolvedCtaUrl" class="mt-8">
         <NuxtLink
           :to="resolvedCtaUrl"
-          class="inline-flex items-center rounded-full bg-[--color-accent] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[--color-accent-hover]"
+          class="inline-flex items-center rounded-full bg-[--color-accent] px-5 py-2.5 text-sm font-semibold text-[--color-text-inverse] transition hover:bg-[--color-accent-hover]"
         >
           {{ resolvedCtaText }}
         </NuxtLink>
@@ -96,7 +96,7 @@ const sectionStyle = computed(() => {
   const item = primaryHeroItem.value
   
   if (!item) {
-    return { background: 'var(--color-bg-inverse)' }
+    return { background: 'var(--color-bg-page)' }
   }
 
   // Gradient type - ensure values are sanitized and stable

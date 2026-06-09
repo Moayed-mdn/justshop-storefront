@@ -4,6 +4,12 @@
   --font-secondary: 'Georgia', 'Times New Roman', serif;
   --font-mono: 'SF Mono', 'Monaco', monospace;
   
+  /* Theme font tokens with fallback chain */
+  /* These resolve merchant fonts from runtime injection through multiple naming variants */
+  --font-body: var(--runtime-font-body, var(--theme-font-body, var(--font-primary)));
+  --font-heading: var(--runtime-font-heading, var(--theme-font-heading, var(--font-primary)));
+  --font-main: var(--font-body);
+  
   /* Font Sizes - Mobile First */
   --text-xs: 0.75rem;    /* 12px */
   --text-sm: 0.875rem;   /* 14px */
@@ -28,4 +34,9 @@
   --leading-normal: 1.5;
   --leading-relaxed: 1.625;
   --leading-loose: 2;
+}
+
+/* Global heading font application */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
 }

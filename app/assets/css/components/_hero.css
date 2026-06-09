@@ -15,4 +15,5 @@
  
   --hero-btn-bg: var(--color-primary);
   --hero-btn-text: var(--color-text-inverse);
+  --hero-btn-hover: var(--color-primary-hover);
 }

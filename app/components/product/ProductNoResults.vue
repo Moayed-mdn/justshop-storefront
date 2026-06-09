@@ -30,8 +30,8 @@
         data-testid="product-no-results-reset"
         class="mt-2 px-6 py-2 rounded border cursor-pointer
                text-sm font-medium
-               bg-(--color-accent) text-white
-               hover:opacity-90 transition-opacity"
+               bg-(--color-accent) text-(--color-on-accent)
+               hover:bg-(--color-accent-hover) transition-colors"
         @click="resetFilters"
       >
         {{ t('product.no_results_reset') }}

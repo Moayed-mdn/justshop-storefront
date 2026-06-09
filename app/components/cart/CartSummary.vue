@@ -84,8 +84,8 @@
       @click="handleCheckout"
       :disabled="checkoutLoading"
       data-testid="cart-checkout-button"
-      class="w-full py-3 px-4 bg-(--color-primary) text-white font-semibold rounded-md
-             hover:bg-(--green-950) transition-colors text-sm sm:text-base cursor-pointer
+      class="w-full py-3 px-4 bg-(--color-primary) text-(--color-on-primary) font-semibold rounded-md
+             hover:bg-(--color-primary-hover) transition-colors text-sm sm:text-base cursor-pointer
              disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
     >
       <svg

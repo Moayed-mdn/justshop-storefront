@@ -211,61 +211,14 @@ const runtimeShellStyle = computed<Record<string, string>>(() => {
   if (!theme) return {} as Record<string, string>
 
   return {
-    '--color-primary': theme.tokens.colorPrimary,
-    '--color-secondary': theme.tokens.colorSecondary,
-    '--color-accent': theme.tokens.colorAccent,
-    '--color-bg-page': theme.tokens.colorSurface,
-    '--color-bg-surface': theme.tokens.colorSurface,
-    '--color-bg-elevated': theme.tokens.colorSurface,
-    '--color-bg-card': theme.tokens.colorSurface,
-    '--color-bg-secondary': theme.tokens.colorSurface,
-    '--color-bg-hover': `color-mix(in srgb, ${theme.tokens.colorSurface} 90%, #000)`,
-    '--color-border-default': `color-mix(in srgb, ${theme.tokens.colorSurface} 80%, #000)`,
-    '--color-background': theme.tokens.colorSurface,
-    '--color-text-primary': theme.tokens.colorText,
-    '--color-text': theme.tokens.colorText,
-    '--color-text-secondary': theme.tokens.colorText,
-    '--color-text-muted': theme.tokens.colorText,
-    '--runtime-font-body': theme.tokens.fontBody,
-    '--runtime-font-heading': theme.tokens.fontHeading,
     '--runtime-radius': `var(--radius-${theme.settings.radius})`,
-    fontFamily: 'var(--runtime-font-body)',
   }
 })
 
 useHead(() => {
   const theme = runtimeBundle.value?.theme
-  
-  // Generate CSS for runtime theme override with !important to ensure it wins
-  const themeStyleContent = theme ? `:root {
-    --color-primary: ${theme.tokens.colorPrimary} !important;
-    --color-secondary: ${theme.tokens.colorSecondary} !important;
-    --color-accent: ${theme.tokens.colorAccent} !important;
-    --color-bg-page: ${theme.tokens.colorSurface} !important;
-    --color-bg-surface: ${theme.tokens.colorSurface} !important;
-    --color-bg-elevated: ${theme.tokens.colorSurface} !important;
-    --color-bg-card: ${theme.tokens.colorSurface} !important;
-    --color-bg-secondary: ${theme.tokens.colorSurface} !important;
-    --color-bg-hover: color-mix(in srgb, ${theme.tokens.colorSurface} 90%, #000) !important;
-    --color-border-default: color-mix(in srgb, ${theme.tokens.colorSurface} 80%, #000) !important;
-    --color-background: ${theme.tokens.colorSurface} !important;
-    --color-text-primary: ${theme.tokens.colorText} !important;
-    --color-text: ${theme.tokens.colorText} !important;
-    --color-text-secondary: ${theme.tokens.colorText} !important;
-    --color-text-muted: ${theme.tokens.colorText} !important;
-    --runtime-font-body: ${theme.tokens.fontBody} !important;
-    --runtime-font-heading: ${theme.tokens.fontHeading} !important;
-  }
-  body {
-    font-family: ${theme.tokens.fontBody};
-  }` : undefined
 
   return {
-    style: themeStyleContent ? [{
-      children: themeStyleContent,
-      type: 'text/css',
-      id: 'runtime-theme-override'
-    }] : [],
     htmlAttrs: {
       lang: runtimePage.value?.locale || storefrontContext.value.locale,
       dir: theme?.settings?.direction || 'ltr',

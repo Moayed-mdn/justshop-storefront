@@ -1,7 +1,7 @@
 <template>
   <div class="w-full" data-testid="product-card">
     <div
-      class="bg-(--card-bg-light) rounded-(--radius-md) flex items-center justify-center
+      class="bg-(--color-bg-card) rounded-(--radius-md) flex items-center justify-center
              h-(--card-img-height-mobile) lg:h-(--card-img-height-desktop) overflow-hidden group"
     >
       <NuxtLinkLocale :to="routes.product(product.slug)" class="cursor-pointer">

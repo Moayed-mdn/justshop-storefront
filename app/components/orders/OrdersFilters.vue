@@ -18,7 +18,7 @@
             :data-status="statusFilter.value"
             class="px-3 py-1.5 text-xs font-semibold rounded-full border transition-colors cursor-pointer"
             :class="selectedStatus === statusFilter.value
-              ? 'bg-(--color-primary) text-white border-(--color-primary)'
+              ? 'bg-(--color-primary) text-(--color-on-primary) border-(--color-primary)'
               : 'orders-filter-pill'"
           >
             {{ $t(`orders.filter_${statusFilter.label}`) }}

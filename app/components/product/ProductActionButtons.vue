@@ -5,8 +5,8 @@
         data-testid="product-add-to-cart-button"
         @click="$emit('add-to-cart')"
         :disabled="!canAddToCart || isAddingToCart"
-        class="flex-1 py-3 px-6 bg-(--color-primary) text-white font-semibold rounded-md
-               hover:bg-(--green-950) transition-colors disabled:opacity-50
+        class="flex-1 py-3 px-6 bg-(--color-primary) text-(--color-on-primary) font-semibold rounded-md
+               hover:bg-(--color-primary-hover) transition-colors disabled:opacity-50
                disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
         type="button"
       >

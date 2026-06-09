@@ -68,6 +68,8 @@
   /* States */
   --color-error: var(--red-error);
   --color-success: var(--green-success);
+  --color-warning: #f59e0b;
+  --color-info: #3b82f6;
 
   /* Overlays */
   --color-overlay-light: rgba(0, 0, 0, 0.1);
@@ -87,9 +89,51 @@
 
   /* Interaction */
   --color-bg-hover: var(--gray-200);
+
+  /* =======================================================
+     ======= MISSING TOKENS — Added for correctness =======
+     ======================================================= */
+
+  /* Hover states */
+  --color-border-hover: color-mix(in srgb, var(--color-border-default) 150%, black);
+  --color-border-subtle: color-mix(in srgb, var(--color-text-primary) 10%, transparent);
+  --color-surface: var(--color-bg-elevated);
+  --color-surface-hover: color-mix(in srgb, var(--color-bg-elevated) 95%, black);
+
+  /* Error states */
+  --color-error-bg: #FEE2E2;
+  --color-error-hover: #DC2626;
+
+  /* Info states */
+  --color-info-bg: #DBEAFE;
+  --color-info-text: #1E40AF;
+  --color-info-border: #93C5FD;
+
+  /* Warning states */
+  --color-warning-bg: #FEF3C7;
+  --color-warning-text: #92400E;
+
+  /* Status badge tokens — light mode */
+  --status-pending-bg: #FEF3C7;
+  --status-pending-text: #92400E;
+  --status-processing-bg: #DBEAFE;
+  --status-processing-text: #1E40AF;
+  --status-shipped-bg: #E0E7FF;
+  --status-shipped-text: #4C1D95;
+  --status-delivered-bg: #D1FAE5;
+  --status-delivered-text: #065F46;
+  --status-cancelled-bg: #FEE2E2;
+  --status-cancelled-text: #991B1B;
+  --status-refunded-bg: #FFEDD5;
+  --status-refunded-text: #7C2D12;
+
+  /* Overlay tokens — UI chrome, not merchant-configurable */
+  --color-overlay-heavy: rgba(0, 0, 0, 0.7);
+  --color-overlay-backdrop: rgba(0, 0, 0, 0.4);
+  --color-on-overlay: #FFFFFF;
 }
 
-[data-theme="dark"] {
+:root:not([data-merchant-dark-theme])[data-theme="dark"] {
   /* Brand Overrides (if any) */
   --color-primary: #00A670; /* Slightly brighter green for dark mode contrast */
 
@@ -115,12 +159,34 @@
   --color-border-strong: #444444;
   --color-border-active: var(--color-primary);
   --color-border-disabled: #2a2a2a;
+  --color-border-hover: color-mix(in srgb, var(--color-border-default) 150%, white);
 
   /* Overlays */
   --color-overlay-light: rgba(255, 255, 255, 0.05);
   --color-overlay-medium: rgba(0, 0, 0, 0.6);
+  --color-overlay-heavy: rgba(0, 0, 0, 0.8);
+  --color-overlay-backdrop: rgba(0, 0, 0, 0.7);
 
   /* Inverse UI */
   --color-bg-inverse: var(--white);
   --color-border-inverse: var(--gray-300);
+
+  /* Status badge tokens — dark mode inverted */
+  --status-pending-bg: #78350F;
+  --status-pending-text: #FEF3C7;
+  --status-processing-bg: #1E3A8A;
+  --status-processing-text: #DBEAFE;
+  --status-shipped-bg: #4C1D95;
+  --status-shipped-text: #EDE9FE;
+  --status-delivered-bg: #14532D;
+  --status-delivered-text: #DCFCE7;
+  --status-cancelled-bg: #7F1D1D;
+  --status-cancelled-text: #FEE2E2;
+  --status-refunded-bg: #7C2D12;
+  --status-refunded-text: #FFEDD5;
+
+  /* Error states — dark mode */
+  --color-error-bg: #7F1D1D;
+  --color-info-bg: #1E3A8A;
+  --color-warning-bg: #78350F;
 }

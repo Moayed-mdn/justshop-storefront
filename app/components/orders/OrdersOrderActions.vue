@@ -17,8 +17,8 @@
       v-if="canCancel"
       @click="$emit('cancel')"
       data-testid="order-detail-cancel-button"
-      class="w-full py-2.5 px-4 text-sm font-semibold text-red-600 border border-red-200
-             rounded-md hover:bg-red-50 transition-colors cursor-pointer"
+      class="w-full py-2.5 px-4 text-sm font-semibold text-(--color-error) border border-(--color-error)
+             rounded-md hover:bg-(--color-error-bg) transition-colors cursor-pointer"
     >
       {{ $t('orders.cancel_order') }}
     </button>

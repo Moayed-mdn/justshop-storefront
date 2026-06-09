@@ -150,7 +150,7 @@ const disclosure = computed(() => {
   padding: 1.25rem;
   border-radius: 1rem;
   background: var(--color-bg-card, #f5f6f6);
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--color-border-default, #e5e7eb);
 }
 
 .runtime-content-section__stat-value {
@@ -178,7 +178,7 @@ const disclosure = computed(() => {
   padding: 1.25rem 1.5rem;
   border-radius: 1rem;
   background: var(--color-bg-card, #f5f6f6);
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--color-border-default, #e5e7eb);
 }
 
 .runtime-content-section__promise-title {
@@ -216,13 +216,17 @@ const disclosure = computed(() => {
   padding: 1.25rem;
   border-radius: 1rem;
   background: var(--color-bg-card, #f5f6f6);
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--color-border-default, #e5e7eb);
 }
 
-.runtime-content-section__metric-value {
-  font-size: 1.75rem;
-  font-weight: 800;
-  color: var(--color-primary, #003d29);
+.runtime-content-section__metric {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 1.25rem;
+  border-radius: 1rem;
+  background: var(--color-bg-card, #f5f6f6);
+  border: 1px solid var(--color-border-default, #e5e7eb);
 }
 
 .runtime-content-section__metric-label {
@@ -243,8 +247,8 @@ const disclosure = computed(() => {
   color: var(--color-text-secondary, #555);
   padding: 1rem 1.25rem;
   border-radius: 0.75rem;
-  background: #f0fdf4;
-  border: 1px solid #bbf7d0;
+  background: color-mix(in srgb, var(--color-bg-card, #f5f6f6) 100%, transparent);
+  border: 1px solid var(--color-border-default, #e5e7eb);
   margin: 0;
 }
 </style>

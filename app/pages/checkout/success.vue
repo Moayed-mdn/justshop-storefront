@@ -1,6 +1,6 @@
 <!-- pages/checkout/success.vue -->
 <template>
-    <div class="min-h-[60vh] bg-gray-50">
+    <div class="min-h-[60vh] bg-(--color-bg-page)">
       <div class="max-w-lg mx-auto px-4 py-12 sm:py-20">
   
         <!-- ── Loading / Processing ── -->
@@ -11,37 +11,37 @@
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
             </svg>
           </div>
-          <h2 class="text-xl font-bold text-gray-900">{{ $t('checkout.processing_title') }}</h2>
-          <p class="text-gray-500 text-sm">{{ $t('checkout.processing_description') }}</p>
+          <h2 class="text-xl font-bold text-(--color-text-primary)">{{ $t('checkout.processing_title') }}</h2>
+          <p class="text-(--color-text-secondary) text-sm">{{ $t('checkout.processing_description') }}</p>
         </div>
   
         <!-- ── Success ── -->
         <div v-else-if="status === 'success'" data-testid="checkout-success-container" class="text-center space-y-6">
           <!-- Checkmark -->
           <div class="flex justify-center">
-            <div class="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center">
-              <svg class="w-10 h-10 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div class="w-20 h-20 rounded-full bg-(--status-delivered-bg) flex items-center justify-center">
+              <svg class="w-10 h-10 text-(--status-delivered-text)" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
               </svg>
             </div>
           </div>
   
           <div>
-            <h1 class="text-2xl font-bold text-gray-900">{{ $t('checkout.success_title') }}</h1>
-            <p class="text-gray-500 mt-2">{{ $t('checkout.success_description') }}</p>
+            <h1 class="text-2xl font-bold text-(--color-text-primary)">{{ $t('checkout.success_title') }}</h1>
+            <p class="text-(--color-text-secondary) mt-2">{{ $t('checkout.success_description') }}</p>
           </div>
   
           <!-- Order Details Card -->
-          <div data-testid="checkout-success-order" class="bg-white rounded-lg border border-gray-200 p-6 text-left space-y-4">
+          <div data-testid="checkout-success-order" class="bg-(--color-bg-card) rounded-lg border border-(--color-border-default) p-6 text-left space-y-4">
             <!-- Order Number -->
             <div class="flex justify-between items-center">
-              <span class="text-sm text-gray-500">{{ $t('checkout.order_number') }}</span>
-              <span data-testid="checkout-order-number" class="text-sm font-bold text-gray-900 font-mono">{{ orderData?.order_number }}</span>
+              <span class="text-sm text-(--color-text-secondary)">{{ $t('checkout.order_number') }}</span>
+              <span data-testid="checkout-order-number" class="text-sm font-bold text-(--color-text-primary) font-mono">{{ orderData?.order_number }}</span>
             </div>
   
             <!-- Payment Status -->
             <div class="flex justify-between items-center">
-              <span class="text-sm text-gray-500">{{ $t('checkout.payment_status') }}</span>
+              <span class="text-sm text-(--color-text-secondary)">{{ $t('checkout.payment_status') }}</span>
               <span
                 data-testid="checkout-payment-status"
                 class="text-sm font-semibold px-2.5 py-0.5 rounded-full"
@@ -52,14 +52,14 @@
             </div>
   
             <!-- Divider -->
-            <div class="border-t border-gray-100"></div>
+            <div class="border-t border-(--color-border-default)"></div>
   
             <!-- Email -->
             <div v-if="orderData?.customer_email" class="text-center">
-              <p class="text-sm text-gray-500">
+              <p class="text-sm text-(--color-text-secondary)">
                 {{ $t('checkout.confirmation_email') }}
               </p>
-              <p class="text-sm font-semibold text-gray-900 mt-1">
+              <p class="text-sm font-semibold text-(--color-text-primary) mt-1">
                 {{ orderData.customer_email }}
               </p>
             </div>
@@ -68,14 +68,14 @@
           <!-- Guest: Create Account Prompt -->
           <div
             v-if="!isLoggedIn && orderData?.customer_email"
-            class="bg-blue-50 rounded-lg border border-blue-200 p-5 text-left"
+            class="bg-(--color-info-bg) rounded-lg border border-(--color-info-border) p-5 text-left"
           >
-            <h3 class="text-sm font-bold text-blue-900">{{ $t('checkout.create_account_title') }}</h3>
-            <p class="text-sm text-blue-700 mt-1">{{ $t('checkout.create_account_description') }}</p>
+            <h3 class="text-sm font-bold text-(--color-info-text)">{{ $t('checkout.create_account_title') }}</h3>
+            <p class="text-sm text-(--color-info-text) mt-1">{{ $t('checkout.create_account_description') }}</p>
             <NuxtLinkLocale
               :to="routes.register()"
-              class="inline-block mt-3 px-4 py-2 text-sm font-medium text-white bg-blue-600
-                     rounded-md hover:bg-blue-700 transition-colors"
+              class="inline-block mt-3 px-4 py-2 text-sm font-medium text-(--color-on-primary) bg-(--color-primary)
+                     rounded-md hover:bg-(--color-primary-hover) transition-colors"
             >
               {{ $t('checkout.create_account_button') }}
             </NuxtLinkLocale>
@@ -87,8 +87,8 @@
               v-if="isLoggedIn"
               :to="routes.orders()"
               data-testid="checkout-view-orders"
-              class="flex-1 py-3 px-4 text-center text-sm font-semibold text-white bg-(--color-primary)
-                     rounded-md hover:bg-(--green-950) transition-colors"
+              class="flex-1 py-3 px-4 text-center text-sm font-semibold text-(--color-on-primary) bg-(--color-primary)
+                     rounded-md hover:bg-(--color-primary-hover) transition-colors"
             >
               {{ $t('checkout.view_orders') }}
             </NuxtLinkLocale>
@@ -96,9 +96,9 @@
             <NuxtLinkLocale
               :to="routes.home()"
               data-testid="checkout-continue-shopping"
-              class="flex-1 py-3 px-4 text-center text-sm font-semibold border border-gray-300
-                     rounded-md hover:bg-gray-50 transition-colors"
-              :class="isLoggedIn ? 'text-gray-700' : 'text-white bg-(--color-primary) hover:bg-(--green-950) border-transparent'"
+              class="flex-1 py-3 px-4 text-center text-sm font-semibold border border-(--color-border-default)
+                     rounded-md hover:bg-(--color-bg-hover) transition-colors"
+              :class="isLoggedIn ? 'text-(--color-text-primary)' : 'text-(--color-on-primary) bg-(--color-primary) hover:bg-(--color-primary-hover) border-transparent'"
             >
               {{ $t('checkout.continue_shopping') }}
             </NuxtLinkLocale>
@@ -108,8 +108,8 @@
         <!-- ── Error ── -->
         <div v-else-if="status === 'error'" data-testid="checkout-error-container" class="text-center space-y-6">
           <div class="flex justify-center">
-            <div class="w-20 h-20 rounded-full bg-red-100 flex items-center justify-center">
-              <svg class="w-10 h-10 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div class="w-20 h-20 rounded-full bg-(--color-error-bg) flex items-center justify-center">
+              <svg class="w-10 h-10 text-(--color-error)" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
@@ -117,14 +117,14 @@
           </div>
   
           <div>
-            <h1 class="text-2xl font-bold text-gray-900">{{ $t('checkout.error_title') }}</h1>
-            <p class="text-gray-500 mt-2">{{ $t('checkout.error_description') }}</p>
+            <h1 class="text-2xl font-bold text-(--color-text-primary)">{{ $t('checkout.error_title') }}</h1>
+            <p class="text-(--color-text-secondary) mt-2">{{ $t('checkout.error_description') }}</p>
           </div>
   
           <NuxtLinkLocale
             :to="routes.home()"
-            class="inline-block py-3 px-6 text-sm font-semibold text-white bg-(--color-primary)
-                   rounded-md hover:bg-(--green-950) transition-colors"
+            class="inline-block py-3 px-6 text-sm font-semibold text-(--color-on-primary) bg-(--color-primary)
+                   rounded-md hover:bg-(--color-primary-hover) transition-colors"
           >
             {{ $t('checkout.continue_shopping') }}
           </NuxtLinkLocale>
@@ -163,11 +163,11 @@
   const paymentStatusClasses = computed(() => {
     switch (orderData.value?.payment_status) {
       case 'paid':
-        return 'bg-green-100 text-green-700'
+        return 'bg-(--status-success-bg) text-(--status-success-text)'
       case 'unpaid':
-        return 'bg-yellow-100 text-yellow-700'
+        return 'bg-(--status-warning-bg) text-(--status-warning-text)'
       default:
-        return 'bg-gray-100 text-gray-700'
+        return 'bg-(--color-bg-tertiary) text-(--color-text-tertiary)'
     }
   })
   

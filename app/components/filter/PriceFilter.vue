@@ -2,7 +2,7 @@
   <section>
     <h3 class="font-semibold mb-2">{{ t('filter.price') }}</h3>
     <div class="double-range-slider">
-      <div class="flex justify-between mb-2 text-sm text-gray-700">
+      <div class="flex justify-between mb-2 text-sm text-(--color-text-primary)">
         <span>{{ formatPrice(localMin) }}</span>
         <span>{{ formatPrice(localMax) }}</span>
       </div>
@@ -39,7 +39,7 @@
           :aria-label="t('filter.to')"
         />
       </div>
-      <p class="mt-2 text-xs text-gray-600">
+      <p class="mt-2 text-xs text-(--color-text-secondary)">
         {{ t('filter.products_between') }} {{ formatPriceCompact(localMin) }} -
         {{ formatPriceCompact(localMax) }}
       </p>

@@ -48,7 +48,7 @@
   
           <span
             v-if="selectedVariant.stock > 0 && selectedVariant.stock <= 5"
-            class="text-amber-600 text-xs"
+            class="text-(--color-warning) text-xs"
             data-testid="product-stock-warning"
           >
             ({{ $t('product.only_x_left', { count: selectedVariant.stock }) }})
@@ -120,7 +120,7 @@ import type { ProductVariant } from '~~/types/productDetail';
     }
   
     if (isSelected) {
-      return 'border-(--color-primary) bg-(--color-primary) text-white'
+      return 'border-(--color-primary) bg-(--color-primary) text-(--color-on-primary)'
     }
   
     return 'border-(--color-border-default) text-(--color-text-primary) hover:border-(--color-primary)'
