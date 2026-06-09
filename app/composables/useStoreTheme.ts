@@ -35,14 +35,18 @@ export const useStoreTheme = () => {
         }
       );
 
-      if (response?.data) {
-        theme.value = response.data;
+      // The runtime API returns { data: { data: theme } } structure
+      // Extract the actual theme from response.data.data or response.data
+      const themeData = (response as any)?.data?.data || response?.data;
+      
+      if (themeData) {
+        theme.value = themeData;
         initialized.value = true;
 
         // Cache in session storage for performance
         if (process.client) {
           try {
-            sessionStorage.setItem('store-theme', JSON.stringify(response.data));
+            sessionStorage.setItem('store-theme', JSON.stringify(themeData));
             sessionStorage.setItem('store-theme-timestamp', Date.now().toString());
           } catch (e) {
             console.warn('Failed to cache theme in sessionStorage:', e);
@@ -227,6 +231,37 @@ export const useStoreTheme = () => {
     }
   };
 
+  /**
+   * Get theme CSS for SSR injection (SSR-compatible)
+   * Extracts theme tokens and generates CSS string
+   * Works on both server and client
+   */
+  const getThemeCSS = async (): Promise<string> => {
+    if (!theme.value) {
+      return '';
+    }
+
+    try {
+      // Dynamically import utilities
+      const [
+        { extractThemeTokens },
+        { generateThemeCSS }
+      ] = await Promise.all([
+        import('~/utils/themeTokens'),
+        import('~/utils/cssInjector')
+      ]);
+
+      // Extract tokens from theme
+      const tokens = extractThemeTokens(theme.value);
+
+      // Generate CSS string
+      return generateThemeCSS(tokens);
+    } catch (err) {
+      console.error('Failed to generate theme CSS:', err);
+      return '';
+    }
+  };
+
   return {
     // State
     theme: computed(() => theme.value),
@@ -249,5 +284,6 @@ export const useStoreTheme = () => {
     clearCache,
     refresh,
     applyThemeTokens,
+    getThemeCSS,
   };
 };

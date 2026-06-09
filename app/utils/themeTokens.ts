@@ -94,12 +94,27 @@ export const extractThemeTokens = (theme: Theme | null): ThemeTokens => {
     });
   }
 
-  // Merge with defaults (defaults only used if not set)
+  // Apply defaults for missing values only
+  // Convert default key names to match runtime API format (--colors-* -> --color-*)
   const defaultTokens = flattenThemeSettings(DEFAULT_THEME_VALUES);
-  const merged = { ...defaultTokens, ...tokens };
-  applyAliases(merged);
+  
+  Object.entries(defaultTokens).forEach(([key, value]) => {
+    // Normalize --colors-* to --color-* to match API format
+    const normalizedKey = key.startsWith('--colors-') 
+      ? key.replace('--colors-', '--color-')
+      : key.startsWith('--typography-')
+      ? key.replace('--typography-', '--font-')
+      : key;
+    
+    // Only add if not already present
+    if (!tokens[normalizedKey]) {
+      tokens[normalizedKey] = value;
+    }
+  });
 
-  return merged;
+  applyAliases(tokens);
+
+  return tokens;
 };
 
 /**
@@ -114,6 +129,7 @@ function applyAliases(tokens: ThemeTokens): void {
     tokens['--color-bg-surface'] = bgColor;
     tokens['--color-bg-elevated'] = bgColor;
     tokens['--color-bg-card'] = bgColor;
+    tokens['--color-bg-secondary'] = bgColor; // For footer and secondary surfaces
   }
   const textColor = tokens['--color-text'] || tokens['--colors-text'];
   if (textColor) {

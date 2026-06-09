@@ -14,9 +14,10 @@
 import type { ToasterProps } from '@nuxt/ui';
 import { useTheme } from '~/composables/useTheme'
 import { useStoreTheme } from '~/composables/useStoreTheme'
+import { generateFontLinks } from '~/utils/fontLoader'
 
 const { theme } = useTheme()
-const { theme: storeTheme, fetchTheme, loadFromCache, applyThemeTokens } = useStoreTheme()
+const { theme: storeTheme, fetchTheme, getThemeCSS } = useStoreTheme()
 
 const head = useLocaleHead({
   // 'addDirAttribute' is now just 'dir'
@@ -26,6 +27,22 @@ const head = useLocaleHead({
 })
 
 const toaster:ToasterProps = { position: 'top-right'  }
+
+// Fetch theme during SSR and get the CSS synchronously
+const { data: themeData } = await useAsyncData('store-theme', async () => {
+  await fetchTheme()
+  
+  // Generate CSS while we have the theme available
+  if (storeTheme.value) {
+    const css = await getThemeCSS()
+    return {
+      theme: storeTheme.value,
+      css: css
+    }
+  }
+  
+  return null
+})
 
 useHead({
   htmlAttrs: {
@@ -38,7 +55,7 @@ useHead({
       content: () => theme.value === 'dark' ? '#0b0b0b' : '#ffffff'
     }
   ],
-    script: [
+  script: [
     {
       children: `(function () {
         try {
@@ -54,22 +71,22 @@ useHead({
   ]
 })
 
-// Initialize store theme on mount
-onMounted(async () => {
-  // Try to load from cache first for instant rendering
-  const cached = loadFromCache()
-  
-  if (cached && storeTheme.value) {
-    // Apply cached theme immediately
-    await applyThemeTokens()
+// Inject theme CSS synchronously using the cached data
+useHead(() => {
+  if (!themeData.value) {
+    return {}
   }
   
-  // Fetch fresh theme data (will update if changed)
-  await fetchTheme()
-  
-  // Apply theme tokens (colors, fonts, etc.)
-  if (storeTheme.value) {
-    await applyThemeTokens()
+  return {
+    style: [
+      {
+        id: 'merchant-theme',
+        innerHTML: themeData.value.css
+      }
+    ],
+    link: themeData.value.theme 
+      ? generateFontLinks(themeData.value.theme)
+      : []
   }
 })
 </script>
