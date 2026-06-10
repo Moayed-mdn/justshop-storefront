@@ -24,10 +24,10 @@
     
         <NuxtLinkLocale
           v-if="bannerData.cat_text"
-          :to="bannerData.cat_url || '#'"
+          to="/products"
           class="inline-block mt-8 px-8 py-3 text-sm font-semibold transition-all duration-200
                  rounded-(--radius-md) bg-(--hero-btn-bg) text-(--hero-btn-text)  cursor-pointer
-                 hover:bg-gray-100 shadow-(--shadow-sm) hover:shadow-(--shadow-md)"
+                 hover:bg-green-800 shadow-(--shadow-sm) hover:shadow-(--shadow-md)"
         >
           {{ bannerData.cat_text }}
         </NuxtLinkLocale>

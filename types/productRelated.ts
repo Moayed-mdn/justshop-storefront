@@ -10,6 +10,7 @@ export interface ProductRelated {
     primary_image: string;
     price: number;
     category_id: number;
+    product_variant_id: number;
 }
 
 

@@ -25,7 +25,7 @@
   const mappedProducts = computed<ProductCard[]>(() => {
     return props.products.map((related) => ({
       product_id: related.id,
-      product_variant_id: 0,
+      product_variant_id: related.product_variant_id,
       slug: related.slug,
       category_id: related.category_id,
       primary_image: related.primary_image || '',
