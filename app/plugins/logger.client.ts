@@ -1,4 +1,4 @@
-export default defineNuxtPlugin(() => {
+export default defineNuxtPlugin((nuxtApp) => {
   if (process.server) return
 
   const originalWarn = console.warn
@@ -52,5 +52,15 @@ export default defineNuxtPlugin(() => {
   console.error = (...args: any[]) => {
     originalError(...args)
     sendLog('error', args)
+  }
+
+  // Hook into Vue's error handler to capture the ACTUAL errors that Vue swallows
+  nuxtApp.vueApp.config.errorHandler = (err, instance, info) => {
+    originalError('[VUE ERROR HANDLER]', err, info)
+    sendLog('error', [
+      `[VUE ERROR] ${info}`,
+      `Error: ${err instanceof Error ? err.message : String(err)}`,
+      `Stack: ${err instanceof Error ? err.stack : 'N/A'}`
+    ])
   }
 })

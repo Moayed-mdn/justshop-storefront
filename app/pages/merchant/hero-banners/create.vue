@@ -43,8 +43,8 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import type { HeroBannerFormData } from '~/types/heroBanner'
-import { useHeroBanners } from '~/app/composables/useHeroBanners'
-import HeroBannerForm from '~/app/components/merchant/hero-banners/HeroBannerForm.vue'
+import { useHeroBanners } from '~/composables/useHeroBanners'
+import HeroBannerForm from '~/components/merchant/hero-banners/HeroBannerForm.vue'
 
 // TODO: Get actual store ID from auth context
 const STORE_ID = 1

@@ -39,6 +39,8 @@
 <script setup lang="ts">
 import type { RuntimeSectionComponentProps } from '../types'
 
+const localePath = useLocalePath()
+
 type CategoryCard = {
   id: string | number
   name: string
@@ -62,7 +64,11 @@ const categories = computed<CategoryCard[]>(() => {
     .map((item) => ({
       id: (item.id as string | number) ?? item.slug ?? item.name,
       name: typeof item.name === 'string' ? item.name : 'Category',
-      path: typeof item.path === 'string' ? item.path : '#',
+      path: typeof item.path === 'string'
+        ? (item.path.startsWith('/') && !item.path.startsWith('/en/') && !item.path.startsWith('/ar/')
+          ? localePath(item.path)
+          : item.path)
+        : '#',
       productCount: typeof item.productCount === 'number' ? item.productCount : null,
       image: typeof item.image === 'string' ? item.image
         : (typeof item.primary_image === 'string' ? item.primary_image

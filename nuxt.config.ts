@@ -117,6 +117,7 @@ export default defineNuxtConfig({
           'en/topbar.json', 'en/footer.json', 'en/checkout.json',
           'en/orders.json', 'en/login.json', 'en/register.json',
           'en/profile.json', 'en/auth.json', 'en/error.json',
+          'en/categories.json',
         ],
       },
       {
@@ -131,6 +132,7 @@ export default defineNuxtConfig({
           'ar/topbar.json', 'ar/footer.json', 'ar/checkout.json',
           'ar/orders.json', 'ar/login.json', 'ar/register.json',
           'ar/profile.json', 'ar/auth.json', 'ar/error.json',
+          'ar/categories.json',
         ],
       },
     ],

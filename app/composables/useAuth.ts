@@ -1,6 +1,7 @@
 // composables/useAuth.ts
 import { useApi } from '~/composables/useApi';
 import { API_ROUTES } from '~~/shared/utils/routes';
+import { clearResourceCache, refreshResourceCache, CacheResources } from '~~/src/core/cache/createCacheKey';
 import type { AuthResponse, UserResponse } from '~~/types/auth';
 import type { ApiSuccess } from '~~/types/api';
 
@@ -27,6 +28,12 @@ export const useAuth = () => {
 
       const cartStore = useCartStore();
       await cartStore.onLogin();
+
+      // ✅ Refresh user-specific data after login
+      await refreshResourceCache([
+        CacheResources.USER_PROFILE,
+        CacheResources.CART_ITEMS,
+      ]);
 
       return navigateTo(storefrontRoutes.home());
     }finally {
@@ -116,6 +123,14 @@ export const useAuth = () => {
     } finally {
       authStore.clearAuth();
       useCartStore().onLogout();
+      
+      // ✅ Clear all user-specific caches after logout
+      await clearResourceCache([
+        CacheResources.USER_PROFILE,
+        CacheResources.USER_ORDERS,
+        CacheResources.CART_ITEMS,
+      ]);
+      
       loading.value = false;
       return navigateTo(storefrontRoutes.login());
     }

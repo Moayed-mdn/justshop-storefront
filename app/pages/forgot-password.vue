@@ -5,19 +5,19 @@
     <div v-if="success" class="text-center space-y-4">
       <AuthAlert type="success" :message="successMessage" />
       <p class="text-sm text-(--color-text-secondary)">
-        {{ $t('auth.forgot_password_success_note') }}
+        {{ $t('forgot_password_success_note') }}
       </p>
       <NuxtLinkLocale
         :to="routes.login()"
         class="inline-block mt-4 text-sm font-medium text-(--color-primary) hover:text-(--color-primary-hover)"
       >
-        {{ $t('auth.back_to_login') }}
+        {{ $t('back_to_login') }}
       </NuxtLinkLocale>
     </div>
 
     <form v-else class="space-y-6" @submit.prevent="handleForgot">
       <p class="text-sm text-(--color-text-secondary)">
-        {{ $t('auth.forgot_password_description') }}
+        {{ $t('forgot_password_description') }}
       </p>
 
       <AuthAlert type="error" :message="error || undefined" />
@@ -34,8 +34,8 @@
 
       <AuthSubmitButton
         :loading="loading"
-        :text="$t('auth.send_reset_link')"
-        :loading-text="$t('auth.sending')"
+        :text="$t('send_reset_link')"
+        :loading-text="$t('sending')"
       />
 
       <div class="text-center">
@@ -43,7 +43,7 @@
           :to="routes.login()"
           class="text-sm font-medium text-(--color-primary) hover:text-(--color-primary-hover)"
         >
-          {{ $t('auth.back_to_login') }}
+          {{ $t('back_to_login') }}
         </NuxtLinkLocale>
       </div>
     </form>
@@ -80,13 +80,13 @@ const handleForgot = async () => {
   try {
     const response = await forgotPassword(email.value)
     success.value = true
-    successMessage.value = response?.message || t('auth.password_reset_link_sent')
+    successMessage.value = response?.message || t('password_reset_link_sent')
   } catch (err: any) {
     const errorData = err?.data?.data || err?.data
     if (errorData?.errors?.email) {
       fieldError.value = errorData.errors.email[0]
     } else {
-      error.value = errorData?.message || t('auth.failed_to_send_reset_link')
+      error.value = errorData?.message || t('failed_to_send_reset_link')
     }
   }
 }

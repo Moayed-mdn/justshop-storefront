@@ -28,7 +28,7 @@
           >
             {{ $t('checkout.return_to_cart') }}
           </NuxtLinkLocale>
-  
+
           <NuxtLinkLocale
             :to="routes.home()"
             data-testid="checkout-cancel-continue-shopping"

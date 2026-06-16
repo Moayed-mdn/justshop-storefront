@@ -11,7 +11,8 @@
 
     <div class="p-(--filter-sidebar-padding) space-y-(--filter-sidebar-gap)">
       <!-- Categories -->
-      <FilterCategoryFilter
+      <CategoryFilter
+        v-if="backendFilters?.descendants?.length"
         :categories="backendFilters.descendants"
         :selected-slug="filters.categorySlug"
         @select="setCategory"
@@ -35,8 +36,8 @@
           range
         />
         <div class="flex justify-between mt-2 text-sm">
-          <span>{{ priceRange[0] }}</span>
-          <span>{{ priceRange[1] }}</span>
+          <span>{{ displayLeft }}</span>
+          <span>{{ displayRight }}</span>
         </div>
       </div>
 
@@ -71,16 +72,18 @@ import type { UIProductListFilters } from '../../../types/api/product'
 import type { ProductListFilters } from '~~/types/product';
 
 const { t } = useI18n()
+const { locale } = useI18n()
+const isRtl = computed(() => locale.value === 'ar')
 
 const props = defineProps<{
-  backendFilters: ProductListFilters /// ProductListFilters
+  backendFilters: ProductListFilters | null
 }>()
 
 const emit = defineEmits<{
   (e: 'close'): void
 }>()
 
-const FiltersData = mapToUIFilters(props.backendFilters);
+const FiltersData = computed(() => mapToUIFilters(props.backendFilters));
 
 // ✅ Everything comes from the composable now — no local filter state
 const {
@@ -91,8 +94,8 @@ const {
 } = useProductFilters()
 
 /* Price helpers */
-const numericMinPrice = computed(() => Number(FiltersData.min_price))
-const numericMaxPrice = computed(() => Number(FiltersData.max_price))
+const numericMinPrice = computed(() => Number(FiltersData.value.min_price))
+const numericMaxPrice = computed(() => Number(FiltersData.value.max_price))
 const numericInitialMin = computed(
   () => filters.value.minPrice ?? numericMinPrice.value
 )
@@ -100,27 +103,47 @@ const numericInitialMax = computed(
   () => filters.value.maxPrice ?? numericMaxPrice.value
 )
 
+// ✅ RTL Fix: Keep internal values always in logical order (min, max)
+// Only reverse the visual display in RTL
 const priceRange = ref<[number, number]>([
   numericInitialMin.value,
   numericInitialMax.value
 ])
 
+// Display values - swap positions in RTL for visual correctness
+const displayLeft = computed(() => isRtl.value ? priceRange.value[1] : priceRange.value[0])
+const displayRight = computed(() => isRtl.value ? priceRange.value[0] : priceRange.value[1])
+
 const onPriceChange = () => {
-  const [min, max] = priceRange.value
-  filters.value.minPrice = min
-  filters.value.maxPrice = max
+  // Slider always gives us [left_value, right_value]
+  // Store them as min/max (already in correct order in LTR and RTL)
+  const [left, right] = priceRange.value
+  
+  // Always ensure min < max
+  filters.value.minPrice = Math.min(left, right)
+  filters.value.maxPrice = Math.max(left, right)
 }
 
 // ✅ This watcher syncs priceRange when resetFilters() clears minPrice/maxPrice
 watch(
   () => [filters.value.minPrice, filters.value.maxPrice],
   ([min, max]) => {
-    priceRange.value = [
-      min ?? numericMinPrice.value,
-      max ?? numericMaxPrice.value
-    ]
+    const newMin = min ?? numericMinPrice.value
+    const newMax = max ?? numericMaxPrice.value
+    
+    // Always keep internal values in logical order (min, max)
+    priceRange.value = [newMin, newMax]
   }
 )
+
+// Watch locale changes - no need to reverse, just keep logical order
+watch(locale, () => {
+  const currentMin = filters.value.minPrice ?? numericMinPrice.value
+  const currentMax = filters.value.maxPrice ?? numericMaxPrice.value
+  
+  // Keep values in logical order, display will handle RTL
+  priceRange.value = [currentMin, currentMax]
+})
 
 /* Category helpers */
 const setCategory = (slug: string) => {

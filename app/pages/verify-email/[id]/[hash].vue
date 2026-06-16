@@ -62,9 +62,9 @@ onMounted(async () => {
 
     <div v-else-if="error" class="text-center text-(--color-error)">
       <p class="mb-4">{{ error }}</p>
-      <NuxtLink :to="routes.register()" class="text-(--color-info) underline">
+      <NuxtLinkLocale :to="routes.register()" class="text-(--color-info) underline">
         Resend Verification Email
-      </NuxtLink>
+      </NuxtLinkLocale>
     </div>
 
     <div v-else-if="success" class="text-center text-(--color-success)">

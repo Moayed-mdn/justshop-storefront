@@ -1,4 +1,5 @@
 import { useServerApi } from '../utils/api'
+import { transformResponseUrls } from '../utils/transformImageUrls'
 import { EXTERNAL_API_ROUTES } from '../../shared/utils/routes'
 import type { ProductApiFilters } from '../../types/api/product'
 
@@ -28,5 +29,6 @@ export default defineEventHandler(async (event) => {
     query: apiFilters,
   })
 
-  return response
+  // Transform all image URLs from backend domain to frontend domain
+  return transformResponseUrls(event, response)
 })

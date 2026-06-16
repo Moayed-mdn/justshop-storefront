@@ -1,0 +1,10 @@
+{
+  "categories": {
+    "page_title": "Categories",
+    "page_description": "Browse all product categories",
+    "browse": "Browse",
+    "no_categories": "No categories available",
+    "no_categories_description": "Check back later for new categories",
+    "back_home": "Back to Home"
+  }
+}

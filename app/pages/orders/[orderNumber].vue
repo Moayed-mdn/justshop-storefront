@@ -67,13 +67,6 @@
     middleware: 'auth',
   })
 
-  useHead({
-    title: t('orders.order_title', { number: orderNumber }),
-    meta: [
-      { name: 'description', content: t('orders.order_description') },
-    ],
-  })
-  
   const route = useRoute()
   const { fetchOrder, cancelOrder, reorder: reorderFn, loading } = useOrders()
   const cartStore = useCartStore()
@@ -82,6 +75,13 @@
   const toast = useToast()
   
   const orderNumber = route.params.orderNumber as string
+  
+  useHead({
+    title: t('orders.order_title', { number: orderNumber }),
+    meta: [
+      { name: 'description', content: t('orders.order_description') },
+    ],
+  })
   const order = ref<any>(null)
   const showCancelModal = ref(false)
   const cancelling = ref(false)

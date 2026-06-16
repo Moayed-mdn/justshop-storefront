@@ -3,16 +3,20 @@
     class="storefront-runtime min-h-screen bg-(--color-bg-page) text-(--color-text-primary)"
     :style="runtimeShellStyle"
   >
+    <!-- Show subtle loading overlay when fetching new locale data -->
+    <div v-if="pending" class="fixed inset-0 bg-white/60 dark:bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center">
+      <div class="flex flex-col items-center gap-3">
+        <UiLoadingSpinner class="w-8 h-8" />
+        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
+          Loading {{ locale === 'ar' ? 'Arabic' : 'English' }} content...
+        </span>
+      </div>
+    </div>
+
     <template v-if="resolvedRoute && runtimePage">
       <RuntimeLayoutManager :layout="runtimePage.layout || resolvedRoute.layout || undefined">
         <RuntimeSectionRenderer :sections="runtimePage.sections" />
       </RuntimeLayoutManager>
-    </template>
-
-    <template v-else-if="pending">
-      <div class="flex items-center justify-center min-h-screen">
-        <UiLoadingSpinner />
-      </div>
     </template>
   </div>
 </template>
@@ -32,6 +36,27 @@ definePageMeta({
 })
 
 const storefrontContext = useStorefrontContext()
+const { locale } = useI18n()
+const route = useRoute()
+
+// ✅ Extract locale from path - this is reactive and updates cache key
+const currentLocale = computed(() => {
+  const pathParts = route.path.split('/').filter(Boolean)
+  if (pathParts.length > 0 && ['en', 'ar'].includes(pathParts[0])) {
+    return pathParts[0] as 'en' | 'ar'
+  }
+  return locale.value
+})
+
+// Sync locale to context only on client side (after mount)
+if (process.client) {
+  watch(currentLocale, (newLocale) => {
+    if (storefrontContext.value.locale !== newLocale) {
+      console.log('[Locale] Updating storefrontContext.locale to:', newLocale)
+      storefrontContext.value.locale = newLocale
+    }
+  }, { immediate: true })
+}
 
 if (storefrontContext.value.featureFlags.storefront_runtime === false) {
   throw createError({
@@ -40,7 +65,6 @@ if (storefrontContext.value.featureFlags.storefront_runtime === false) {
   })
 }
 
-const route = useRoute()
 const nuxtApp = useNuxtApp()
 const { resolveRoute } = useRouteResolver()
 const { fetchPayload } = useStorefrontPayload()
@@ -64,7 +88,7 @@ const runtimeDataKey = computed(() =>
       storefrontContext.value.tenant?.id ||
       'default'
     ),
-    locale: storefrontContext.value.locale || 'en',
+    locale: currentLocale.value,  // ✅ Use currentLocale directly
     artifact: 'page',
     route: route.path,
     previewState: isPreview.value ? 'preview' : 'live',
@@ -128,11 +152,17 @@ const toRuntimePageError = (error: unknown) => {
 }
 
 const { data: runtimeData, pending, error } = await useAsyncData(
-  runtimeDataKey.value,
+  () => runtimeDataKey.value,
   async () => {
+    // Performance tracking
+    const startTime = Date.now()
+    console.log('[Runtime] Starting data fetch for:', route.path, 'locale:', locale.value)
+    
     syncRuntimeContext()
 
+    const resolveStart = Date.now()
     const resolved = await resolveRoute(route.path)
+    console.log('[Runtime] Route resolved in:', Date.now() - resolveStart, 'ms')
 
     if (resolved.status === 'redirect' && resolved.redirectTo) {
       // navigateTo needs context — run it via nuxtApp
@@ -150,7 +180,10 @@ const { data: runtimeData, pending, error } = await useAsyncData(
       throw new StorefrontPageError('Page not found', 404, true)
     }
 
+    const bundleStart = Date.now()
     const bundle = await fetchPayload(resolved)
+    console.log('[Runtime] Bundle fetched in:', Date.now() - bundleStart, 'ms')
+    console.log('[Runtime] Total time:', Date.now() - startTime, 'ms')
 
     if (!bundle) {
       throw new StorefrontPageError(
@@ -219,10 +252,8 @@ useHead(() => {
   const theme = runtimeBundle.value?.theme
 
   return {
-    htmlAttrs: {
-      lang: runtimePage.value?.locale || storefrontContext.value.locale,
-      dir: theme?.settings?.direction || 'ltr',
-    },
+    // ✅ FIX BUG 2: Don't set htmlAttrs here - let app.vue handle it
+    // This prevents overriding app.vue's correct dir from useLocaleHead
     meta: theme?.tokens?.colorPrimary
       ? [{ name: 'theme-color', content: theme.tokens.colorPrimary }]
       : [],

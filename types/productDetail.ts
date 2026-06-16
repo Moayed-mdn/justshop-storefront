@@ -37,6 +37,7 @@ export interface ProductImage {
   export interface ProductBrand {
     id: number;
     name: string;
+    slug: string;
   }
   
   export interface ProductDetail {
@@ -45,8 +46,8 @@ export interface ProductImage {
     slug: string;
     description: string;
     default_variant_id: number;
-    category: ProductCategory;
-    brand: ProductBrand;
+    category?: ProductCategory | null;
+    brand?: ProductBrand | null;
     attributes: Record<string, string[]>; // e.g., { "Storage": ["128GB", "256GB"], "Color": ["Black", "Green"] }
     variants: ProductVariant[];
   }

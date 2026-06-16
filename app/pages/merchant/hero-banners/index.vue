@@ -49,9 +49,9 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import type { HeroBannersFilters } from '~/types/heroBanner'
-import { useHeroBanners } from '~/app/composables/useHeroBanners'
-import HeroBannerFilters from '~/app/components/merchant/hero-banners/HeroBannerFilters.vue'
-import HeroBannersList from '~/app/components/merchant/hero-banners/HeroBannersList.vue'
+import { useHeroBanners } from '~/composables/useHeroBanners'
+import HeroBannerFilters from '~/components/merchant/hero-banners/HeroBannerFilters.vue'
+import HeroBannersList from '~/components/merchant/hero-banners/HeroBannersList.vue'
 
 // TODO: Get actual store ID from auth context
 // For now, using store ID 1 as default

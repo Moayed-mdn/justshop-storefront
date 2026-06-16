@@ -2,7 +2,7 @@
   <div class="flex items-center gap-(--header-gap-wide)">
 
     <!-- ═══ NOT LOGGED IN ═══ -->
-    <NuxtLink
+    <NuxtLinkLocale
       v-if="!isLoggedIn"
       :to="routes.login()"
       class="group flex font-semibold gap-(--header-gap-tight) items-center transition-all duration-(--header-duration) hover:text-(--color-accent) cursor-pointer"
@@ -11,13 +11,13 @@
       <span class="hidden sm:block group-hover:opacity-(--header-opacity)">
         {{ $t('header.account') }}
       </span>
-    </NuxtLink>
+    </NuxtLinkLocale>
 
     <!-- ═══ LOGGED IN — Profile Dropdown ═══ -->
     <HeaderProfileDropdown v-else />
 
     <!-- ═══ CART ═══ -->
-    <NuxtLink
+    <NuxtLinkLocale
       class="relative group flex font-semibold gap-(--header-gap-tight) items-center transition-all duration-(--header-duration) hover:text-(--color-accent) cursor-pointer"
       :to="routes.cart()"
     >
@@ -32,7 +32,7 @@
         {{ cart.itemsCount.value }}
       </div>
       </client-only>
-    </NuxtLink>
+    </NuxtLinkLocale>
     
     <ThemeToggle />
 

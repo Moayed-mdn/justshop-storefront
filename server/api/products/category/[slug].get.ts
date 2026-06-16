@@ -1,4 +1,5 @@
 import { useServerApi } from "../../../utils/api"
+import { transformResponseUrls } from "../../../utils/transformImageUrls"
 import { EXTERNAL_API_ROUTES } from "~~/shared/utils/routes"
 
 export default defineEventHandler(async (event) => {
@@ -7,7 +8,10 @@ export default defineEventHandler(async (event) => {
   const query = getQuery(event)
   const api = useServerApi(event)
   
-  return await api(EXTERNAL_API_ROUTES.products.category(tenantId, slug as string), {
+  const response = await api(EXTERNAL_API_ROUTES.products.category(tenantId, slug as string), {
     query
   })
+  
+  // Transform all image URLs from backend domain to frontend domain
+  return transformResponseUrls(event, response)
 })

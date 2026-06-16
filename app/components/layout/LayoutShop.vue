@@ -32,14 +32,19 @@
 <script setup lang="ts">
 import type { PaginationMeta } from '~~/types/api';
 import type { ProductListFilters, ProductListResponse } from '~~/types/product'
+import { transformProduct } from '~~/src/core/api/dto/storefront'
 
 const props = defineProps<{
   data: ProductListResponse | null
 }>()
 
-const products = computed(() => props.data?.data ?? [])
-const pagination = computed<PaginationMeta | null>(() => props.data?.meta.pagination ?? null)
+const products = computed(() => {
+  const rawProducts = props.data?.data
+  if (!rawProducts || !Array.isArray(rawProducts)) return []
+  return rawProducts.map(transformProduct)
+})
+const pagination = computed<PaginationMeta | null>(() => props.data?.meta?.pagination ?? null)
 const backendFilters = computed<ProductListFilters | null>(
-  () => props.data?.meta.filters ?? null
+  () => props.data?.meta?.filters ?? null
 )
 </script>

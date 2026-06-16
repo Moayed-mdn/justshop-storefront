@@ -92,6 +92,46 @@ Code surfaces this file aligns with:
 - Keep store actions focused on state ownership and synchronization, especially for persisted auth state and guest cart logic.
 - When handling forms with file uploads, preserve multipart behavior by not forcing `Content-Type: application/json` on `FormData`.
 
+### useAsyncData And Cache Keys
+
+**CRITICAL RULE:** When using `useAsyncData` with reactive cache keys in page components:
+
+- In **page components** (`app.vue`, `pages/*.vue`, `layouts/*.vue`): Use `createCacheKey()` directly with refs extracted in setup
+- In **composables** (`composables/use*.ts`): The `useCacheKey()` wrapper is safe to use
+
+**Why:** Arrow functions in `useAsyncData(() => key, ...)` are evaluated during key computation, which happens outside Vue setup context in SSR. Calling composables inside that arrow function causes "composable called outside setup" errors.
+
+**Pattern for pages:**
+```typescript
+// Extract composables in setup
+const storefrontContext = useStorefrontContext()
+const { locale } = useI18n()
+
+// Use createCacheKey with .value access
+const { data } = await useAsyncData(
+  () => createCacheKey({
+    locale: locale.value,
+    tenantId: storefrontContext.value.tenant?.id,
+    resource: 'categories'
+  }),
+  async () => { ... }
+)
+```
+
+**Pattern for composables:**
+```typescript
+export const useProductDetail = (slug: MaybeRef<string>) => {
+  const { getCacheKey } = useCacheKey() // Safe in composable context
+  
+  const { data } = useAsyncData(
+    () => getCacheKey({ resource: 'product', identifier: slug.value }),
+    async () => { ... }
+  )
+}
+```
+
+See `COMPOSABLE_CONTEXT_FIX.md` and `docs/development/AI_AGENT_RULES.md` for full details.
+
 ## UI, Styling, And Accessibility Expectations
 
 - Keep component templates readable by pushing repeated logic into computed values, composables, or child components.

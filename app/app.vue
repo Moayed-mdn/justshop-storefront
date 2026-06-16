@@ -15,9 +15,13 @@ import type { ToasterProps } from '@nuxt/ui';
 import { useTheme } from '~/composables/useTheme'
 import { useStoreTheme } from '~/composables/useStoreTheme'
 import { generateFontLinks } from '~/utils/fontLoader'
+import { createCacheKey, CacheResources } from '~~/src/core/cache/createCacheKey'
+import { useStorefrontContext } from '~~/src/core/tenant/composables'
 
 const { theme } = useTheme()
 const { theme: storeTheme, fetchTheme, getThemeCSS } = useStoreTheme()
+const storefrontContext = useStorefrontContext()
+const { locale } = useI18n()
 
 const head = useLocaleHead({
   // 'addDirAttribute' is now just 'dir'
@@ -28,31 +32,43 @@ const head = useLocaleHead({
 
 const toaster:ToasterProps = { position: 'top-right'  }
 
-// Fetch theme during SSR and get the CSS synchronously
-const { data: themeData } = await useAsyncData('store-theme', async () => {
-  await fetchTheme()
-  
-  // Generate CSS while we have the theme available
-  if (storeTheme.value) {
-    const css = await getThemeCSS()
-    return {
-      theme: storeTheme.value,
-      css: css
-    }
-  }
-  
-  return null
-})
+// ✅ CRITICAL FIX: Computed cache key for locale reactivity
+// Without computed, createCacheKey returns new object each time → no reactivity
+const themeCacheKey = computed(() => createCacheKey({ 
+  locale: locale.value,
+  tenantId: storefrontContext.value.tenant?.id,
+  resource: CacheResources.STORE_THEME 
+}))
 
-useHead({
+// Fetch theme during SSR and get the CSS synchronously
+const { data: themeData } = await useAsyncData(
+  themeCacheKey,  // Pass computed directly (NOT themeCacheKey.value)
+  async () => {
+    await fetchTheme()
+    
+    // Generate CSS while we have the theme available
+    if (storeTheme.value) {
+      const css = await getThemeCSS()
+      return {
+        theme: storeTheme.value,
+        css: css
+      }
+    }
+    
+    return null
+  }
+)
+
+// ✅ FIX BUG 3: Use function for proper reactivity on locale change
+useHead(() => ({
   htmlAttrs: {
-    lang: () => head.value.htmlAttrs?.lang,
-    dir: () => head.value.htmlAttrs?.dir as 'ltr' | 'rtl' 
+    lang: head.value.htmlAttrs?.lang,
+    dir: head.value.htmlAttrs?.dir as 'ltr' | 'rtl' 
   },
   meta: [
     {
       name: 'theme-color',
-      content: () => theme.value === 'dark' ? '#0b0b0b' : '#ffffff'
+      content: theme.value === 'dark' ? '#0b0b0b' : '#ffffff'
     }
   ],
   script: [
@@ -69,7 +85,7 @@ useHead({
       })();`
     }
   ]
-})
+}))
 
 // Inject theme CSS synchronously using the cached data
 useHead(() => {

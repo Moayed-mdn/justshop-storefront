@@ -3,6 +3,7 @@ import { useAuthStore } from '~/stores/auth';
 import { useApi } from '~/composables/useApi';
 import { API_ROUTES } from '~~/shared/utils/routes';
 import { useTenant } from '~~/src/core/tenant/composables';
+import { clearResourceCache, CacheResources } from '~~/src/core/cache/createCacheKey';
 import type {
   AddToCartPayload,
   Cart,
@@ -202,6 +203,9 @@ export const useCartStore = defineStore('cart', () => {
         );
         if (apiError) throw apiError;
         if (data) setCart(data.data);
+        
+        // ✅ Invalidate cart cache after adding item
+        await clearResourceCache(CacheResources.CART_ITEMS);
       } finally {
         delete itemLoading.value[tempId];
       }
@@ -251,6 +255,9 @@ export const useCartStore = defineStore('cart', () => {
         );
         if (apiError) throw apiError;
         if (data) setCart(data.data);
+        
+        // ✅ Invalidate cart cache after updating item
+        await clearResourceCache(CacheResources.CART_ITEMS);
       } else {
         const item = items.value.find((i) => i.id === itemId) as GuestCartItem | undefined;
         if (!item) {
@@ -286,6 +293,9 @@ export const useCartStore = defineStore('cart', () => {
         );
         if (apiError) throw apiError;
         if (data) setCart(data.data);
+        
+        // ✅ Invalidate cart cache after removing item
+        await clearResourceCache(CacheResources.CART_ITEMS);
       } else {
         items.value = items.value.filter((i) => i.id !== itemId);
         syncGuestCart(items.value as GuestCartItem[]);
@@ -309,6 +319,9 @@ export const useCartStore = defineStore('cart', () => {
         cartHelpers.clearGuestCart(tenantId.value);
       }
       setCart({ items: [], total_price: 0, total_items: 0 });
+      
+      // ✅ Invalidate cart cache after clearing
+      await clearResourceCache(CacheResources.CART_ITEMS);
     } catch (err) {
       handleError(err);
       throw err;
@@ -343,12 +356,18 @@ export const useCartStore = defineStore('cart', () => {
   async function onLogin() {
     await mergeGuestCartToServer();
     await fetchCart();
+    
+    // ✅ Invalidate cart cache after login (merged cart)
+    await clearResourceCache(CacheResources.CART_ITEMS);
   }
 
   function onLogout() {
     setCart({ items: [], total_price: 0, total_items: 0 });
     cartHelpers.clearGuestCart(tenantId.value);
     initialized.value = false;
+    
+    // ✅ Invalidate cart cache after logout
+    clearResourceCache(CacheResources.CART_ITEMS);
   }
 
   return {

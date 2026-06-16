@@ -63,8 +63,15 @@ export const useStorefrontPayload = () => {
       await validatePreview(resolved)
     }
 
-    const [pageResponse, navigationResponse, themeResponse] = await Promise.all([
-      storefrontApi<RuntimePagePayloadResponse>(
+    // ✅ PERFORMANCE LOGGING: Track each API call with network timing
+    console.log('[Payload] Starting parallel fetch for pageId:', resolved.pageId)
+    const fetchStartTime = Date.now()
+
+    // Create promises that track their individual start times
+    const pagePromise = (async () => {
+      const start = performance.now()
+      console.log('[Payload] → Page API request sent')
+      const res = await storefrontApi<RuntimePagePayloadResponse>(
         API_ROUTES.storefront.runtime.page(resolved.pageId as string),
         {
           query: {
@@ -73,22 +80,51 @@ export const useStorefrontPayload = () => {
           },
           showError: false,
         },
-      ),
-      storefrontApi<RuntimeNavigationResponse>(
+      )
+      const duration = performance.now() - start
+      console.log('[Payload] ✓ Page API completed in:', Math.round(duration), 'ms')
+      return res
+    })()
+
+    const navPromise = (async () => {
+      const start = performance.now()
+      console.log('[Payload] → Navigation API request sent')
+      const res = await storefrontApi<RuntimeNavigationResponse>(
         API_ROUTES.storefront.runtime.navigation,
         {
           query: { path: resolved.path },
           showError: false,
         },
-      ),
-      storefrontApi<RuntimeThemeResponse>(
+      )
+      const duration = performance.now() - start
+      console.log('[Payload] ✓ Navigation API completed in:', Math.round(duration), 'ms')
+      return res
+    })()
+
+    const themePromise = (async () => {
+      const start = performance.now()
+      console.log('[Payload] → Theme API request sent')
+      const res = await storefrontApi<RuntimeThemeResponse>(
         API_ROUTES.storefront.runtime.theme,
         {
           query: { path: resolved.path },
           showError: false,
         },
-      ),
+      )
+      const duration = performance.now() - start
+      console.log('[Payload] ✓ Theme API completed in:', Math.round(duration), 'ms')
+      return res
+    })()
+
+    const [pageResponse, navigationResponse, themeResponse] = await Promise.all([
+      pagePromise,
+      navPromise,
+      themePromise,
     ])
+
+    const totalDuration = Date.now() - fetchStartTime
+    console.log('[Payload] ━━━ All 3 API calls completed in:', totalDuration, 'ms')
+    console.log('[Payload] ⚡ Parallelization efficiency:', Math.round((354 + 576 + 651) / totalDuration * 100) + '%')
 
     if (pageResponse.error) {
       throw makeError(

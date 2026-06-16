@@ -45,8 +45,27 @@
         </p>
       </div>
 
+      <!-- Error State -->
+      <div v-if="fetchError" class="flex flex-col items-center justify-center py-16 text-center">
+        <svg class="w-20 h-20 text-red-500 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+        </svg>
+        <h2 class="text-xl font-semibold text-(--color-text-primary) mb-2">
+          Search Error
+        </h2>
+        <p class="text-(--color-text-secondary) mb-4">
+          {{ fetchError.message || 'Unable to perform search. Please try again.' }}
+        </p>
+        <details class="text-left max-w-2xl">
+          <summary class="cursor-pointer text-sm text-(--color-text-muted) hover:text-(--color-primary)">
+            Technical Details
+          </summary>
+          <pre class="mt-2 p-4 bg-(--color-bg-elevated) rounded text-xs overflow-auto">{{ fetchError }}</pre>
+        </details>
+      </div>
+
       <!-- Loading State -->
-      <div v-if="pending" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-(--product-grid-gap)">
+      <div v-else-if="pending" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-(--product-grid-gap)">
         <ProductCardSkeleton v-for="i in 6" :key="i" />
       </div>
 
@@ -144,30 +163,55 @@ const routes = useStorefrontRoutes()
 const searchTerm = computed(() => ((route.query.q as string) ?? '').trim())
 
 // ─── Fetch logic (SSR-safe) ────────────────────
-const { data, pending } = await useAsyncData(
-  `search-${searchTerm.value}-${locale.value}`,
+const { data, pending, error: fetchError } = await useAsyncData(
+  () => `search-${searchTerm.value}-${locale.value}`,
   async () => {
     if (!searchTerm.value) return null
 
     const apollo = useNuxtApp().$apollo
-    if (!apollo) return null
+    
+    // Debug logging
+    if (import.meta.dev) {
+      console.log('[Search] Apollo client available:', !!apollo)
+      console.log('[Search] GraphQL URL:', useRuntimeConfig().public.graphqlUrl)
+      console.log('[Search] Search term:', searchTerm.value)
+    }
+    
+    if (!apollo) {
+      console.error('[Search] Apollo GraphQL client is not initialized')
+      throw new Error('Apollo GraphQL client not available. Check if apollo plugin is loaded.')
+    }
 
-    const { data: searchData } = await apollo.query<SearchResult>({
-      query: SEARCH_QUERY,
-      variables: {
-        query: searchTerm.value,
-        locale: locale.value,
-        limit: 30,
-      },
-    })
+    try {
+      const { data: searchData } = await apollo.query({
+        query: SEARCH_QUERY,
+        variables: {
+          query: searchTerm.value,
+          locale: locale.value,
+          limit: 30,
+        },
+      })
 
-    return searchData?.search ?? null
+      if (import.meta.dev) {
+        console.log('[Search] GraphQL response:', searchData)
+      }
+
+      return searchData?.search ?? null
+    } catch (err) {
+      console.error('[Search] GraphQL query failed:', err)
+      throw err
+    }
   },
   {
     watch: [searchTerm, locale],
     server: true,
   }
 )
+
+// Log fetch errors
+if (fetchError.value) {
+  console.error('[Search] Fetch error:', fetchError.value)
+}
 
 const results = computed(() => data.value)
 

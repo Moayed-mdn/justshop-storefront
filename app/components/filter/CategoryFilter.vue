@@ -37,12 +37,12 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-import type { Category } from '../../../types/filters'
+import type { FilterDescendant } from '../../../types/product'
 
 const { t } = useI18n()
 
 const props = defineProps<{
-  categories?: Category[]
+  categories?: FilterDescendant[]
   selectedSlug: string | null | undefined
 }>()
 

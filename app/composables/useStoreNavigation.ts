@@ -7,8 +7,11 @@
 
 import type { NavigationMenu } from '~~/types/navigation';
 import { API_ROUTES } from '~~/shared/utils/routes';
+import { useCacheKey, CacheResources } from '~~/src/core/cache/createCacheKey';
 
 export const useStoreNavigation = (handle: string = 'main-menu') => {
+  const { getCacheKey } = useCacheKey();
+  
   // Create unique state keys per menu handle
   const stateKey = `nav-${handle}`;
   const loadingKey = `nav-${handle}-loading`;
@@ -22,6 +25,16 @@ export const useStoreNavigation = (handle: string = 'main-menu') => {
   const initialized = useState<boolean>(initializedKey, () => false);
 
   const api = useApi();
+
+  /**
+   * Get session storage key with locale/tenant awareness
+   */
+  const getStorageKey = (menuHandle: string) => {
+    return getCacheKey({ 
+      resource: CacheResources.STORE_NAVIGATION, 
+      identifier: menuHandle 
+    });
+  };
 
   /**
    * Fetch navigation menu data from the backend API
@@ -47,11 +60,12 @@ export const useStoreNavigation = (handle: string = 'main-menu') => {
         menu.value = response.data;
         initialized.value = true;
 
-        // Cache in session storage for performance
+        // ✅ Cache in session storage with locale/tenant-aware key
         if (process.client) {
           try {
-            sessionStorage.setItem(`nav-${targetHandle}`, JSON.stringify(response.data));
-            sessionStorage.setItem(`nav-${targetHandle}-timestamp`, Date.now().toString());
+            const storageKey = getStorageKey(targetHandle);
+            sessionStorage.setItem(storageKey, JSON.stringify(response.data));
+            sessionStorage.setItem(`${storageKey}-timestamp`, Date.now().toString());
           } catch (e) {
             console.warn(`Failed to cache navigation menu ${targetHandle}:`, e);
           }
@@ -64,7 +78,8 @@ export const useStoreNavigation = (handle: string = 'main-menu') => {
       // Try to load from cache on error
       if (process.client) {
         try {
-          const cached = sessionStorage.getItem(`nav-${targetHandle}`);
+          const storageKey = getStorageKey(targetHandle);
+          const cached = sessionStorage.getItem(storageKey);
           if (cached) {
             menu.value = JSON.parse(cached);
             initialized.value = true;

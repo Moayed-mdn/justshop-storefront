@@ -8,6 +8,7 @@
 
 import type { Theme, ThemeState } from '~~/types/theme';
 import { API_ROUTES } from '~~/shared/utils/routes';
+import { useCacheKey, CacheResources } from '~~/src/core/cache/createCacheKey';
 
 export const useStoreTheme = () => {
   // State management
@@ -17,6 +18,91 @@ export const useStoreTheme = () => {
   const initialized = useState<boolean>('store-theme-initialized', () => false);
 
   const api = useApi();
+  const { getCacheKey } = useCacheKey();
+
+  /**
+   * Get session storage key with locale/tenant awareness
+   */
+  const getStorageKey = () => {
+    return getCacheKey({ resource: CacheResources.STORE_THEME });
+  };
+
+  // ✅ EMERGENCY: Clear all theme caches on composable initialization
+  if (process.client && !initialized.value) {
+    try {
+      const keysToRemove: string[] = [];
+      for (let i = 0; i < sessionStorage.length; i++) {
+        const key = sessionStorage.key(i);
+        if (key && (key.includes(':store-theme') || key.includes(':STORE_THEME') || key.includes('store-theme'))) {
+          keysToRemove.push(key);
+        }
+      }
+      keysToRemove.forEach(key => sessionStorage.removeItem(key));
+      if (keysToRemove.length > 0) {
+        console.info(`[EMERGENCY CLEANUP] Removed ${keysToRemove.length} old theme cache entries on init`);
+      }
+    } catch (e) {
+      console.warn('Emergency cleanup on init failed:', e);
+    }
+  }
+
+  /**
+   * Clear old theme cache entries from other locales
+   */
+  const clearOldThemeCaches = (): void => {
+    if (!process.client) return;
+    
+    try {
+      const currentKey = getStorageKey();
+      const keysToRemove: string[] = [];
+      
+      // Find all theme-related keys
+      for (let i = 0; i < sessionStorage.length; i++) {
+        const key = sessionStorage.key(i);
+        if (key && (key.includes(':store-theme') || key.includes(':STORE_THEME'))) {
+          // Remove if it's not the current locale's key
+          if (!key.startsWith(currentKey)) {
+            keysToRemove.push(key);
+          }
+        }
+      }
+      
+      // Remove old entries
+      keysToRemove.forEach(key => sessionStorage.removeItem(key));
+      
+      if (keysToRemove.length > 0) {
+        console.info(`Cleaned up ${keysToRemove.length} old theme cache entries`);
+      }
+    } catch (e) {
+      console.warn('Failed to clear old theme caches:', e);
+    }
+  };
+
+  /**
+   * Clear ALL theme cache entries (emergency cleanup)
+   */
+  const clearAllThemeCaches = (): void => {
+    if (!process.client) return;
+    
+    try {
+      const keysToRemove: string[] = [];
+      
+      // Find all theme-related keys
+      for (let i = 0; i < sessionStorage.length; i++) {
+        const key = sessionStorage.key(i);
+        if (key && (key.includes(':store-theme') || key.includes(':STORE_THEME'))) {
+          keysToRemove.push(key);
+        }
+      }
+      
+      // Remove all theme entries
+      keysToRemove.forEach(key => sessionStorage.removeItem(key));
+      
+      console.info(`Emergency cleanup: removed ${keysToRemove.length} theme cache entries`);
+    } catch (e) {
+      console.warn('Failed to clear all theme caches:', e);
+    }
+  };
 
   /**
    * Fetch theme data from the backend API
@@ -43,13 +129,32 @@ export const useStoreTheme = () => {
         theme.value = themeData;
         initialized.value = true;
 
-        // Cache in session storage for performance
-        if (process.client) {
+        // ✅ Cache in session storage with locale/tenant-aware key
+        // NOTE: Disabled sessionStorage caching due to quota issues
+        // Backend has Redis cache (3600s TTL) which is sufficient
+        if (process.client && false) { // Disabled for now
           try {
-            sessionStorage.setItem('store-theme', JSON.stringify(themeData));
-            sessionStorage.setItem('store-theme-timestamp', Date.now().toString());
+            // Clear old theme cache entries to prevent quota errors
+            clearOldThemeCaches();
+            
+            const storageKey = getStorageKey();
+            sessionStorage.setItem(storageKey, JSON.stringify(themeData));
+            sessionStorage.setItem(`${storageKey}-timestamp`, Date.now().toString());
           } catch (e) {
-            console.warn('Failed to cache theme in sessionStorage:', e);
+            // If quota exceeded, try to clear space and retry once
+            if (e instanceof Error && (e.name === 'QuotaExceededError' || (e as any).code === 22 || (e as any).code === 26)) {
+              try {
+                clearAllThemeCaches();
+                const storageKey = getStorageKey();
+                sessionStorage.setItem(storageKey, JSON.stringify(themeData));
+                sessionStorage.setItem(`${storageKey}-timestamp`, Date.now().toString());
+                console.info('Theme cached successfully after clearing old entries');
+              } catch (retryError) {
+                console.warn('Failed to cache theme in sessionStorage even after cleanup:', retryError);
+              }
+            } else {
+              console.warn('Failed to cache theme in sessionStorage:', e);
+            }
           }
         }
       }
@@ -60,7 +165,8 @@ export const useStoreTheme = () => {
       // Try to load from cache on error
       if (process.client) {
         try {
-          const cached = sessionStorage.getItem('store-theme');
+          const storageKey = getStorageKey();
+          const cached = sessionStorage.getItem(storageKey);
           if (cached) {
             theme.value = JSON.parse(cached);
             initialized.value = true;
@@ -77,13 +183,17 @@ export const useStoreTheme = () => {
 
   /**
    * Load theme from cache if available (for SSR hydration)
+   * DISABLED: sessionStorage caching disabled due to quota issues
    */
   const loadFromCache = (): boolean => {
+    return false; // Disabled - rely on backend Redis cache instead
+    
     if (!process.client) return false;
 
     try {
-      const cached = sessionStorage.getItem('store-theme');
-      const timestamp = sessionStorage.getItem('store-theme-timestamp');
+      const storageKey = getStorageKey();
+      const cached = sessionStorage.getItem(storageKey);
+      const timestamp = sessionStorage.getItem(`${storageKey}-timestamp`);
 
       if (cached && timestamp) {
         const age = Date.now() - parseInt(timestamp, 10);
@@ -173,8 +283,9 @@ export const useStoreTheme = () => {
    */
   const clearCache = (): void => {
     if (process.client) {
-      sessionStorage.removeItem('store-theme');
-      sessionStorage.removeItem('store-theme-timestamp');
+      const storageKey = getStorageKey();
+      sessionStorage.removeItem(storageKey);
+      sessionStorage.removeItem(`${storageKey}-timestamp`);
     }
     theme.value = null;
     initialized.value = false;

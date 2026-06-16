@@ -27,7 +27,7 @@ import type { ProductListFilters } from '~~/types/product'
 const { t } = useI18n()
 
 defineProps<{
-  backendFilters: ProductListFilters
+  backendFilters: ProductListFilters | null
 }>()
 
 const isOpen = ref(false)

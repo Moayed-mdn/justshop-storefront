@@ -158,15 +158,16 @@ const product = computed<ProductDetail | null>(() => {
     slug: String(props.data.slug || ''),
     description: String(props.data.description || ''),
     default_variant_id: Number(props.data.productVariantId || 0),
-    category: {
-      id: 0,
-      name: '',
-      slug: '',
-    },
-    brand: {
-      id: 0,
-      name: String(props.data.brand_name || ''),
-    },
+    category: props.data.category ? {
+      id: Number(props.data.category.id),
+      name: String(props.data.category.name),
+      slug: String(props.data.category.slug),
+    } : null,
+    brand: props.data.brand ? {
+      id: Number(props.data.brand.id),
+      name: String(props.data.brand.name),
+      slug: String(props.data.brand.slug),
+    } : null,
     attributes: (props.data.attributes as Record<string, string[]>) || {},
     variants: (props.data.variants as any[])?.map(v => ({
         ...v,

@@ -30,6 +30,8 @@
 <script setup lang="ts">
 import type { RuntimeSectionComponentProps } from '../types'
 
+const localePath = useLocalePath()
+
 type HeroBannerItem = {
   headline?: string
   subheadline?: string
@@ -178,11 +180,17 @@ const resolvedCtaText = computed(() => {
 })
 
 const resolvedCtaUrl = computed(() => {
-  if (primaryHeroItem.value?.ctaUrl) {
-    return primaryHeroItem.value.ctaUrl
+  const raw = primaryHeroItem.value?.ctaUrl
+    || (typeof props.data.ctaUrl === 'string' ? props.data.ctaUrl : '')
+
+  if (!raw) return ''
+
+  // Only localize internal paths that aren't already locale-prefixed
+  if (raw.startsWith('/') && !raw.startsWith('/en/') && !raw.startsWith('/ar/')) {
+    return localePath(raw)
   }
 
-  return typeof props.data.ctaUrl === 'string' ? props.data.ctaUrl : ''
+  return raw
 })
 
 const hasContent = computed(() =>

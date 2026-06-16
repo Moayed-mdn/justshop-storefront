@@ -98,6 +98,69 @@ Important files to inspect before documenting related behavior:
 - Keep auth persistence behavior aligned with `app/stores/auth.ts` and the persisted cookie storage currently configured there.
 - Keep guest cart behavior aligned with `app/stores/cart.ts`, including client-only local storage handling and merge-on-login behavior.
 
+### useAsyncData Cache Key Rules
+
+**CRITICAL:** All cache keys MUST include locale to prevent mixing English/Arabic data. When using `useAsyncData` with reactive cache keys:
+
+**Multilingual Requirement:**
+- ✅ **ALWAYS** include `locale` in cache keys: `en:product:laptop` vs `ar:product:laptop`
+- ✅ **ALWAYS** include `tenantId` for multi-tenant data isolation
+- ✅ Cache keys MUST be reactive - use arrow function pattern: `() => createCacheKey({...})`
+- ❌ **NEVER** use static cache keys like `'product-list'` that don't include locale
+
+**Implementation Pattern for Page Components:**
+
+In page components (`app.vue`, pages, layouts):
+- **DO NOT** use the `useCacheKey()` wrapper - it calls composables inside the arrow function which breaks in SSR
+- **DO** use `createCacheKey()` directly with explicit refs extracted in setup()
+- **DO** extract all composable values (`useStorefrontContext()`, `useI18n()`) in the setup function
+- **DO** access only `.value` properties inside the arrow function
+
+```typescript
+// ❌ WRONG - Causes "composable called outside of setup" error
+const { getCacheKey } = useCacheKey()
+const { data } = await useAsyncData(
+  () => getCacheKey({ resource: 'product' }), // Calls composables here!
+  async () => { ... }
+)
+
+// ❌ WRONG - Static key without locale causes EN/AR data mixing
+const { data } = await useAsyncData(
+  'product-list', // No locale = wrong data for users!
+  async () => { ... }
+)
+
+// ✅ CORRECT - Locale-aware, reactive, SSR-safe
+const storefrontContext = useStorefrontContext()
+const { locale } = useI18n()
+const { data } = await useAsyncData(
+  () => createCacheKey({
+    locale: locale.value,              // ✅ Required for multilingual
+    tenantId: storefrontContext.value.tenant?.id, // ✅ Required for multi-tenant
+    resource: 'product'
+  }),
+  async () => { ... }
+)
+```
+
+**Exception:** Inside composables (functions starting with `use`), `useCacheKey()` is safe to use because the composable has proper Nuxt context.
+
+**Rationale:** 
+1. **Multilingual:** Without locale in keys, switching EN→AR shows stale English data until page reload
+2. **SSR Safety:** Arrow function `() => key` is evaluated by Nuxt internals during key computation, which happens outside Vue setup context. Any composable call at that point fails.
+3. **Reactivity:** Using `() => createCacheKey({...})` ensures data refetches when locale changes
+
+**This ensures:**
+1. ✅ No EN/AR data mixing (locale-specific caching)
+2. ✅ Automatic refetch on language switch (reactivity)
+3. ✅ No "composable called outside setup" errors (SSR-safe)
+4. ✅ Multi-tenant data isolation
+
+**See also:** 
+- `COMPOSABLE_CONTEXT_FIX.md` - Technical SSR error details
+- `REACTIVE_CACHE_KEY_FIX.md` - Language switching behavior
+- `docs/architecture/cache-deduplication.md` - Full cache architecture
+
 ## SSR And Hydration Rules
 
 - Treat hydration mismatches as SSR/client render divergence first, not as a component-resolution problem.

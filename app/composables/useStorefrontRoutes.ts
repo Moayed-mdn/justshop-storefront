@@ -4,39 +4,37 @@ import {
 } from '~~/shared/utils/storefront-routes'
 
 /**
- * Locale-aware storefront route builders.
- * Use for all storefront navigation, breadcrumbs, and deep links.
+ * Storefront route builders.
+ * Returns locale-neutral paths (e.g. "/shop", "/cart").
+ * Use with <NuxtLinkLocale> in templates for automatic locale prefixing.
  */
 export function useStorefrontRoutes() {
-  const localePath = useLocalePath()
-
   const paths = STOREFRONT_ROUTE_PATHS
 
-  const home = () => localePath(paths.home)
-  const shop = () => localePath(paths.shop)
+  const home = () => paths.home
+  const shop = () => paths.shop
   const search = (query?: string) => {
-    const base = localePath(paths.search)
     if (!query?.trim()) {
-      return base
+      return paths.search
     }
-    return { path: base, query: { q: query.trim() } }
+    return { path: paths.search, query: { q: query.trim() } }
   }
-  const cart = () => localePath(paths.cart)
-  const login = () => localePath(paths.login)
-  const register = () => localePath(paths.register)
-  const forgotPassword = () => localePath(paths.forgotPassword)
-  const resetPassword = () => localePath(paths.resetPassword)
-  const profile = () => localePath(paths.profile)
-  const category = (slug: string) => localePath(paths.category(slug))
-  const product = (slug: string) => localePath(paths.product(slug))
-  const orders = () => localePath(paths.orders.index)
+  const cart = () => paths.cart
+  const login = () => paths.login
+  const register = () => paths.register
+  const forgotPassword = () => paths.forgotPassword
+  const resetPassword = () => paths.resetPassword
+  const profile = () => paths.profile
+  const category = (slug: string) => paths.category(slug)
+  const product = (slug: string) => paths.product(slug)
+  const orders = () => paths.orders.index
   const orderDetail = (orderNumber: string | number) =>
-    localePath(paths.orders.detail(orderNumber))
-  const orderTrack = () => localePath(paths.orders.track)
-  const checkoutSuccess = () => localePath(paths.checkout.success)
-  const checkoutCancel = () => localePath(paths.checkout.cancel)
+    paths.orders.detail(orderNumber)
+  const orderTrack = () => paths.orders.track
+  const checkoutSuccess = () => paths.checkout.success
+  const checkoutCancel = () => paths.checkout.cancel
   const verifyEmail = (id: string | number, hash: string) =>
-    localePath(paths.verifyEmail(id, hash))
+    paths.verifyEmail(id, hash)
 
   return {
     paths: paths satisfies StorefrontRoutePaths,
@@ -57,7 +55,5 @@ export function useStorefrontRoutes() {
     checkoutSuccess,
     checkoutCancel,
     verifyEmail,
-    /** Raw locale-prefixed path for arbitrary canonical segments. */
-    to: (path: string) => localePath(path),
   }
 }

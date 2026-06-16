@@ -75,14 +75,13 @@
     middleware: 'auth',
   })
 
+  const { t } = useI18n()
   useHead({
     title: t('profile.page_title'),
     meta: [
       { name: 'description', content: t('profile.page_description') },
     ],
   })
-  
-  const { t } = useI18n()
   const { user } = useAuth()
   const { fetchProfile, updateInfo, updatePassword, updateAvatar, deleteAccount, loading: profileLoading } = useProfile()
   const { getAvatarUrl, getInitials } = useAvatar()

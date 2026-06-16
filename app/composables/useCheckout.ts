@@ -18,10 +18,10 @@ export const useCheckout = () => {
     const startCheckout = async () => {
       loading.value = true
       error.value = null
-  
+
       try {
         let response: { data: CreateCheckoutSessionResponse | null; error: any }
-  
+
         if (isLoggedIn.value) {
           response = await api<CreateCheckoutSessionResponse>(API_ROUTES.checkout.sessionAuth, {
             method: 'POST',
@@ -32,7 +32,7 @@ export const useCheckout = () => {
             product_variant_id: item.variant.id,
             quantity: item.quantity,
           }))
-  
+
           response = await api<CreateCheckoutSessionResponse>(API_ROUTES.checkout.session, {
             method: 'POST',
             body: { items },

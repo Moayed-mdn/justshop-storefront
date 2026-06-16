@@ -52,6 +52,24 @@
         :text="$t('login.log_in')"
         :loading-text="$t('login.signing_in')"
       />
+
+      <!-- Divider -->
+      <div class="relative">
+        <div class="absolute inset-0 flex items-center">
+          <div class="w-full border-t" :style="{ borderColor: 'var(--color-border-default)' }"></div>
+        </div>
+        <div class="relative flex justify-center text-sm">
+          <span class="px-2 bg-(--color-bg-page) text-(--color-text-secondary)">
+            {{ $t('login.or_continue_with') }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Google OAuth Button -->
+      <AuthGoogleButton
+        :text="$t('login.sign_in_google')"
+        @click="handleGoogleLogin"
+      />
     </form>
 
     <template v-if="!isEmailNotVerified">
@@ -101,6 +119,15 @@ const form = reactive({
   email: '',
   password: 'password',
 })
+
+const handleGoogleLogin = () => {
+  const config = useRuntimeConfig()
+  const apiBase = config.public.apiBase || 'http://localhost:8000/api/v1'
+  const googleAuthUrl = `${apiBase}/users/auth/google/redirect`
+  
+  // Redirect to backend OAuth endpoint
+  window.location.href = googleAuthUrl
+}
 
 const handleLogin = async () => {
   errors.value = null

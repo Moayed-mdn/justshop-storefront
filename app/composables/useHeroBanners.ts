@@ -16,7 +16,7 @@ import {
   updateHeroBanner,
   deleteHeroBanner,
   restoreHeroBanner,
-} from '~/app/utils/api/heroBanners'
+} from '~/utils/api/heroBanners'
 
 export function useHeroBanners(storeId: number) {
   const banners = ref<HeroBanner[]>([])

@@ -241,6 +241,7 @@
     layout: 'default',
   })
 
+  const { t } = useI18n()
   useHead({
     title: t('orders.track_title'),
     meta: [
@@ -250,7 +251,6 @@
   
   const routes = useStorefrontRoutes()
   const { guestLookup, loading } = useOrders()
-  const { t } = useI18n()
   
   const form = reactive({
     order_number: '',

@@ -20,9 +20,9 @@ export type PaginationMeta = {
 }
 
 export type ApiPaginated<T, M = {}> = {
-  status: true
+  success: boolean
   message: string
-  data: T
+  data: T[]
   meta: {
     pagination: PaginationMeta
   } & M

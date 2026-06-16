@@ -65,7 +65,7 @@ const products = computed<ProductDto[]>(() => {
       description: typeof item.description === 'string' ? item.description : '',
       categoryId: (item.categoryId as string | number) ?? (item.category_id as string | number),
     }))
-    .filter((item) => item.slug !== '')
+    .filter((item) => item.slug !== '' && item.image !== '')
 })
 </script>
 
