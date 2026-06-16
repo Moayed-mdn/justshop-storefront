@@ -77,44 +77,6 @@ export const hasCSSVariable = (
 };
 
 /**
- * Load Google Fonts dynamically
- * 
- * @param fonts - Array of font family names
- */
-export const loadGoogleFonts = (fonts: string[]): void => {
-  if (process.server) return;
-  if (!fonts.length) return;
-
-  const fontParams = fonts
-    .map((font) => `family=${encodeURIComponent(font.replace(/\s+/g, '+'))}:wght@400;500;600;700`)
-    .join('&');
-
-  const href = `https://fonts.googleapis.com/css2?${fontParams}&display=swap`;
-
-  // Check if link already exists
-  const existingLink = document.querySelector(`link[href="${href}"]`);
-  if (existingLink) return;
-
-  // Create and append link element
-  const link = document.createElement('link');
-  link.rel = 'stylesheet';
-  link.href = href;
-  link.setAttribute('data-theme-fonts', 'true');
-
-  document.head.appendChild(link);
-};
-
-/**
- * Remove previously loaded Google Fonts
- */
-export const removeGoogleFonts = (): void => {
-  if (process.server) return;
-
-  const links = document.querySelectorAll('link[data-theme-fonts="true"]');
-  links.forEach((link) => link.remove());
-};
-
-/**
  * Apply theme with transition effect
  * 
  * @param tokens - Theme tokens to apply
@@ -197,7 +159,7 @@ export const generateThemeCSS = (tokens: ThemeTokens): string => {
     .map(([key, value]) => `  ${key}: ${value};`)
     .join('\n');
 
-  return `:root {\n${properties}\n}`;
+  return `:root:root {\n${properties}\n}`;
 };
 
 /**

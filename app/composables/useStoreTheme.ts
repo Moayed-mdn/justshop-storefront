@@ -204,10 +204,12 @@ export const useStoreTheme = () => {
       // Dynamically import utilities (code splitting)
       const [
         { extractThemeTokens, extractGoogleFonts },
-        { injectThemeTokens, loadGoogleFonts }
+        { injectThemeTokens },
+        { loadGoogleFonts }
       ] = await Promise.all([
         import('~/utils/themeTokens'),
-        import('~/utils/cssInjector')
+        import('~/utils/cssInjector'),
+        import('~/utils/fontLoader')
       ]);
 
       // Extract tokens from theme
