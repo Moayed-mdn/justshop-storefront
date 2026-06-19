@@ -224,7 +224,10 @@ export const useCartStore = defineStore('cart', () => {
       } else {
         const newItem: GuestCartItem = {
           id: cartHelpers.generateLocalId(),
-          product: { id: payload.product_id },
+          product: { 
+            id: payload.product_id,
+            slug: payload.slug || '',  // Add slug for product links
+          },
           variant: { id: payload.product_variant_id },
           name: payload.name,
           image: payload.image ?? null,

@@ -56,6 +56,7 @@ export interface GuestCartItem {
   max_quantity?: number;
   product: {
     id: number;
+    slug?: string;  // Optional slug for product links
   };
   variant: {
     id: number;
@@ -94,6 +95,7 @@ export interface AddToCartPayload {
   product_variant_id: number;
   quantity?: number;
   name: string;
+  slug?: string;  // Product slug for guest cart links
   image?: string | null;
   price: number;
   max_quantity?: number;

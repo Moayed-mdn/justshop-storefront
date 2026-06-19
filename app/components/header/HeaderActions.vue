@@ -34,7 +34,7 @@
       </client-only>
     </NuxtLinkLocale>
     
-    <ThemeToggle />
+    <!-- ThemeToggle disabled - dark mode not fully implemented -->
 
     <!-- ═══ BURGER MENU ═══ -->
     <button
@@ -52,7 +52,7 @@
 </template>
 
 <script setup lang="ts">
-import ThemeToggle from '~/components/ui/ThemeToggle.vue'
+// ThemeToggle import removed - dark mode disabled
 
 const cart = useCart()
 const { isLoggedIn } = useAuth()

@@ -41,6 +41,7 @@
             :product-id="Number(product.id)"
             :product-variant-id="Number(product.variantId)"
             :name="product.name"
+            :slug="product.slug"
             :price="String(product.price)"
             :image="product.image"
           />

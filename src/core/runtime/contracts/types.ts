@@ -12,7 +12,7 @@ export type RuntimePageType = (typeof STOREFRONT_RUNTIME_PAGE_TYPES)[number]
 export type RuntimeLayout = (typeof STOREFRONT_RUNTIME_LAYOUTS)[number]
 export type RuntimeCacheArtifact = (typeof STOREFRONT_RUNTIME_CACHE_ARTIFACTS)[number]
 
-export type RuntimeRouteStatus = 'matched' | 'redirect' | 'not_found'
+export type RuntimeRouteStatus = 'matched' | 'not_found'
 export type RuntimeErrorCode =
   | 'runtime.tenant_not_found'
   | 'runtime.tenant_inactive'
@@ -89,15 +89,13 @@ export interface RuntimeCacheDescriptor {
 
 export interface RuntimeRouteMatch {
   status: RuntimeRouteStatus
-  routeType: RuntimePageType | 'redirect'
+  routeType: RuntimePageType
   pageId: string | null
   resourceType: 'page' | 'product' | 'category' | 'none'
   resourceId: string | null
   path: string
   locale: StorefrontRuntimeLocale
   layout: RuntimeLayout | null
-  redirectTo: string | null
-  redirectStatus: 301 | 302 | null
   legacyPassthrough: boolean
 }
 

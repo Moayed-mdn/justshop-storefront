@@ -65,6 +65,7 @@ const props = defineProps<{
   productId: number
   productVariantId: number            
   name: string
+  slug?: string  // Add slug for guest cart links
   price: string
   image?: string | null
   maxQuantity?: number
@@ -113,6 +114,7 @@ const add = async () => {
     product_id: props.productId,
     product_variant_id: props.productVariantId,
     name: props.name,
+    slug: props.slug,  // Pass slug for guest cart links
     price: +props.price,
     image: props.image,
     quantity: 1,

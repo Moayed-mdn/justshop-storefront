@@ -24,3 +24,6 @@ logs
 !.env.example
 search_and_print.sh
 
+session
+.vscode
+justshop*

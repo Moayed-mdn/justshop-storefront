@@ -89,6 +89,7 @@ export function useProductCommerce(product: Ref<ProductDetail | null>) {
       product_id: product.value.id,
       product_variant_id: variantToAdd.id,
       name: product.value.name,
+      slug: product.value.slug,  // Add slug for guest cart links
       image: (variantToAdd as any).primary_image?.url || currentImages.value[0]?.url || '',
       price: variantToAdd.price,
       quantity: quantity.value,

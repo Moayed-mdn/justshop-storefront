@@ -101,8 +101,6 @@ const syncRuntimeContext = () => {
   storefrontContext.value.previewToken = previewToken.value
 }
 
-const isExternalRuntimeRedirect = (target: string) => /^https?:\/\//i.test(target)
-
 // Plain error class — zero Nuxt composables, safe anywhere including async
 class StorefrontPageError extends Error {
   statusCode: number
@@ -163,18 +161,6 @@ const { data: runtimeData, pending, error } = await useAsyncData(
     const resolveStart = Date.now()
     const resolved = await resolveRoute(route.path)
     console.log('[Runtime] Route resolved in:', Date.now() - resolveStart, 'ms')
-
-    if (resolved.status === 'redirect' && resolved.redirectTo) {
-      // navigateTo needs context — run it via nuxtApp
-      await nuxtApp.runWithContext(() =>
-        navigateTo(resolved.redirectTo!, {
-          redirectCode: resolved.redirectStatus || 302,
-          external: isExternalRuntimeRedirect(resolved.redirectTo!),
-          replace: resolved.redirectStatus === 301,
-        })
-      )
-      return null
-    }
 
     if (resolved.status === 'not_found' || resolved.legacyPassthrough) {
       throw new StorefrontPageError('Page not found', 404, true)

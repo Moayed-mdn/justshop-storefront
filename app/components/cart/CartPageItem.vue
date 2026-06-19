@@ -156,8 +156,21 @@
   const routes = useStorefrontRoutes()
 
   const productLink = computed(() => {
+    // Try to get slug from item
     const slug = props.item.product?.slug
-    if (slug) return routes.product(slug)
+    
+    if (slug) {
+      return routes.product(slug)
+    }
+    
+    // Fallback: if no slug but we have product data with name, try using name as slug
+    // This handles old guest cart items
+    if (props.item.name) {
+      const slugFromName = props.item.name.toLowerCase().replace(/\s+/g, '-')
+      console.warn('[CartPageItem] Using name as fallback slug:', slugFromName)
+      // Don't use this - it won't work. Just disable link for old items.
+    }
+    
     return '#'
   })
   
