@@ -4,10 +4,15 @@ import RuntimeCategoryGridSection from './sections/RuntimeCategoryGridSection.vu
 import RuntimeCategorySummarySection from './sections/RuntimeCategorySummarySection.vue'
 import RuntimeContentSection from './sections/RuntimeContentSection.vue'
 import RuntimeCtaSection from './sections/RuntimeCtaSection.vue'
+import RuntimeFaqSection from './sections/RuntimeFaqSection.vue'
 import RuntimeFeatureListSection from './sections/RuntimeFeatureListSection.vue'
+import RuntimeGallerySection from './sections/RuntimeGallerySection.vue'
 import RuntimeHeroSection from './sections/RuntimeHeroSection.vue'
+import RuntimePricingSection from './sections/RuntimePricingSection.vue'
 import RuntimeProductGridSection from './sections/RuntimeProductGridSection.vue'
 import RuntimeProductSummarySection from './sections/RuntimeProductSummarySection.vue'
+import RuntimeTestimonialsSection from './sections/RuntimeTestimonialsSection.vue'
+import RuntimeVideoSection from './sections/RuntimeVideoSection.vue'
 import ShopGridSection from './sections/ShopGridSection.vue'
 
 export interface RuntimeSectionRegistryEntry {
@@ -29,6 +34,21 @@ export const sectionRegistry: Record<string, RuntimeSectionRegistryEntry> = {
   },
   CtaSection: {
     component: RuntimeCtaSection,
+  },
+  FaqSection: {
+    component: RuntimeFaqSection,
+  },
+  TestimonialsSection: {
+    component: RuntimeTestimonialsSection,
+  },
+  GallerySection: {
+    component: RuntimeGallerySection,
+  },
+  VideoSection: {
+    component: RuntimeVideoSection,
+  },
+  PricingSection: {
+    component: RuntimePricingSection,
   },
   CategoryGridSection: {
     component: RuntimeCategoryGridSection,

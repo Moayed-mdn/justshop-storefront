@@ -1,16 +1,3 @@
-export interface HeroBannerDto {
-  title: string
-  subtitle?: string
-  ctaText?: string
-  ctaUrl?: string
-  visual: {
-    type: 'image' | 'gradient'
-    imageUrl?: string
-    gradientFrom?: string
-    gradientTo?: string
-  }
-}
-
 export interface ProductDto {
   id: string | number
   variantId: string | number
@@ -28,21 +15,6 @@ export interface BestSellerCategoryDto {
   name: string
   slug: string
   products: ProductDto[]
-}
-
-export const transformHeroBanner = (raw: any): HeroBannerDto => {
-  return {
-    title: raw.title || '',
-    subtitle: raw.subtitle || '',
-    ctaText: raw.cat_text || '',
-    ctaUrl: raw.cat_url || '',
-    visual: {
-      type: raw.visual?.type || 'image',
-      imageUrl: raw.visual?.img_url,
-      gradientFrom: raw.visual?.gradient_from,
-      gradientTo: raw.visual?.gradient_to,
-    }
-  }
 }
 
 export const transformProduct = (raw: any): ProductDto => {
