@@ -175,6 +175,9 @@ export const extractThemeTokens = (theme: Theme | null): ThemeTokens => {
   // CRITICAL: Compute hover colors dynamically from merchant's actual colors
   // This ensures hover states match the merchant's brand colors, not hardcoded values
   computeDynamicHoverColors(tokens);
+  
+  // Compute "on-*" contrast colors to ensure text-on-background readability
+  computeOnColors(tokens);
 
   return tokens;
 };
@@ -279,6 +282,53 @@ function computeDynamicHoverColors(tokens: ThemeTokens): void {
     tokens['--color-accent-hover'] = isDarkBg
       ? lightenColor(accentColor, 15)
       : darkenColor(accentColor, 15);
+  }
+}
+
+/**
+ * Compute "on-*" contrast text colors to ensure readability
+ * when text is placed on a colored background.
+ * 
+ * Examples:
+ *   --color-primary (bg)  →  --color-on-primary  (text color on primary bg)
+ *   --color-secondary      →  --color-on-secondary
+ *   --color-accent         →  --color-on-accent
+ *   --color-background     →  --color-on-background
+ * 
+ * Uses YIQ-based brightness check: dark bg → white text, light bg → dark text.
+ */
+function computeOnColors(tokens: ThemeTokens): void {
+  const darkText = '#111827';
+  const lightText = '#ffffff';
+
+  // On-primary
+  const primaryColor = tokens['--color-primary'] || tokens['--colors-primary'];
+  if (primaryColor) {
+    tokens['--color-on-primary'] = isLightColor(primaryColor) ? darkText : lightText;
+  }
+
+  // On-secondary
+  const secondaryColor = tokens['--color-secondary'] || tokens['--colors-secondary'];
+  if (secondaryColor) {
+    tokens['--color-on-secondary'] = isLightColor(secondaryColor) ? darkText : lightText;
+  }
+
+  // On-accent
+  const accentColor = tokens['--color-accent'];
+  if (accentColor) {
+    tokens['--color-on-accent'] = isLightColor(accentColor) ? darkText : lightText;
+  }
+
+  // On-background (text color for page background)
+  const bgColor = tokens['--color-background'] || tokens['--colors-background'];
+  if (bgColor && !tokens['--color-on-background']) {
+    tokens['--color-on-background'] = isLightColor(bgColor) ? darkText : lightText;
+  }
+
+  // On-surface (text color for surface/card backgrounds)
+  const surfaceColor = tokens['--color-surface'] || bgColor;
+  if (surfaceColor && !tokens['--color-on-surface']) {
+    tokens['--color-on-surface'] = isLightColor(surfaceColor) ? darkText : lightText;
   }
 }
 

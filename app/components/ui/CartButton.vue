@@ -7,7 +7,7 @@
         key="add-btn"
         @click="handle(add)"
         :disabled="isLoading"
-        :style="{ borderColor: primary, color: primary }"
+        :style="{ borderColor: primary }"
         class="py-2 px-4 mt-2 rounded-full border font-bold transition-all duration-300
                cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed
                hover-cart-add-btn"
@@ -183,7 +183,10 @@ const decrement = async () => {
   transform: translateY(-6px);
 }
 
-/* ===== Hover states ===== */
+/* ===== Cart button ===== */
+.hover-cart-add-btn {
+  color: v-bind('primary');
+}
 .hover-cart-add-btn:hover:not(:disabled) {
   background-color: v-bind('primary');
   color: v-bind('onPrimary');
