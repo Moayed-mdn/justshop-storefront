@@ -6,7 +6,7 @@
  */
 
 import type { RuntimeThemeResponse, ColorScheme } from '../../runtime/contracts/types'
-import { getContrastingTextColor } from './colorContrast'
+import { getContrastingTextColor, darkenColor, lightenColor } from './colorContrast'
 
 /**
  * Applied color scheme with all calculated values
@@ -16,6 +16,8 @@ export interface AppliedColorScheme {
   color: string
   buttonBackground: string
   buttonColor: string
+  buttonHoverBackground: string
+  buttonHoverColor: string
   secondaryBackground: string
   borderColor: string
 }
@@ -96,11 +98,18 @@ export function applyColorScheme(
   const textColor = scheme.text || getContrastingTextColor(scheme.background)
   const buttonTextColor = scheme.button_text || getContrastingTextColor(scheme.button_background)
   
+  // Calculate button hover background: darken if light, lighten if dark
+  const buttonHoverBackground = darkenColor(scheme.button_background, 10)
+  // Auto-calculate contrasting hover text color for accessibility
+  const buttonHoverColor = getContrastingTextColor(buttonHoverBackground)
+  
   return {
     backgroundColor: scheme.background,
     color: textColor,
     buttonBackground: scheme.button_background,
     buttonColor: buttonTextColor,
+    buttonHoverBackground,
+    buttonHoverColor,
     secondaryBackground: scheme.secondary_background,
     borderColor: scheme.border,
   }

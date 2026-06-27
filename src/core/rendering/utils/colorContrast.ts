@@ -27,6 +27,34 @@ export function hexToRgb(hex: string): { r: number; g: number; b: number } | nul
 }
 
 /**
+ * Converts RGB values to hex string
+ */
+export function rgbToHex(r: number, g: number, b: number): string {
+  const toHex = (n: number) => Math.max(0, Math.min(255, Math.round(n))).toString(16).padStart(2, '0')
+  return `#${toHex(r)}${toHex(g)}${toHex(b)}`
+}
+
+/**
+ * Darkens a color by a percentage (0-100)
+ */
+export function darkenColor(hex: string, percentage: number = 15): string {
+  const rgb = hexToRgb(hex)
+  if (!rgb) return hex
+  const factor = 1 - percentage / 100
+  return rgbToHex(rgb.r * factor, rgb.g * factor, rgb.b * factor)
+}
+
+/**
+ * Lightens a color by a percentage (0-100)
+ */
+export function lightenColor(hex: string, percentage: number = 15): string {
+  const rgb = hexToRgb(hex)
+  if (!rgb) return hex
+  const factor = 1 + percentage / 100
+  return rgbToHex(rgb.r * factor, rgb.g * factor, rgb.b * factor)
+}
+
+/**
  * Calculate perceived brightness using YIQ formula
  * Returns a value between 0 (dark) and 255 (bright)
  * 
