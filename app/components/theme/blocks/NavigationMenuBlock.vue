@@ -27,6 +27,7 @@
           :target="item.target"
           class="navigation-menu-block__link"
           active-class="navigation-menu-block__link--active"
+          exact-active-class="navigation-menu-block__link--active"
         >
           {{ item.label }}
         </NuxtLinkLocale>
@@ -52,6 +53,8 @@
                 :to="child.url"
                 :target="child.target"
                 class="navigation-menu-block__sublink"
+                active-class="navigation-menu-block__sublink--active"
+                exact-active-class="navigation-menu-block__sublink--active"
                 @click="closeAllDropdowns"
               >
                 {{ child.label }}
@@ -169,9 +172,12 @@ const menuStyles = computed(() => {
   color: var(--color-primary, #3b82f6);
 }
 
+/* Active state for navigation links - using :deep() for router classes */
+:deep(.navigation-menu-block__link.router-link-active),
+:deep(.navigation-menu-block__link.router-link-exact-active),
 .navigation-menu-block__link--active {
-  color: var(--color-primary, #3b82f6);
-  font-weight: 600;
+  color: var(--color-primary, #3b82f6) !important;
+  font-weight: 600 !important;
 }
 
 .navigation-menu-block__link--dropdown {
@@ -214,6 +220,15 @@ const menuStyles = computed(() => {
 .navigation-menu-block__sublink:hover {
   background-color: var(--color-bg-secondary, #f3f4f6);
   color: var(--color-primary, #3b82f6);
+}
+
+/* Active state for sublinks - using :deep() for router classes */
+:deep(.navigation-menu-block__sublink.router-link-active),
+:deep(.navigation-menu-block__sublink.router-link-exact-active),
+.navigation-menu-block__sublink--active {
+  background-color: var(--color-bg-secondary, #f3f4f6);
+  color: var(--color-primary, #3b82f6) !important;
+  font-weight: 600;
 }
 
 /* Vertical orientation */

@@ -76,8 +76,9 @@
             @click="$emit('reorder', order.order_number)"
             :disabled="reordering"
             data-testid="order-reorder-button"
-            class="px-3 py-1.5 text-xs font-semibold text-(--color-primary) border border-(--color-primary)
-                   rounded-md hover:bg-(--color-primary)/5 transition-colors disabled:opacity-50 cursor-pointer"
+            :style="{ borderColor: primary, color: primary }"
+            class="px-3 py-1.5 text-xs font-semibold border rounded-md transition-colors 
+                   disabled:opacity-50 cursor-pointer hover-outline-btn"
           >
             {{ reordering ? '...' : $t('orders.buy_again') }}
           </button>
@@ -95,8 +96,8 @@
           <NuxtLinkLocale
             :to="routes.orderDetail(order.order_number)"
             data-testid="order-view-details-link"
-            class="px-3 py-1.5 text-xs font-semibold text-(--color-on-primary) bg-(--color-primary)
-                   rounded-md hover:bg-(--color-primary-hover) transition-colors"
+            :style="{ backgroundColor: primary, color: onPrimary }"
+            class="px-3 py-1.5 text-xs font-semibold rounded-md transition-colors hover-primary-link"
           >
             {{ $t('orders.view_details') }}
           </NuxtLinkLocale>
@@ -109,6 +110,22 @@
   import { formatPrice } from '../../utils/price'
   import { formatDate as formatDateUtil } from '../../utils/date'
   import type { Order } from '~~/types/order'
+  
+  // Inline theme colors for SSR compatibility
+  const getCSSVar = (varName: string, fallback: string): string => {
+    if (!process.client) return fallback
+    try {
+      const value = getComputedStyle(document.documentElement)
+        .getPropertyValue(varName)
+        .trim()
+      return value || fallback
+    } catch {
+      return fallback
+    }
+  }
+
+  const primary = computed(() => getCSSVar('--color-primary', '#3b82f6'))
+  const onPrimary = computed(() => getCSSVar('--color-on-primary', '#ffffff'))
   
   const routes = useStorefrontRoutes()
   const props = defineProps<{
@@ -138,3 +155,13 @@
       day: 'numeric',
     })
   </script>
+  
+  <style scoped>
+  .hover-outline-btn:hover:not(:disabled) {
+    background-color: rgba(59, 130, 246, 0.05);
+  }
+  
+  .hover-primary-link:hover {
+    filter: brightness(0.9);
+  }
+  </style>

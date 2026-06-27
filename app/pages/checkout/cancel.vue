@@ -23,8 +23,8 @@
           <NuxtLinkLocale
             :to="routes.cart()"
             data-testid="checkout-return-to-cart"
-            class="py-3 px-6 text-sm font-semibold text-(--color-on-primary) bg-(--color-primary)
-                   rounded-md hover:bg-(--color-primary-hover) transition-colors"
+            :style="{ backgroundColor: primary, color: onPrimary }"
+            class="py-3 px-6 text-sm font-semibold rounded-md transition-colors hover-primary-link"
           >
             {{ $t('checkout.return_to_cart') }}
           </NuxtLinkLocale>
@@ -43,6 +43,22 @@
   </template>
   
   <script setup lang="ts">
+  // Inline theme colors for SSR compatibility
+  const getCSSVar = (varName: string, fallback: string): string => {
+    if (!process.client) return fallback
+    try {
+      const value = getComputedStyle(document.documentElement)
+        .getPropertyValue(varName)
+        .trim()
+      return value || fallback
+    } catch {
+      return fallback
+    }
+  }
+
+  const primary = computed(() => getCSSVar('--color-primary', '#3b82f6'))
+  const onPrimary = computed(() => getCSSVar('--color-on-primary', '#ffffff'))
+  
   const routes = useStorefrontRoutes()
   const { t } = useI18n()
 
@@ -57,3 +73,9 @@
     ],
   })
   </script>
+  
+  <style scoped>
+  .hover-primary-link:hover {
+    filter: brightness(0.9);
+  }
+  </style>

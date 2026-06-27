@@ -2,23 +2,24 @@
   <section 
     v-if="hasContent" 
     ref="heroSection"
-    class="rounded-3xl px-6 py-16 text-[--color-text-inverse] sm:px-10"
+    class="rounded-3xl px-6 py-16 sm:px-10"
     :style="sectionStyle"
   >
     <div class="mx-auto max-w-4xl">
-      <p v-if="resolvedEyebrow" class="text-sm font-semibold uppercase tracking-[0.2em] text-[--color-text-inverse] opacity-90">
+      <p v-if="resolvedEyebrow" class="text-sm font-semibold uppercase tracking-[0.2em] opacity-90" :style="{ color: textColor }">
         {{ resolvedEyebrow }}
       </p>
-      <h1 class="mt-3 text-4xl font-bold tracking-tight text-[--color-text-inverse] sm:text-5xl">
+      <h1 class="mt-3 text-4xl font-bold tracking-tight sm:text-5xl" :style="{ color: textColor }">
         {{ resolvedHeadline }}
       </h1>
-      <p v-if="resolvedSubheadline" class="mt-4 max-w-2xl text-base text-[--color-text-inverse] opacity-90 sm:text-lg">
+      <p v-if="resolvedSubheadline" class="mt-4 max-w-2xl text-base opacity-90 sm:text-lg" :style="{ color: textColor }">
         {{ resolvedSubheadline }}
       </p>
       <div v-if="resolvedCtaText && resolvedCtaUrl" class="mt-8">
         <NuxtLink
           :to="resolvedCtaUrl"
-          class="inline-flex items-center rounded-full bg-[--color-accent] px-5 py-2.5 text-sm font-semibold text-[--color-text-inverse] transition hover:bg-[--color-accent-hover]"
+          class="inline-flex items-center rounded-full px-5 py-2.5 text-sm font-semibold transition"
+          :style="ctaButtonStyle"
         >
           {{ resolvedCtaText }}
         </NuxtLink>
@@ -29,6 +30,8 @@
 
 <script setup lang="ts">
 import type { RuntimeSectionComponentProps } from '../types'
+import { getContrastingTextColor } from '../utils/colorContrast'
+import { applyColorScheme, resolveColorSchemeKey } from '../utils/colorScheme'
 
 const localePath = useLocalePath()
 
@@ -93,6 +96,57 @@ const content = computed(() => {
     : {}
 })
 
+// Resolve color scheme for this section
+const colorScheme = computed(() => {
+  const schemeKey = resolveColorSchemeKey(props.data.settings)
+  return applyColorScheme(props.theme, schemeKey)
+})
+
+// Extract background color from sectionStyle for contrast calculation
+// This is used when there's a gradient or image (not using color scheme)
+const backgroundColor = computed(() => {
+  const item = primaryHeroItem.value
+  
+  // For gradients, use the "from" color
+  if (item?.visualType === 'gradient' && item.gradientFrom) {
+    return String(item.gradientFrom).trim()
+  }
+  
+  // For images, default to dark background assumption
+  if (item?.visualType === 'image' && item.imageUrl) {
+    return '#1F2937' // Dark gray - safe assumption for images
+  }
+  
+  // Otherwise use color scheme background
+  return colorScheme.value.backgroundColor
+})
+
+// Calculate contrasting text color
+const textColor = computed(() => {
+  const item = primaryHeroItem.value
+  
+  // For images, use white text (dark background assumption)
+  if (item?.visualType === 'image' && item.imageUrl) {
+    return '#FFFFFF'
+  }
+  
+  // For gradients, calculate from gradient start color
+  if (item?.visualType === 'gradient' && item.gradientFrom) {
+    return getContrastingTextColor(String(item.gradientFrom).trim())
+  }
+  
+  // Use color scheme text color
+  return colorScheme.value.color
+})
+
+// CTA button style from color scheme
+const ctaButtonStyle = computed(() => {
+  return {
+    backgroundColor: colorScheme.value.buttonBackground,
+    color: colorScheme.value.buttonColor,
+  }
+})
+
 // Memoized and stable style computation
 const sectionStyle = computed(() => {
   const item = primaryHeroItem.value
@@ -124,8 +178,10 @@ const sectionStyle = computed(() => {
     }
   }
 
-  // Fallback
-  return { background: 'var(--color-bg-inverse)' }
+  // Fallback: Use color scheme background
+  return {
+    background: colorScheme.value.backgroundColor
+  }
 })
 
 const resolvedEyebrow = computed(() => {

@@ -5,9 +5,13 @@
         data-testid="product-add-to-cart-button"
         @click="$emit('add-to-cart')"
         :disabled="!canAddToCart || isAddingToCart"
-        class="flex-1 py-3 px-6 bg-(--color-primary) text-(--color-on-primary) font-semibold rounded-md
-               hover:bg-(--color-primary-hover) transition-colors disabled:opacity-50
-               disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
+        :style="{
+          backgroundColor: primary,
+          color: onPrimary,
+        }"
+        class="flex-1 py-3 px-6 font-semibold rounded-md transition-colors disabled:opacity-50
+               disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer
+               hover-primary-button"
         type="button"
       >
         <svg
@@ -34,9 +38,13 @@
         data-testid="product-buy-now-button"
         @click="$emit('buy-now')"
         :disabled="!canAddToCart"
-        class="flex-1 sm:flex-initial py-3 px-6 border-2 border-(--color-primary) text-(--color-primary)
-               font-semibold rounded-md hover:bg-(--color-primary)/5 transition-colors
-               disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+        :style="{
+          borderColor: primary,
+          color: primary,
+        }"
+        class="flex-1 sm:flex-initial py-3 px-6 border-2 font-semibold rounded-md transition-colors
+               disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer
+               hover-secondary-button"
         type="button"
       >
         {{ $t('product.buy_now') }}
@@ -45,7 +53,8 @@
 
     <p
       v-if="disabledReason && !canAddToCart"
-      class="text-sm text-(--color-error)"
+      :style="{ color: 'var(--color-error)' }"
+      class="text-sm"
       data-testid="product-action-error"
     >
       {{ disabledReason }}
@@ -54,6 +63,22 @@
 </template>
 
 <script setup lang="ts">
+// Inline theme colors for SSR compatibility
+const getCSSVar = (varName: string, fallback: string): string => {
+  if (!process.client) return fallback
+  try {
+    const value = getComputedStyle(document.documentElement)
+      .getPropertyValue(varName)
+      .trim()
+    return value || fallback
+  } catch {
+    return fallback
+  }
+}
+
+const primary = computed(() => getCSSVar('--color-primary', '#3b82f6'))
+const onPrimary = computed(() => getCSSVar('--color-on-primary', '#ffffff'))
+
 defineProps<{
   canAddToCart: boolean
   isAddingToCart: boolean
@@ -66,3 +91,13 @@ defineEmits<{
   'buy-now': []
 }>()
 </script>
+
+<style scoped>
+.hover-primary-button:hover:not(:disabled) {
+  filter: brightness(0.9);
+}
+
+.hover-secondary-button:hover:not(:disabled) {
+  background-color: rgba(59, 130, 246, 0.05);
+}
+</style>

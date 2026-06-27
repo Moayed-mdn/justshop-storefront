@@ -2,10 +2,14 @@
   <button
     type="submit"
     :disabled="loading"
-    class="w-full flex justify-center px-4 py-2 text-sm font-medium text-(--color-on-primary) 
-           bg-(--color-primary) border border-transparent rounded-md shadow-sm 
-           hover:bg-(--color-primary-hover) focus:outline-none focus:ring-2 focus:ring-(--color-primary)/30
-           disabled:opacity-50 transition-colors"
+    :style="{
+      backgroundColor: primary,
+      color: onPrimary,
+    }"
+    class="w-full flex justify-center px-4 py-2 text-sm font-medium border border-transparent 
+           rounded-md shadow-sm focus:outline-none focus:ring-2 
+           disabled:opacity-50 transition-colors hover-primary-button"
+    :class="{ 'focus:ring-opacity-30': true }"
   >
     <span v-if="loading" class="flex items-center gap-2">
       <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -19,9 +23,35 @@
 </template>
 
 <script setup lang="ts">
+// Inline theme colors for SSR compatibility
+const getCSSVar = (varName: string, fallback: string): string => {
+  if (!process.client) return fallback
+  try {
+    const value = getComputedStyle(document.documentElement)
+      .getPropertyValue(varName)
+      .trim()
+    return value || fallback
+  } catch {
+    return fallback
+  }
+}
+
+const primary = computed(() => getCSSVar('--color-primary', '#3b82f6'))
+const onPrimary = computed(() => getCSSVar('--color-on-primary', '#ffffff'))
+
 defineProps<{
   loading: boolean
   text: string
   loadingText: string
 }>()
 </script>
+
+<style scoped>
+.hover-primary-button:hover:not(:disabled) {
+  filter: brightness(0.9);
+}
+
+.hover-primary-button:focus {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+}
+</style>

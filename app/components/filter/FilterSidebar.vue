@@ -2,8 +2,8 @@
   <div>
     <!-- Mobile open button -->
     <button
-      
-      class="md:hidden cursor-pointer hover:bg-(--color-accent-hover) p-(--space-4) bg-(--color-accent) text-(--filter-button-active-text) w-full"
+      :style="{ backgroundColor: accent, color: onAccent }"
+      class="md:hidden cursor-pointer p-(--space-4) w-full hover-accent-btn"
       @click="isOpen = true"
     >
       {{ t('filter.open') }}
@@ -23,6 +23,22 @@
 
 <script setup lang="ts">
 import type { ProductListFilters } from '~~/types/product'
+
+// Inline theme colors for SSR compatibility
+const getCSSVar = (varName: string, fallback: string): string => {
+  if (!process.client) return fallback
+  try {
+    const value = getComputedStyle(document.documentElement)
+      .getPropertyValue(varName)
+      .trim()
+    return value || fallback
+  } catch {
+    return fallback
+  }
+}
+
+const accent = computed(() => getCSSVar('--color-accent', '#FF7006'))
+const onAccent = computed(() => getCSSVar('--color-text-inverse', '#ffffff'))
 
 const { t } = useI18n()
 
@@ -56,5 +72,7 @@ watch(isMobile, (val) => {
   background-color: var(--text-secondary);
 }
 
-
+.hover-accent-btn:hover:not(:disabled) {
+  filter: brightness(0.9);
+}
 </style>

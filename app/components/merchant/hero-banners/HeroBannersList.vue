@@ -30,7 +30,8 @@
       <div class="mt-6">
         <NuxtLink
           to="/merchant/hero-banners/create"
-          class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-(--color-primary) hover:bg-(--color-primary-hover) focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-(--color-primary)"
+          :style="{ backgroundColor: primary, color: onPrimary }"
+          class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 hover-primary-link"
         >
           <svg class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
@@ -166,6 +167,22 @@
 <script setup lang="ts">
 import type { HeroBanner } from '~/types/heroBanner'
 
+// Inline theme colors for SSR compatibility
+const getCSSVar = (varName: string, fallback: string): string => {
+  if (!process.client) return fallback
+  try {
+    const value = getComputedStyle(document.documentElement)
+      .getPropertyValue(varName)
+      .trim()
+    return value || fallback
+  } catch {
+    return fallback
+  }
+}
+
+const primary = computed(() => getCSSVar('--color-primary', '#3b82f6'))
+const onPrimary = computed(() => getCSSVar('--color-on-primary', '#ffffff'))
+
 defineProps<{
   banners: HeroBanner[]
   loading: boolean
@@ -191,3 +208,9 @@ function formatDate(dateString: string): string {
   }).format(date)
 }
 </script>
+
+<style scoped>
+.hover-primary-link:hover {
+  filter: brightness(0.9);
+}
+</style>

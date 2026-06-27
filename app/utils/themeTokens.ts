@@ -6,6 +6,7 @@
  */
 
 import type { Theme, ThemeTokens, ThemeSettings } from '~~/types/theme';
+import { darkenColor, lightenColor, isLightColor } from './colorUtils';
 
 /**
  * Default theme values (fallback)
@@ -13,22 +14,23 @@ import type { Theme, ThemeTokens, ThemeSettings } from '~~/types/theme';
 const DEFAULT_THEME_VALUES = {
   colors: {
     primary: '#3b82f6',
-    secondary: '#6366f1',
-    accent: '#ec4899',
+    secondary: '#10b981',
     background: '#ffffff',
     text: '#1f2937',
-    'text-light': '#6b7280',
-    'text-dark': '#111827',
-    success: '#10b981',
-    warning: '#f59e0b',
-    error: '#ef4444',
+    'text-muted': '#6b7280',
     border: '#e5e7eb',
+    success: '#10b981',
+    error: '#ef4444',
+    warning: '#f59e0b',
   },
   typography: {
     heading: 'Inter, system-ui, sans-serif',
     body: 'Inter, system-ui, sans-serif',
+    'heading-weight': '600',
+    'body-weight': '400',
     'font-size-base': '16px',
     'line-height-base': '1.5',
+    'letter-spacing-base': '0',
   },
   layout: {
     'container-width': '1280px',
@@ -60,9 +62,13 @@ export const extractThemeTokens = (theme: Theme | null): ThemeTokens => {
   if (runtimeTokens) {
     tokens['--color-primary'] = runtimeTokens.colorPrimary;
     tokens['--color-secondary'] = runtimeTokens.colorSecondary;
-    tokens['--color-accent'] = runtimeTokens.colorAccent;
     tokens['--color-background'] = runtimeTokens.colorSurface ?? runtimeTokens.colorBackground;
     tokens['--color-text'] = runtimeTokens.colorText;
+    tokens['--color-text-muted'] = runtimeTokens.colorTextMuted;
+    tokens['--color-border'] = runtimeTokens.colorBorder;
+    tokens['--color-success'] = runtimeTokens.colorSuccess;
+    tokens['--color-error'] = runtimeTokens.colorError;
+    tokens['--color-warning'] = runtimeTokens.colorWarning;
     tokens['--runtime-font-body'] = runtimeTokens.fontBody ?? '';
     tokens['--runtime-font-heading'] = runtimeTokens.fontHeading ?? '';
   }
@@ -78,8 +84,60 @@ export const extractThemeTokens = (theme: Theme | null): ThemeTokens => {
 
   // Extract typography
   if (theme.settings?.typography) {
+    const typo = theme.settings.typography;
+    
+    // Font families
+    if (typo.headingFont) tokens['--theme-font-heading'] = typo.headingFont;
+    if (typo.bodyFont) tokens['--theme-font-body'] = typo.bodyFont;
+    
+    // Font weights (convert to CSS values)
+    if (typo.headingWeight) {
+      tokens['--theme-font-weight-heading'] = {
+        normal: '400',
+        medium: '500',
+        semibold: '600',
+        bold: '700',
+      }[typo.headingWeight] || '600';
+    }
+    if (typo.bodyWeight) {
+      tokens['--theme-font-weight-body'] = {
+        normal: '400',
+        medium: '500',
+        semibold: '600',
+        bold: '700',
+      }[typo.bodyWeight] || '400';
+    }
+    
+    // Base font size
+    if (typo.baseFontSize) {
+      tokens['--theme-font-size-base'] = {
+        sm: '14px',
+        base: '16px',
+        lg: '18px',
+      }[typo.baseFontSize] || '16px';
+    }
+    
+    // Line height
+    if (typo.lineHeight) {
+      tokens['--theme-line-height-base'] = {
+        tight: '1.25',
+        normal: '1.5',
+        relaxed: '1.75',
+      }[typo.lineHeight] || '1.5';
+    }
+    
+    // Letter spacing
+    if (typo.letterSpacing) {
+      tokens['--theme-letter-spacing-base'] = {
+        tight: '-0.025em',
+        normal: '0',
+        wide: '0.025em',
+      }[typo.letterSpacing] || '0';
+    }
+    
+    // Legacy fields for backward compatibility
     Object.entries(theme.settings.typography).forEach(([key, value]) => {
-      if (value) {
+      if (value && !['headingFont', 'bodyFont', 'headingWeight', 'bodyWeight', 'baseFontSize', 'lineHeight', 'letterSpacing'].includes(key)) {
         tokens[`--font-${kebabCase(key)}`] = value;
       }
     });
@@ -113,6 +171,10 @@ export const extractThemeTokens = (theme: Theme | null): ThemeTokens => {
   });
 
   applyAliases(tokens);
+  
+  // CRITICAL: Compute hover colors dynamically from merchant's actual colors
+  // This ensures hover states match the merchant's brand colors, not hardcoded values
+  computeDynamicHoverColors(tokens);
 
   return tokens;
 };
@@ -123,27 +185,100 @@ export const extractThemeTokens = (theme: Theme | null): ThemeTokens => {
  * Handles both --color-* (from API) and --colors-* (from DEFAULT_THEME_VALUES fallback).
  */
 function applyAliases(tokens: ThemeTokens): void {
+  // Background aliases
   const bgColor = tokens['--color-background'] || tokens['--colors-background'];
   if (bgColor) {
     tokens['--color-bg-page'] = bgColor;
     tokens['--color-bg-surface'] = bgColor;
     tokens['--color-bg-elevated'] = bgColor;
     tokens['--color-bg-card'] = bgColor;
-    tokens['--color-bg-secondary'] = bgColor; // For footer and secondary surfaces
+    tokens['--color-bg-secondary'] = bgColor;
   }
+  
+  // Text aliases
   const textColor = tokens['--color-text'] || tokens['--colors-text'];
   if (textColor) {
     tokens['--color-text-primary'] = textColor;
     tokens['--color-text-secondary'] = textColor;
-    tokens['--color-text-muted'] = textColor;
   }
+  
+  // Text muted alias
+  const textMutedColor = tokens['--color-text-muted'] || tokens['--colors-text-muted'];
+  if (textMutedColor) {
+    tokens['--color-text-muted-alias'] = textMutedColor;
+  }
+  
+  // Primary color aliases
   const primaryColor = tokens['--color-primary'] || tokens['--colors-primary'];
   if (primaryColor) {
     tokens['--color-primary-dark'] = primaryColor;
+    tokens['--color-link'] = primaryColor;
   }
+  
+  // Border alias
+  const borderColor = tokens['--color-border'] || tokens['--colors-border'];
+  if (borderColor) {
+    tokens['--color-border-default'] = borderColor;
+  }
+  
+  // Status color aliases
   const errorColor = tokens['--color-error'] || tokens['--colors-error'];
   if (errorColor) {
     tokens['--red-error'] = errorColor;
+  }
+  
+  const successColor = tokens['--color-success'] || tokens['--colors-success'];
+  if (successColor) {
+    tokens['--green-success'] = successColor;
+  }
+  
+  const warningColor = tokens['--color-warning'] || tokens['--colors-warning'];
+  if (warningColor) {
+    tokens['--yellow-warning'] = warningColor;
+  }
+}
+
+/**
+ * Compute dynamic hover colors from merchant's actual brand colors
+ * This replaces hardcoded hover colors in CSS with merchant-specific values
+ * 
+ * CRITICAL: This ensures buttons/links respect merchant's brand, not hardcoded colors
+ */
+function computeDynamicHoverColors(tokens: ThemeTokens): void {
+  // Primary hover color
+  const primaryColor = tokens['--color-primary'] || tokens['--colors-primary'];
+  if (primaryColor) {
+    // Check if background is light or dark to decide hover direction
+    const bgColor = tokens['--color-background'] || tokens['--colors-background'] || '#ffffff';
+    const isDarkBg = !isLightColor(bgColor);
+    
+    // Dark backgrounds: lighten on hover (better visibility)
+    // Light backgrounds: darken on hover (standard pattern)
+    tokens['--color-primary-hover'] = isDarkBg 
+      ? lightenColor(primaryColor, 15)
+      : darkenColor(primaryColor, 15);
+  }
+  
+  // Secondary hover color
+  const secondaryColor = tokens['--color-secondary'] || tokens['--colors-secondary'];
+  if (secondaryColor) {
+    const bgColor = tokens['--color-background'] || tokens['--colors-background'] || '#ffffff';
+    const isDarkBg = !isLightColor(bgColor);
+    
+    tokens['--color-secondary-hover'] = isDarkBg
+      ? lightenColor(secondaryColor, 15)
+      : darkenColor(secondaryColor, 15);
+  }
+  
+  // Accent hover color
+  const accentColor = tokens['--color-accent'];
+  if (accentColor) {
+    const bgColor = tokens['--color-background'] || tokens['--colors-background'] || '#ffffff';
+    const isDarkBg = !isLightColor(bgColor);
+    
+    tokens['--color-accent-hover'] = isDarkBg
+      ? lightenColor(accentColor, 15)
+      : darkenColor(accentColor, 15);
   }
 }
 

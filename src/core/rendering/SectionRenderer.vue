@@ -11,6 +11,7 @@
           v-if="entry.component && entry.section.dataState === 'ready' && !entry.reason"
           :section="entry.section"
           :data="entry.data"
+          :theme="runtimeTheme"
         />
         <RuntimeSectionFallback
           v-else
@@ -26,7 +27,7 @@
 
 <script setup lang="ts">
 import { computed, watchEffect } from 'vue'
-import type { CmsSection } from '../runtime/router/types'
+import type { CmsSection, RuntimeThemeResponse } from '../runtime/router/types'
 import { logRuntimeEvent } from '../runtime/observability/logRuntimeEvent'
 import { useSectionRegistry } from './registry'
 import type { RuntimeSectionData } from './types'
@@ -34,10 +35,14 @@ import { useStorefrontContext } from '../tenant/composables'
 
 const props = defineProps<{
   sections: CmsSection[]
+  theme?: RuntimeThemeResponse['data'] | null
 }>()
 
 const storefrontContext = useStorefrontContext()
 const { getSection } = useSectionRegistry()
+
+// Use theme from props directly
+const runtimeTheme = computed(() => props.theme)
 
 type RuntimeSectionFallbackReason = 'unknown_component' | 'invalid_props'
 

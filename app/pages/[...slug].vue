@@ -15,20 +15,22 @@
 
     <template v-if="resolvedRoute && runtimePage">
       <RuntimeLayoutManager :layout="runtimePage.layout || resolvedRoute.layout || undefined">
-        <RuntimeSectionRenderer :sections="runtimePage.sections" />
+        <RuntimeSectionRenderer :sections="sectionsToRender" :theme="runtimeTheme" />
       </RuntimeLayoutManager>
     </template>
   </div>
 </template>
 
 <script setup lang="ts">
-import type { RuntimeResolvedRoute, StorefrontRuntimeBundle } from '../../src/core/runtime/router/types'
+import type { CmsSection, RuntimeResolvedRoute, StorefrontRuntimeBundle } from '../../src/core/runtime/router/types'
+import type { RuntimePageTemplate, RuntimeTemplateSection, RuntimeNavigationItem } from '../../src/core/runtime/contracts/types'
 import { normalizeError } from '../../src/core/api/errors'
 import { createTenantCacheKey } from '../../src/core/cache/createTenantCacheKey'
 import { useRouteResolver } from '../../src/core/runtime/router/useRouteResolver'
 import { useStorefrontPayload } from '../../src/core/runtime/router/useStorefrontPayload'
 import { mapRuntimeSeoPayload, useRuntimeSeo } from '../../src/core/seo/useRuntimeSeo'
 import { useStorefrontContext } from '../../src/core/tenant/composables'
+import { provideTheme } from '../../src/core/theme/composables/useTheme'
 import UiLoadingSpinner from '../components/ui/LoadingSpinner.vue'
 
 definePageMeta({
@@ -178,6 +180,31 @@ const { data: runtimeData, pending, error } = await useAsyncData(
       )
     }
 
+    // ✅ CRITICAL: Store theme in storefront context IMMEDIATELY after fetching
+    // This ensures it's available when components render during SSR
+    if (bundle.theme) {
+      storefrontContext.value.themePayload = bundle.theme
+    }
+
+    // ✅ Override global navigation with page template section navigation
+    // This allows per-page header/footer menu configuration via templates
+    if (bundle.page?.template?.sections) {
+      const sections = bundle.page.template.sections
+      const headerSection = Object.values(sections).find((s: RuntimeTemplateSection) => s.type === 'header')
+      const footerSection = Object.values(sections).find(
+        (s: RuntimeTemplateSection) => s.type === 'footer' || s.type === 'footer-minimal' || s.type === 'footer-legal',
+      )
+
+      const templateNav = {
+        header: (headerSection?.data?.navigation as RuntimeNavigationItem[]) ?? [],
+        footer: (footerSection?.data?.navigation as RuntimeNavigationItem[]) ?? [],
+      }
+
+      if (templateNav.header.length || templateNav.footer.length) {
+        storefrontContext.value.navigation = templateNav
+      }
+    }
+
     return { resolved, bundle }
   },
   {
@@ -224,6 +251,91 @@ const runtimeBundle = computed<StorefrontRuntimeBundle | null>(() => {
 const runtimePage = computed(() =>
   runtimeBundle.value?.page ?? runtimeState.value?.page ?? null
 )
+
+const runtimeTheme = computed(() => runtimeBundle.value?.theme ?? null)
+
+// ── Template-driven sections ─────────────────────────────────────
+// When a page has a template with resolved sections but no old-format
+// sections array, convert template sections to CmsSection[] for rendering.
+const COMPONENT_FOR_TYPE: Record<string, string> = {
+  hero: 'HeroSection',
+  hero_banner: 'HeroSection',
+  features: 'FeatureListSection',
+  feature_list: 'FeatureListSection',
+  content: 'ContentSection',
+  rich_text: 'ContentSection',
+  cta: 'CtaSection',
+  call_to_action: 'CtaSection',
+  category_grid: 'CategoryGridSection',
+  product_grid: 'ProductGridSection',
+  products: 'ProductGridSection',
+  faq: 'FaqSection',
+  gallery: 'GallerySection',
+  video: 'VideoSection',
+  testimonials: 'TestimonialsSection',
+  pricing: 'PricingSection',
+}
+
+const templateSectionsToCms = (template: RuntimePageTemplate): CmsSection[] => {
+  return template.section_order
+    .map((sectionId) => {
+      const raw = template.sections[sectionId]
+      if (!raw) return null
+
+      const type = raw.type
+      const component = COMPONENT_FOR_TYPE[type]
+      if (!component) return null
+
+      const props: Record<string, unknown> = { ...raw.data }
+
+      // Normalize field names so both heading/title and text/subtitle consumers work
+      if (props.heading !== undefined && props.title === undefined) {
+        props.title = props.heading
+      }
+      if (props.title !== undefined && props.heading === undefined) {
+        props.heading = props.title
+      }
+      if (props.text !== undefined && props.subtitle === undefined) {
+        props.subtitle = props.text
+      }
+      if (props.subtitle !== undefined && props.text === undefined) {
+        props.text = props.subtitle
+      }
+
+      return {
+        id: sectionId,
+        type,
+        component,
+        props,
+        version: '1',
+        dataState: 'ready' as const,
+      }
+    })
+    .filter(Boolean) as CmsSection[]
+}
+
+const sectionsToRender = computed<CmsSection[]>(() => {
+  const page = runtimePage.value
+  if (!page) return []
+
+  // Prefer old-format sections when available
+  if (page.sections?.length) {
+    return page.sections
+  }
+
+  // Fall back to template-driven sections
+  if (page.template) {
+    return templateSectionsToCms(page.template)
+  }
+
+  return []
+})
+
+// ✅ Also provide theme via provide/inject for components that use it
+provideTheme(runtimeTheme)
+
+// Provide layout_order so StorefrontShell can render sections in template-defined order
+provide('layoutOrder', runtimePage.value?.layout_order ?? ['header', 'content', 'footer'])
 
 const runtimeShellStyle = computed<Record<string, string>>(() => {
   const theme = runtimeBundle.value?.theme

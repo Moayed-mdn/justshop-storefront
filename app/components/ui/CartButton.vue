@@ -7,10 +7,10 @@
         key="add-btn"
         @click="handle(add)"
         :disabled="isLoading"
+        :style="{ borderColor: primary, color: primary }"
         class="py-2 px-4 mt-2 rounded-full border font-bold transition-all duration-300
-               border-(--color-primary) text-(--color-primary) cursor-pointer
-               hover:bg-(--color-primary) hover:border-(--color-primary)
-               hover:text-(--color-on-primary) disabled:opacity-50 disabled:cursor-not-allowed"
+               cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed
+               hover-cart-add-btn"
       >
         <span v-if="!isLoading">{{ $t('cart.add_to_cart') }}</span>
         <span v-else class="animate-pulse">...</span>
@@ -20,9 +20,9 @@
       <div
         v-else
         key="counter"
+        :style="{ borderColor: primary }"
         class="flex w-fit min-w-[125px] items-center justify-between
-               mt-2 px-3 py-1 rounded-full border
-               border-(--color-primary) bg-transparent"
+               mt-2 px-3 py-1 rounded-full border bg-transparent"
       >
         <button
           @click="handle(decrement)"
@@ -61,6 +61,22 @@
   </div>
 </template>
 <script setup lang="ts">
+// Inline theme colors for SSR compatibility
+const getCSSVar = (varName: string, fallback: string): string => {
+  if (!process.client) return fallback
+  try {
+    const value = getComputedStyle(document.documentElement)
+      .getPropertyValue(varName)
+      .trim()
+    return value || fallback
+  } catch {
+    return fallback
+  }
+}
+
+const primary = computed(() => getCSSVar('--color-primary', '#3b82f6'))
+const onPrimary = computed(() => getCSSVar('--color-on-primary', '#ffffff'))
+
 const props = defineProps<{
   productId: number
   productVariantId: number            
@@ -165,5 +181,11 @@ const decrement = async () => {
 .fade-slide-leave-to {
   opacity: 0;
   transform: translateY(-6px);
+}
+
+/* ===== Hover states ===== */
+.hover-cart-add-btn:hover:not(:disabled) {
+  background-color: v-bind('primary');
+  color: v-bind('onPrimary');
 }
 </style>

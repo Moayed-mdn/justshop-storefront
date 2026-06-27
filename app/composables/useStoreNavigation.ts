@@ -108,7 +108,7 @@ export const useStoreNavigation = (handle: string = 'main-menu') => {
 
       if (cached && timestamp) {
         const age = Date.now() - parseInt(timestamp, 10);
-        const maxAge = 5 * 60 * 1000; // 5 minutes
+        const maxAge = 0; // Disabled cache for development - was: 5 * 60 * 1000 (5 minutes)
 
         if (age < maxAge) {
           menu.value = JSON.parse(cached);

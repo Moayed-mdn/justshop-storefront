@@ -74,8 +74,8 @@
             <p class="text-sm text-(--color-info-text) mt-1">{{ $t('checkout.create_account_description') }}</p>
             <NuxtLinkLocale
               :to="routes.register()"
-              class="inline-block mt-3 px-4 py-2 text-sm font-medium text-(--color-on-primary) bg-(--color-primary)
-                     rounded-md hover:bg-(--color-primary-hover) transition-colors"
+              :style="{ backgroundColor: primary, color: onPrimary }"
+              class="inline-block mt-3 px-4 py-2 text-sm font-medium rounded-md transition-colors hover-primary-link"
             >
               {{ $t('checkout.create_account_button') }}
             </NuxtLinkLocale>
@@ -87,8 +87,8 @@
               v-if="isLoggedIn"
               :to="routes.orders()"
               data-testid="checkout-view-orders"
-              class="flex-1 py-3 px-4 text-center text-sm font-semibold text-(--color-on-primary) bg-(--color-primary)
-                     rounded-md hover:bg-(--color-primary-hover) transition-colors"
+              :style="{ backgroundColor: primary, color: onPrimary }"
+              class="flex-1 py-3 px-4 text-center text-sm font-semibold rounded-md transition-colors hover-primary-link"
             >
               {{ $t('checkout.view_orders') }}
             </NuxtLinkLocale>
@@ -96,9 +96,9 @@
             <NuxtLinkLocale
               :to="routes.home()"
               data-testid="checkout-continue-shopping"
-              class="flex-1 py-3 px-4 text-center text-sm font-semibold border border-(--color-border-default)
-                     rounded-md hover:bg-(--color-bg-hover) transition-colors"
-              :class="isLoggedIn ? 'text-(--color-text-primary)' : 'text-(--color-on-primary) bg-(--color-primary) hover:bg-(--color-primary-hover) border-transparent'"
+              :style="!isLoggedIn ? { backgroundColor: primary, color: onPrimary } : {}"
+              class="flex-1 py-3 px-4 text-center text-sm font-semibold border rounded-md transition-colors"
+              :class="isLoggedIn ? 'text-(--color-text-primary) border-(--color-border-default) hover:bg-(--color-bg-hover)' : 'border-transparent hover-primary-link'"
             >
               {{ $t('checkout.continue_shopping') }}
             </NuxtLinkLocale>
@@ -123,8 +123,8 @@
   
           <NuxtLinkLocale
             :to="routes.home()"
-            class="inline-block py-3 px-6 text-sm font-semibold text-(--color-on-primary) bg-(--color-primary)
-                   rounded-md hover:bg-(--color-primary-hover) transition-colors"
+            :style="{ backgroundColor: primary, color: onPrimary }"
+            class="inline-block py-3 px-6 text-sm font-semibold rounded-md transition-colors hover-primary-link"
           >
             {{ $t('checkout.continue_shopping') }}
           </NuxtLinkLocale>
@@ -134,6 +134,22 @@
   </template>
   
   <script setup lang="ts">
+  // Inline theme colors for SSR compatibility
+  const getCSSVar = (varName: string, fallback: string): string => {
+    if (!process.client) return fallback
+    try {
+      const value = getComputedStyle(document.documentElement)
+        .getPropertyValue(varName)
+        .trim()
+      return value || fallback
+    } catch {
+      return fallback
+    }
+  }
+
+  const primary = computed(() => getCSSVar('--color-primary', '#3b82f6'))
+  const onPrimary = computed(() => getCSSVar('--color-on-primary', '#ffffff'))
+  
   definePageMeta({
     layout: 'default',
   })
@@ -212,3 +228,9 @@
     }
   })
   </script>
+  
+  <style scoped>
+  .hover-primary-link:hover {
+    filter: brightness(0.9);
+  }
+  </style>

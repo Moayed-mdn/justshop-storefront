@@ -1,11 +1,11 @@
 <template>
-  <section class="rounded-3xl bg-[--color-bg-page] px-6 py-16">
+  <section class="rounded-3xl px-6 py-16" :style="sectionStyle">
     <div class="mx-auto max-w-7xl">
       <div v-if="title || subtitle" class="mb-12 text-center">
-        <h2 v-if="title" class="text-3xl font-bold tracking-tight text-[--color-text-primary] sm:text-4xl">
+        <h2 v-if="title" class="text-3xl font-bold tracking-tight sm:text-4xl" :style="{ color: colorScheme.color }">
           {{ title }}
         </h2>
-        <p v-if="subtitle" class="mt-3 text-base text-[--color-text-secondary] sm:text-lg">
+        <p v-if="subtitle" class="mt-3 text-base sm:text-lg" :style="{ color: colorScheme.color, opacity: 0.8 }">
           {{ subtitle }}
         </p>
       </div>
@@ -15,7 +15,8 @@
         <article
           v-for="(member, index) in members"
           :key="index"
-          class="flex flex-col items-center rounded-2xl border border-[--color-border-default] bg-[--color-bg-card] p-6 text-center transition-all hover:-translate-y-1 hover:shadow-md"
+          class="flex flex-col items-center rounded-2xl border p-6 text-center transition-all hover:-translate-y-1 hover:shadow-md"
+          :style="cardStyle"
         >
           <!-- Image -->
           <div class="mb-5 h-32 w-32 flex-shrink-0 overflow-hidden rounded-full">
@@ -26,21 +27,21 @@
               loading="lazy"
               class="h-full w-full object-cover"
             />
-            <div v-else class="flex h-full w-full items-center justify-center bg-gradient-to-br from-[--color-primary] to-[--color-primary] text-white">
+            <div v-else class="flex h-full w-full items-center justify-center bg-gradient-to-br text-white" :style="{ background: colorScheme.buttonBackground }">
               <span class="text-3xl font-bold">{{ getInitials(member.name) }}</span>
             </div>
           </div>
 
           <!-- Info -->
           <div class="flex flex-col gap-2">
-            <h3 class="text-lg font-semibold text-[--color-text-primary]">{{ member.name }}</h3>
-            <p v-if="member.role" class="text-sm font-medium text-[--color-primary]">{{ member.role }}</p>
-            <p v-if="showBio && member.bio" class="text-sm leading-relaxed text-[--color-text-secondary]">{{ member.bio }}</p>
+            <h3 class="text-lg font-semibold" :style="{ color: colorScheme.color }">{{ member.name }}</h3>
+            <p v-if="member.role" class="text-sm font-medium" :style="{ color: colorScheme.buttonBackground }">{{ member.role }}</p>
+            <p v-if="showBio && member.bio" class="text-sm leading-relaxed" :style="{ color: colorScheme.color, opacity: 0.8 }">{{ member.bio }}</p>
           </div>
         </article>
       </div>
 
-      <p v-else class="py-12 text-center text-sm text-[--color-text-secondary]">
+      <p v-else class="py-12 text-center text-sm" :style="{ color: colorScheme.color, opacity: 0.7 }">
         No gallery items available.
       </p>
     </div>
@@ -49,8 +50,26 @@
 
 <script setup lang="ts">
 import type { RuntimeSectionComponentProps } from '../types'
+import { applyColorScheme } from '../utils/colorScheme'
 
 const props = defineProps<RuntimeSectionComponentProps>()
+
+// Color scheme support
+const colorScheme = computed(() => {
+  const schemeKey = (props.data.settings as any)?.color_scheme
+  return applyColorScheme(props.theme, schemeKey)
+})
+
+const sectionStyle = computed(() => ({
+  backgroundColor: colorScheme.value.backgroundColor,
+  color: colorScheme.value.color,
+}))
+
+const cardStyle = computed(() => ({
+  backgroundColor: colorScheme.value.secondaryBackground,
+  color: colorScheme.value.color,
+  borderColor: colorScheme.value.borderColor,
+}))
 
 const title = computed(() => typeof props.data.title === 'string' ? props.data.title : '')
 const subtitle = computed(() => typeof props.data.subtitle === 'string' ? props.data.subtitle : '')

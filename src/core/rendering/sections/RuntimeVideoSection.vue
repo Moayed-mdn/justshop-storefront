@@ -1,11 +1,11 @@
 <template>
-  <section class="rounded-3xl bg-[--color-bg-page] px-6 py-16">
+  <section class="rounded-3xl px-6 py-16" :style="sectionStyle">
     <div class="mx-auto max-w-4xl">
       <div v-if="title || subtitle" class="mb-10 text-center">
-        <h2 v-if="title" class="text-3xl font-bold tracking-tight text-[--color-text-primary] sm:text-4xl">
+        <h2 v-if="title" class="text-3xl font-bold tracking-tight sm:text-4xl" :style="{ color: colorScheme.color }">
           {{ title }}
         </h2>
-        <p v-if="subtitle" class="mt-3 text-base text-[--color-text-secondary] sm:text-lg">
+        <p v-if="subtitle" class="mt-3 text-base sm:text-lg" :style="{ color: colorScheme.color, opacity: 0.8 }">
           {{ subtitle }}
         </p>
       </div>
@@ -36,10 +36,10 @@
 
       <!-- Video description -->
       <div v-if="description" class="text-center">
-        <p class="text-sm leading-relaxed text-[--color-text-secondary]">{{ description }}</p>
+        <p class="text-sm leading-relaxed" :style="{ color: colorScheme.color, opacity: 0.8 }">{{ description }}</p>
       </div>
 
-      <p v-if="!videoUrl" class="py-12 text-center text-sm text-[--color-text-secondary]">
+      <p v-if="!videoUrl" class="py-12 text-center text-sm" :style="{ color: colorScheme.color, opacity: 0.7 }">
         No video available.
       </p>
     </div>
@@ -48,8 +48,20 @@
 
 <script setup lang="ts">
 import type { RuntimeSectionComponentProps } from '../types'
+import { applyColorScheme } from '../utils/colorScheme'
 
 const props = defineProps<RuntimeSectionComponentProps>()
+
+// Color scheme support
+const colorScheme = computed(() => {
+  const schemeKey = (props.data.settings as any)?.color_scheme
+  return applyColorScheme(props.theme, schemeKey)
+})
+
+const sectionStyle = computed(() => ({
+  backgroundColor: colorScheme.value.backgroundColor,
+  color: colorScheme.value.color,
+}))
 
 const title = computed(() => typeof props.data.title === 'string' ? props.data.title : '')
 const subtitle = computed(() => typeof props.data.subtitle === 'string' ? props.data.subtitle : '')

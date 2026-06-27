@@ -40,8 +40,10 @@ export default defineEventHandler(async (event) => {
       setHeader(event, 'content-type', contentType)
     }
 
-    // Set cache headers for images
-    setHeader(event, 'cache-control', 'public, max-age=31536000, immutable')
+    // Set cache headers for images - DISABLED for development
+    // For production, use: 'public, max-age=31536000, immutable'
+    // it was setHeader(event, 'cache-control', 'public, max-age=31536000, immutable')
+    setHeader(event, 'cache-control', 'no-store, no-cache, must-revalidate')
 
     // Return the asset
     return response.arrayBuffer()

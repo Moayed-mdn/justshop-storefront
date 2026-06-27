@@ -1,5 +1,5 @@
 <template>
-  <section class="runtime-content-section">
+  <section class="runtime-content-section" :style="sectionStyle">
     <div class="runtime-content-section__inner">
 
       <!-- Section header -->
@@ -12,7 +12,7 @@
       <template v-if="body">
         <p class="runtime-content-section__body">{{ body }}</p>
         <ul v-if="stats.length" class="runtime-content-section__stats">
-          <li v-for="(stat, i) in stats" :key="i" class="runtime-content-section__stat">
+          <li v-for="(stat, i) in stats" :key="i" class="runtime-content-section__stat" :style="cardStyle">
             <span class="runtime-content-section__stat-value">{{ stat.value }}</span>
             <span class="runtime-content-section__stat-label">{{ stat.label }}</span>
           </li>
@@ -21,7 +21,7 @@
 
       <!-- Layout: promise/list items -->
       <ul v-if="promises.length" class="runtime-content-section__promises">
-        <li v-for="(item, i) in promises" :key="i" class="runtime-content-section__promise">
+        <li v-for="(item, i) in promises" :key="i" class="runtime-content-section__promise" :style="cardStyle">
           <strong class="runtime-content-section__promise-title">{{ item.title }}</strong>
           <p class="runtime-content-section__promise-body">{{ item.body }}</p>
         </li>
@@ -30,13 +30,13 @@
       <!-- Layout: metrics (sustainability section) -->
       <template v-if="metrics.length">
         <ul class="runtime-content-section__metrics">
-          <li v-for="(m, i) in metrics" :key="i" class="runtime-content-section__metric">
-            <span class="runtime-content-section__metric-value">{{ m.value }}</span>
-            <span class="runtime-content-section__metric-label">{{ m.label }}</span>
-            <span v-if="m.note" class="runtime-content-section__metric-note">{{ m.note }}</span>
+          <li v-for="(m, i) in metrics" :key="i" class="runtime-content-section__metric" :style="cardStyle">
+            <span class="runtime-content-section__metric-value" :style="{ color: colorScheme.color }">{{ m.value }}</span>
+            <span class="runtime-content-section__metric-label" :style="{ color: colorScheme.color }">{{ m.label }}</span>
+            <span v-if="m.note" class="runtime-content-section__metric-note" :style="{ color: colorScheme.color }">{{ m.note }}</span>
           </li>
         </ul>
-        <p v-if="disclosure" class="runtime-content-section__disclosure">
+        <p v-if="disclosure" class="runtime-content-section__disclosure" :style="cardStyle">
           🤖 {{ disclosure }}
         </p>
       </template>
@@ -47,8 +47,26 @@
 
 <script setup lang="ts">
 import type { RuntimeSectionComponentProps } from '../types'
+import { applyColorScheme } from '../utils/colorScheme'
 
 const props = defineProps<RuntimeSectionComponentProps>()
+
+// Color scheme support
+const colorScheme = computed(() => {
+  const schemeKey = (props.data.settings as any)?.color_scheme
+  return applyColorScheme(props.theme, schemeKey)
+})
+
+const sectionStyle = computed(() => ({
+  backgroundColor: colorScheme.value.backgroundColor,
+  color: colorScheme.value.color,
+}))
+
+const cardStyle = computed(() => ({
+  backgroundColor: colorScheme.value.secondaryBackground,
+  borderColor: colorScheme.value.borderColor,
+  color: colorScheme.value.color,
+}))
 
 const title   = computed(() => typeof props.data.title    === 'string' ? props.data.title    : '')
 const subtitle = computed(() => typeof props.data.subtitle === 'string' ? props.data.subtitle : '')
@@ -113,21 +131,22 @@ const disclosure = computed(() => {
   font-size: clamp(1.5rem, 2.5vw, 2rem);
   font-weight: 800;
   letter-spacing: -0.02em;
-  color: var(--color-text-primary, #231f1e);
+  /* Color inherited from sectionStyle */
 }
 
 .runtime-content-section__subtitle {
   margin: 0.5rem 0 0;
   font-size: 1rem;
   line-height: 1.6;
-  color: var(--color-text-secondary, #555);
+  opacity: 0.9;
+  /* Color inherited from sectionStyle */
 }
 
 .runtime-content-section__body {
   font-size: 1.0625rem;
   line-height: 1.75;
-  color: var(--color-text-primary, #231f1e);
   margin: 0 0 2rem;
+  /* Color inherited from sectionStyle */
 }
 
 /* Stats row */
@@ -149,19 +168,19 @@ const disclosure = computed(() => {
   gap: 0.25rem;
   padding: 1.25rem;
   border-radius: 1rem;
-  background: var(--color-bg-card, #f5f6f6);
-  border: 1px solid var(--color-border-default, #e5e7eb);
+  /* Colors now applied via inline styles from color scheme */
 }
 
 .runtime-content-section__stat-value {
   font-size: 1.5rem;
   font-weight: 800;
-  color: var(--color-primary, #003d29);
+  /* Color applied via inline styles from cardStyle */
 }
 
 .runtime-content-section__stat-label {
   font-size: 0.8125rem;
-  color: var(--color-text-secondary, #555);
+  opacity: 0.7;
+  /* Color applied via inline styles from cardStyle */
 }
 
 /* Promise list */
@@ -177,23 +196,23 @@ const disclosure = computed(() => {
 .runtime-content-section__promise {
   padding: 1.25rem 1.5rem;
   border-radius: 1rem;
-  background: var(--color-bg-card, #f5f6f6);
-  border: 1px solid var(--color-border-default, #e5e7eb);
+  /* Colors now applied via inline styles from color scheme */
 }
 
 .runtime-content-section__promise-title {
   display: block;
   font-size: 1rem;
   font-weight: 700;
-  color: var(--color-text-primary, #231f1e);
   margin-bottom: 0.375rem;
+  /* Color applied via inline styles from cardStyle */
 }
 
 .runtime-content-section__promise-body {
   margin: 0;
   font-size: 0.9375rem;
   line-height: 1.6;
-  color: var(--color-text-secondary, #555);
+  opacity: 0.8;
+  /* Color applied via inline styles from cardStyle */
 }
 
 /* Metrics grid */
@@ -215,40 +234,36 @@ const disclosure = computed(() => {
   gap: 0.25rem;
   padding: 1.25rem;
   border-radius: 1rem;
-  background: var(--color-bg-card, #f5f6f6);
-  border: 1px solid var(--color-border-default, #e5e7eb);
+  border: 1px solid transparent;
+  /* Colors now applied via inline styles from color scheme */
 }
 
-.runtime-content-section__metric {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-  padding: 1.25rem;
-  border-radius: 1rem;
-  background: var(--color-bg-card, #f5f6f6);
-  border: 1px solid var(--color-border-default, #e5e7eb);
+.runtime-content-section__metric-value {
+  font-size: 1.5rem;
+  font-weight: 800;
+  /* Color applied via inline styles from cardStyle */
 }
 
 .runtime-content-section__metric-label {
   font-size: 0.8125rem;
   font-weight: 600;
-  color: var(--color-text-primary, #231f1e);
+  /* Color applied via inline styles from cardStyle */
 }
 
 .runtime-content-section__metric-note {
   font-size: 0.75rem;
-  color: var(--color-text-secondary, #888);
+  opacity: 0.7;
   margin-top: 0.125rem;
+  /* Color applied via inline styles from cardStyle */
 }
 
 .runtime-content-section__disclosure {
   font-size: 0.875rem;
   line-height: 1.6;
-  color: var(--color-text-secondary, #555);
   padding: 1rem 1.25rem;
   border-radius: 0.75rem;
-  background: color-mix(in srgb, var(--color-bg-card, #f5f6f6) 100%, transparent);
-  border: 1px solid var(--color-border-default, #e5e7eb);
   margin: 0;
+  opacity: 0.9;
+  /* Colors now applied via inline styles from color scheme */
 }
 </style>

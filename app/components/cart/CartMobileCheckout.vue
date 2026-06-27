@@ -21,9 +21,10 @@
           @click="$emit('checkout')"
           :disabled="loading"
           data-testid="cart-mobile-checkout-button"
-          class="w-full py-3 bg-(--color-primary) text-(--color-on-primary) font-semibold rounded-md
-                 hover:bg-(--color-primary-hover) transition-colors cursor-pointer
-                 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          :style="{ backgroundColor: primary, color: onPrimary }"
+          class="w-full py-3 font-semibold rounded-md transition-colors cursor-pointer
+                 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2
+                 hover-primary-btn"
         >
           <svg
             v-if="loading"
@@ -43,6 +44,23 @@
   
   <script setup lang="ts">
   import { formatPrice } from '../../utils/price'
+  
+  // Inline theme colors for SSR compatibility
+  const getCSSVar = (varName: string, fallback: string): string => {
+    if (!process.client) return fallback
+    try {
+      const value = getComputedStyle(document.documentElement)
+        .getPropertyValue(varName)
+        .trim()
+      return value || fallback
+    } catch {
+      return fallback
+    }
+  }
+
+  const primary = computed(() => getCSSVar('--color-primary', '#3b82f6'))
+  const onPrimary = computed(() => getCSSVar('--color-on-primary', '#ffffff'))
+  
   defineProps<{
     show: boolean
     total: number
@@ -53,3 +71,9 @@
     checkout: []
   }>()
   </script>
+  
+  <style scoped>
+  .hover-primary-btn:hover:not(:disabled) {
+    filter: brightness(0.9);
+  }
+  </style>

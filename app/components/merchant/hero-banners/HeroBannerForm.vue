@@ -182,7 +182,8 @@
       <button
         type="submit"
         :disabled="loading"
-        class="px-4 py-2 text-sm font-medium text-white bg-(--color-primary) border border-transparent rounded-md hover:bg-(--color-primary-hover) focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-(--color-primary) disabled:opacity-50 disabled:cursor-not-allowed"
+        :style="{ backgroundColor: primary, color: onPrimary }"
+        class="px-4 py-2 text-sm font-medium border border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed hover-primary-btn"
       >
         <span v-if="loading" class="flex items-center gap-2">
           <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
@@ -198,6 +199,22 @@
 </template>
 
 <script setup lang="ts">
+// Inline theme colors for SSR compatibility
+const getCSSVar = (varName: string, fallback: string): string => {
+  if (!process.client) return fallback
+  try {
+    const value = getComputedStyle(document.documentElement)
+      .getPropertyValue(varName)
+      .trim()
+    return value || fallback
+  } catch {
+    return fallback
+  }
+}
+
+const primary = computed(() => getCSSVar('--color-primary', '#3b82f6'))
+const onPrimary = computed(() => getCSSVar('--color-on-primary', '#ffffff'))
+
 import { ref, watch } from 'vue'
 import type { HeroBanner, HeroBannerFormData } from '~/types/heroBanner'
 import VisualTypeSelector from './VisualTypeSelector.vue'
@@ -300,3 +317,9 @@ watch(() => props.error, (newError) => {
   errorMessage.value = newError
 })
 </script>
+
+<style scoped>
+.hover-primary-btn:hover:not(:disabled) {
+  filter: brightness(0.9);
+}
+</style>

@@ -35,7 +35,8 @@
         <button
           type="submit"
           :disabled="loading"
-          class="px-6 py-2 text-sm font-medium text-(--color-on-primary) bg-(--color-primary) rounded-md hover:bg-(--color-primary-hover) disabled:opacity-50 transition-colors"
+          :style="{ backgroundColor: primary, color: onPrimary }"
+          class="px-6 py-2 text-sm font-medium rounded-md disabled:opacity-50 transition-colors hover-primary-btn"
         >
           {{ loading ? savingButtonText : submitButtonText }}
         </button>
@@ -45,6 +46,22 @@
 </template>
 
 <script setup lang="ts">
+// Inline theme colors for SSR compatibility
+const getCSSVar = (varName: string, fallback: string): string => {
+  if (!process.client) return fallback
+  try {
+    const value = getComputedStyle(document.documentElement)
+      .getPropertyValue(varName)
+      .trim()
+    return value || fallback
+  } catch {
+    return fallback
+  }
+}
+
+const primary = computed(() => getCSSVar('--color-primary', '#3b82f6'))
+const onPrimary = computed(() => getCSSVar('--color-on-primary', '#ffffff'))
+
 interface Model {
   current_password: string
   password: string
@@ -78,3 +95,9 @@ defineEmits<{
   (e: 'submit'): void
 }>()
 </script>
+
+<style scoped>
+.hover-primary-btn:hover:not(:disabled) {
+  filter: brightness(0.9);
+}
+</style>

@@ -1,11 +1,11 @@
 <template>
-  <section class="rounded-3xl border border-[--color-border-default] bg-[--color-bg-page] px-6 py-10">
+  <section class="rounded-3xl border px-6 py-10" :style="sectionStyle">
     <div class="mx-auto max-w-3xl">
       <div v-if="title || subtitle" class="mb-8 text-center">
-        <h2 v-if="title" class="text-3xl font-bold tracking-tight text-[--color-text-primary] sm:text-4xl">
+        <h2 v-if="title" class="text-3xl font-bold tracking-tight sm:text-4xl" :style="{ color: colorScheme.color }">
           {{ title }}
         </h2>
-        <p v-if="subtitle" class="mt-3 text-base text-[--color-text-secondary] sm:text-lg">
+        <p v-if="subtitle" class="mt-3 text-base sm:text-lg" :style="{ color: colorScheme.color, opacity: 0.8 }">
           {{ subtitle }}
         </p>
       </div>
@@ -15,18 +15,20 @@
         <div
           v-for="(item, index) in items"
           :key="index"
-          class="rounded-xl border border-[--color-border-default] bg-[--color-bg-card] transition-shadow hover:shadow-sm"
+          class="rounded-xl border transition-shadow hover:shadow-sm"
+          :style="cardStyle"
         >
           <button
             type="button"
-            class="flex w-full items-center justify-between gap-4 px-6 py-5 text-left transition-colors hover:bg-[--color-bg-page]"
+            class="flex w-full items-center justify-between gap-4 px-6 py-5 text-left transition-colors"
             :aria-expanded="openIndex === index"
             @click="toggle(index)"
           >
-            <span class="flex-1 text-base font-semibold text-[--color-text-primary]">{{ item.question }}</span>
+            <span class="flex-1 text-base font-semibold" :style="{ color: colorScheme.color }">{{ item.question }}</span>
             <span 
-              class="flex h-6 w-6 flex-shrink-0 items-center justify-center text-[--color-primary] transition-transform"
+              class="flex h-6 w-6 flex-shrink-0 items-center justify-center transition-transform"
               :class="{ 'rotate-180': openIndex === index }"
+              :style="{ color: colorScheme.buttonBackground }"
             >
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                 <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -38,12 +40,12 @@
             v-show="openIndex === index"
             class="px-6 pb-6"
           >
-            <p class="text-sm leading-relaxed text-[--color-text-secondary]">{{ item.answer }}</p>
+            <p class="text-sm leading-relaxed" :style="{ color: colorScheme.color, opacity: 0.8 }">{{ item.answer }}</p>
           </div>
         </div>
       </div>
 
-      <p v-else class="py-12 text-center text-sm text-[--color-text-secondary]">
+      <p v-else class="py-12 text-center text-sm" :style="{ color: colorScheme.color, opacity: 0.7 }">
         No FAQ items available.
       </p>
     </div>
@@ -52,8 +54,26 @@
 
 <script setup lang="ts">
 import type { RuntimeSectionComponentProps } from '../types'
+import { applyColorScheme } from '../utils/colorScheme'
 
 const props = defineProps<RuntimeSectionComponentProps>()
+
+// Color scheme support
+const colorScheme = computed(() => {
+  const schemeKey = (props.data.settings as any)?.color_scheme
+  return applyColorScheme(props.theme, schemeKey)
+})
+
+const sectionStyle = computed(() => ({
+  backgroundColor: colorScheme.value.backgroundColor,
+  color: colorScheme.value.color,
+  borderColor: colorScheme.value.borderColor,
+}))
+
+const cardStyle = computed(() => ({
+  backgroundColor: colorScheme.value.secondaryBackground,
+  borderColor: colorScheme.value.borderColor,
+}))
 
 const title = computed(() => typeof props.data.title === 'string' ? props.data.title : '')
 const subtitle = computed(() => typeof props.data.subtitle === 'string' ? props.data.subtitle : '')

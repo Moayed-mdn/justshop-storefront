@@ -1,21 +1,23 @@
 <template>
-  <section class="runtime-cta-section">
+  <section class="runtime-cta-section" :style="getSectionBackgroundStyle()">
     <div class="runtime-cta-section__inner">
 
-      <h2 v-if="title" class="runtime-cta-section__title">{{ title }}</h2>
-      <p v-if="subtitle" class="runtime-cta-section__subtitle">{{ subtitle }}</p>
+      <h2 v-if="title" class="runtime-cta-section__title" :style="{ color: sectionTextColor }">{{ title }}</h2>
+      <p v-if="subtitle" class="runtime-cta-section__subtitle" :style="{ color: sectionTextColor }">{{ subtitle }}</p>
 
       <!-- CTA buttons -->
       <div v-if="ctas.length" class="runtime-cta-section__buttons">
-        <NuxtLink
+        <a
           v-for="(cta, i) in ctas"
           :key="i"
-          :to="cta.url || '/'"
+          :href="cta.url || '/'"
+          rel="noopener noreferrer"
           class="runtime-cta-section__btn"
           :class="`runtime-cta-section__btn--${cta.style || 'primary'}`"
+          :style="getButtonStyleDirect(cta.style || 'primary')"
         >
           {{ cta.label }}
-        </NuxtLink>
+        </a>
       </div>
 
       <!-- Trust badges -->
@@ -32,6 +34,7 @@
 
 <script setup lang="ts">
 import type { RuntimeSectionComponentProps } from '../types'
+import { applyColorScheme, resolveColorSchemeKey } from '../utils/colorScheme'
 
 const props = defineProps<RuntimeSectionComponentProps>()
 
@@ -57,13 +60,118 @@ const trustBadges = computed<string[]>(() => {
   if (!Array.isArray(arr)) return []
   return arr.filter((b): b is string => typeof b === 'string')
 })
+
+// Resolve color scheme for this section
+const colorScheme = computed(() => {
+  const schemeKey = resolveColorSchemeKey(props.data.settings)
+  return applyColorScheme(props.theme, schemeKey)
+})
+
+const sectionTextColor = computed(() => colorScheme.value.color)
+
+const getSectionBackgroundStyle = () => {
+  return {
+    backgroundColor: colorScheme.value.backgroundColor,
+    color: colorScheme.value.color,
+  }
+}
+
+// Button style configuration
+type ButtonStyle = 'primary' | 'secondary' | 'outline'
+type ButtonConfig = {
+  backgroundColor: string
+  textColor: string
+  borderColor: string
+  borderWidth: number
+  borderRadius: 'none' | 'sm' | 'md' | 'lg' | 'full'
+  paddingX: 'sm' | 'md' | 'lg' | 'xl'
+  paddingY: 'sm' | 'md' | 'lg'
+  fontSize: 'sm' | 'base' | 'lg'
+  fontWeight: 'normal' | 'medium' | 'semibold' | 'bold'
+  hoverEffect: 'opacity' | 'darken' | 'lift' | 'scale'
+}
+
+const borderRadiusMap = {
+  none: '0',
+  sm: '0.25rem',
+  md: '0.5rem',
+  lg: '1rem',
+  full: '9999px',
+}
+
+const paddingXMap = {
+  sm: '1rem',
+  md: '1.5rem',
+  lg: '1.75rem',
+  xl: '2rem',
+}
+
+const paddingYMap = {
+  sm: '0.5rem',
+  md: '0.75rem',
+  lg: '1rem',
+}
+
+const fontSizeMap = {
+  sm: '0.875rem',
+  base: '0.9375rem',
+  lg: '1rem',
+}
+
+const fontWeightMap = {
+  normal: '400',
+  medium: '500',
+  semibold: '600',
+  bold: '700',
+}
+
+const getButtonConfig = (style: ButtonStyle): ButtonConfig => {
+  // Access theme directly from props
+  const themeSettings = props.theme?.settings as any
+  const buttons = themeSettings?.buttons
+  
+  if (buttons && buttons[style]) {
+    return buttons[style] as ButtonConfig
+  }
+  
+  // Return default config if not found in theme
+  return {
+    backgroundColor: style === 'primary' ? '#3B82F6' : style === 'secondary' ? 'rgba(255, 255, 255, 0.15)' : 'transparent',
+    textColor: '#FFFFFF',
+    borderColor: style === 'primary' ? '#3B82F6' : style === 'secondary' ? 'rgba(255, 255, 255, 0.4)' : 'rgba(255, 255, 255, 0.6)',
+    borderWidth: style === 'outline' ? 2 : style === 'secondary' ? 1 : 0,
+    borderRadius: 'full',
+    paddingX: 'lg',
+    paddingY: 'md',
+    fontSize: 'base',
+    fontWeight: 'semibold',
+    hoverEffect: 'opacity',
+  }
+}
+
+const getButtonStyleDirect = (style: ButtonStyle) => {
+  const config = getButtonConfig(style)
+  return {
+    backgroundColor: config.backgroundColor,
+    color: config.textColor,
+    borderColor: config.borderColor,
+    borderWidth: `${config.borderWidth}px`,
+    borderStyle: config.borderWidth > 0 ? 'solid' : 'none',
+    borderRadius: borderRadiusMap[config.borderRadius] || borderRadiusMap.full,
+    paddingLeft: paddingXMap[config.paddingX] || paddingXMap.lg,
+    paddingRight: paddingXMap[config.paddingX] || paddingXMap.lg,
+    paddingTop: paddingYMap[config.paddingY] || paddingYMap.md,
+    paddingBottom: paddingYMap[config.paddingY] || paddingYMap.md,
+    fontSize: fontSizeMap[config.fontSize] || fontSizeMap.base,
+    fontWeight: fontWeightMap[config.fontWeight] || fontWeightMap.semibold,
+  }
+}
 </script>
 
 <style scoped>
 .runtime-cta-section {
   width: 100%;
-  background:  var(--color-bg-page, #003d29);
-  color: var(--color-text-inverse, #fff);
+  /* Background and color are now set via inline styles */
 }
 
 .runtime-cta-section__inner {
@@ -78,17 +186,18 @@ const trustBadges = computed<string[]>(() => {
   font-size: clamp(1.75rem, 3vw, 2.5rem);
   font-weight: 800;
   letter-spacing: -0.02em;
-  color: var(--color-text-primary, #fff);
+  /* Color is now set via inline styles */
 }
 
 .runtime-cta-section__subtitle {
   margin: 0 0 2.5rem;
   font-size: 1.0625rem;
   line-height: 1.65;
-  color: color-mix(in srgb, var(--color-text-primary, #fff) 85%, transparent);
+  opacity: 0.85;
   max-width: 36rem;
   margin-left: auto;
   margin-right: auto;
+  /* Color is now set via inline styles */
 }
 
 .runtime-cta-section__buttons {
@@ -102,34 +211,14 @@ const trustBadges = computed<string[]>(() => {
 .runtime-cta-section__btn {
   display: inline-flex;
   align-items: center;
-  padding: 0.75rem 1.75rem;
-  border-radius: 9999px;
-  font-size: 0.9375rem;
-  font-weight: 600;
   text-decoration: none;
   transition: opacity 0.2s, transform 0.15s;
   white-space: nowrap;
 }
+
 .runtime-cta-section__btn:hover {
   opacity: 0.88;
   transform: translateY(-1px);
-}
-
-.runtime-cta-section__btn--primary {
-  background: var(--color-bg-card, #fff);
-  color: var(--color-primary, #003d29);
-}
-
-.runtime-cta-section__btn--secondary {
-  background: color-mix(in srgb, var(--color-text-inverse, #fff) 15%, transparent);
-  color: var(--color-text-inverse, #fff);
-  border: 1px solid color-mix(in srgb, var(--color-text-inverse, #fff) 40%, transparent);
-}
-
-.runtime-cta-section__btn--outline {
-  background: transparent;
-  color: var(--color-text-inverse, #fff);
-  border: 2px solid color-mix(in srgb, var(--color-text-inverse, #fff) 60%, transparent);
 }
 
 /* Trust badges */
@@ -148,12 +237,13 @@ const trustBadges = computed<string[]>(() => {
   align-items: center;
   gap: 0.375rem;
   font-size: 0.875rem;
-  color: color-mix(in srgb, var(--color-text-inverse, #fff) 80%, transparent);
+  opacity: 0.8;
+  /* Color is inherited from section */
 }
 
 .runtime-cta-section__badge-icon {
   font-size: 0.8125rem;
-  color: var(--color-success, #6ee7b7);
+  color: #6ee7b7;
   font-weight: 700;
 }
 </style>

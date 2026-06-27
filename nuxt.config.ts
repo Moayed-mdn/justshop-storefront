@@ -92,6 +92,17 @@ export default defineNuxtConfig({
         'src/core/cache',
       ],
     },
+    // Disable all caching for development
+    routeRules: {
+      '/**': { 
+        cache: false,
+        headers: {
+          'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0',
+        }
+      },
+    },
   },
 
   i18n: {

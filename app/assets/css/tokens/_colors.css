@@ -44,8 +44,10 @@
 
   /* Brand */
   --color-primary: var(--green-900);
+  /* REMOVED: --color-primary-hover is now computed dynamically in themeTokens.ts */
+  --color-on-primary: var(--white);
   --color-accent: var(--orange-500);
-  --color-accent-hover: var(--orange-300);
+  /* REMOVED: --color-accent-hover is now computed dynamically in themeTokens.ts */
 
   /* Backgrounds */
   --color-bg-page: var(--white);
@@ -136,6 +138,8 @@
 :root:not([data-merchant-dark-theme])[data-theme="dark"] {
   /* Brand Overrides (if any) */
   --color-primary: #00A670; /* Slightly brighter green for dark mode contrast */
+  /* REMOVED: --color-primary-hover is now computed dynamically in themeTokens.ts */
+  --color-on-primary: var(--gray-900);
 
   /* Backgrounds */
   --color-bg-page: #0b0b0b;

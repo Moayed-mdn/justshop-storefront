@@ -494,7 +494,43 @@ Verify logged-in users have enhanced shopping experience.
 
 ---
 
-## Scenario 13: Order History and Management
+## Scenario 13: Auth Page Template Rendering
+
+### Goal
+
+Verify auth pages (login, register, forgot-password) render with template-based header and footer sections instead of hardcoded minimal shell.
+
+### Steps
+
+1. Navigate to Login page (`/login`).
+2. Observe the page header: should show centered logo with no search bar.
+3. Observe the top navigation bar: should display runtime navigation items from the store's `main-menu` (if items exist).
+4. Observe the footer: should display runtime footer items from the `footer-menu` (if items exist), not the hardcoded `FooterAuth`.
+5. Navigate to Register page (`/register`) and repeat observation steps 2-4.
+6. Navigate to Forgot Password page (`/forgot-password`) and repeat steps 2-4.
+7. Verify language switching (EN ↔ AR) works on auth pages and navigation reflects correct locale.
+
+### Expected
+
+- auth pages show header with centered logo, no search bar, no burger menu
+- top navigation bar shows store's main navigation items when they exist in the `main-menu`
+- footer shows store's footer navigation items when they exist in the `footer-menu`
+- auth form content (login, register, forgot-password) renders correctly in the center of the page
+- auth pages function normally (can submit forms, see errors, etc.)
+- language switching preserves auth state and renders translated navigation
+
+### Watch For
+
+- auth pages showing search bar or burger menu (should be hidden for auth template)
+- auth pages showing empty header/footer when menus have items
+- auth form rendering broken or overlapping with template sections
+- runtime API errors preventing auth page from rendering template sections
+- race condition where shellVariant stays `'minimal'` and shows `FooterAuth` instead of template footer
+- session or auth state lost after language switch from auth page
+
+---
+
+## Scenario 14: Order History and Management
 
 ### Goal
 
@@ -531,7 +567,7 @@ Verify customers can view and manage their orders.
 
 ---
 
-## Scenario 14: Order Detail Page
+## Scenario 15: Order Detail Page
 
 ### Goal
 
@@ -571,7 +607,7 @@ Verify order details provide comprehensive information.
 
 ---
 
-## Scenario 15: Guest Order Tracking
+## Scenario 16: Guest Order Tracking
 
 ### Goal
 
@@ -606,7 +642,7 @@ Verify guests can track orders without logging in.
 
 ---
 
-## Scenario 16: Order Cancellation Flow
+## Scenario 17: Order Cancellation Flow
 
 ### Goal
 
@@ -639,7 +675,7 @@ Verify customers can cancel eligible orders.
 
 ---
 
-## Scenario 17: Reorder Functionality
+## Scenario 18: Reorder Functionality
 
 ### Goal
 
@@ -671,7 +707,7 @@ Verify customers can quickly reorder from past orders.
 
 ---
 
-## Scenario 18: Customer Profile Management
+## Scenario 19: Customer Profile Management
 
 ### Goal
 
@@ -709,7 +745,7 @@ Verify customers can manage their profile information.
 
 ---
 
-## Scenario 19: Profile Avatar Upload
+## Scenario 20: Profile Avatar Upload
 
 ### Goal
 
@@ -748,7 +784,7 @@ Verify customers can upload and update profile pictures.
 
 ---
 
-## Scenario 20: Password Management
+## Scenario 21: Password Management
 
 ### Goal
 
@@ -789,7 +825,7 @@ Verify customers can change their password securely.
 
 ---
 
-## Scenario 21: Account Deletion Flow
+## Scenario 22: Account Deletion Flow
 
 ### Goal
 
@@ -826,7 +862,7 @@ Verify account deletion is handled safely and clearly.
 
 ---
 
-## Scenario 22: Google Account Linking Indicator
+## Scenario 23: Google Account Linking Indicator
 
 ### Goal
 
@@ -856,7 +892,7 @@ Verify Google-linked accounts show appropriate indicators.
 
 ---
 
-## Scenario 23: Multi-Language Support (if enabled)
+## Scenario 24: Multi-Language Support (if enabled)
 
 ### Goal
 
@@ -895,7 +931,7 @@ Verify language switching works correctly throughout the site.
 
 ---
 
-## Scenario 24: Theme and Branding Consistency
+## Scenario 25: Theme and Branding Consistency
 
 ### Goal
 
@@ -932,7 +968,7 @@ Verify merchant's custom theme applies correctly.
 
 ---
 
-## Scenario 25: Mobile Responsiveness
+## Scenario 26: Mobile Responsiveness
 
 ### Goal
 
@@ -974,7 +1010,7 @@ Verify the entire customer experience works on mobile viewports.
 
 ---
 
-## Scenario 26: Performance and Loading States
+## Scenario 27: Performance and Loading States
 
 ### Goal
 
@@ -1013,7 +1049,7 @@ Verify pages load quickly with appropriate loading states.
 
 ---
 
-## Scenario 27: Error Handling and Edge Cases
+## Scenario 28: Error Handling and Edge Cases
 
 ### Goal
 
@@ -1050,7 +1086,7 @@ Verify the app handles errors and edge cases gracefully.
 
 ---
 
-## Scenario 28: Checkout Success and Recovery
+## Scenario 29: Checkout Success and Recovery
 
 ### Goal
 
@@ -1089,7 +1125,7 @@ Verify checkout completion and cancellation flows work correctly.
 
 ---
 
-## Scenario 29: SEO and Meta Tags
+## Scenario 30: SEO and Meta Tags
 
 ### Goal
 
@@ -1124,7 +1160,7 @@ Verify pages have appropriate SEO metadata.
 
 ---
 
-## Scenario 30: Browser History and Back Button Behavior
+## Scenario 31: Browser History and Back Button Behavior
 
 ### Goal
 

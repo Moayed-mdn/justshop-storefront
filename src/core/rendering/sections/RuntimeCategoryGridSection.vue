@@ -1,18 +1,18 @@
 <template>
-  <section class="runtime-category-grid">
+  <section class="runtime-category-grid" :style="sectionStyle">
     <div class="runtime-category-grid__inner">
       <header v-if="title || subtitle" class="runtime-category-grid__header">
-        <h2 v-if="title" class="runtime-category-grid__title">
+        <h2 v-if="title" class="runtime-category-grid__title" :style="{ color: colorScheme.color }">
           {{ title }}
         </h2>
-        <p v-if="subtitle" class="runtime-category-grid__subtitle">
+        <p v-if="subtitle" class="runtime-category-grid__subtitle" :style="{ color: colorScheme.color, opacity: 0.8 }">
           {{ subtitle }}
         </p>
       </header>
 
       <ul v-if="categories.length" class="runtime-category-grid__list">
         <li v-for="category in categories" :key="category.id">
-          <NuxtLink :to="category.path" class="runtime-category-grid__card" :class="{ 'runtime-category-grid__card--has-image': !!category.image }">
+          <NuxtLink :to="category.path" class="runtime-category-grid__card" :class="{ 'runtime-category-grid__card--has-image': !!category.image }" :style="cardStyle">
             <img
               v-if="category.image"
               :src="category.image"
@@ -29,7 +29,7 @@
         </li>
       </ul>
 
-      <div v-else class="runtime-category-grid__empty">
+      <div v-else class="runtime-category-grid__empty" :style="cardStyle">
         <p class="runtime-category-grid__empty-text">No categories available.</p>
       </div>
     </div>
@@ -38,6 +38,7 @@
 
 <script setup lang="ts">
 import type { RuntimeSectionComponentProps } from '../types'
+import { applyColorScheme } from '../utils/colorScheme'
 
 const localePath = useLocalePath()
 
@@ -50,6 +51,23 @@ type CategoryCard = {
 }
 
 const props = defineProps<RuntimeSectionComponentProps>()
+
+// Color scheme support
+const colorScheme = computed(() => {
+  const schemeKey = (props.data.settings as any)?.color_scheme
+  return applyColorScheme(props.theme, schemeKey)
+})
+
+const sectionStyle = computed(() => ({
+  backgroundColor: colorScheme.value.backgroundColor,
+  color: colorScheme.value.color,
+}))
+
+const cardStyle = computed(() => ({
+  backgroundColor: colorScheme.value.secondaryBackground,
+  borderColor: colorScheme.value.borderColor,
+  color: colorScheme.value.color,
+}))
 
 const title = computed(() => typeof props.data.title === 'string' ? props.data.title : '')
 const subtitle = computed(() => typeof props.data.subtitle === 'string' ? props.data.subtitle : '')
@@ -80,7 +98,7 @@ const categories = computed<CategoryCard[]>(() => {
 <style scoped>
 .runtime-category-grid {
   width: 100%;
-  background: var(--color-bg-page, #ffffff);
+  /* Background is now controlled by inline styles via color scheme */
 }
 
 .runtime-category-grid__inner {
@@ -104,7 +122,7 @@ const categories = computed<CategoryCard[]>(() => {
   font-size: clamp(1.75rem, 3vw, 2.25rem);
   font-weight: 800;
   letter-spacing: -0.02em;
-  color: var(--color-text-primary, #231f1e);
+  /* Color applied via inline style from color scheme */
 }
 
 .runtime-category-grid__subtitle {
@@ -112,7 +130,7 @@ const categories = computed<CategoryCard[]>(() => {
   max-width: 40rem;
   font-size: 1rem;
   line-height: 1.6;
-  color: var(--color-text-secondary, #333333);
+  /* Color and opacity applied via inline style from color scheme */
 }
 
 .runtime-category-grid__list {
@@ -142,17 +160,16 @@ const categories = computed<CategoryCard[]>(() => {
   justify-content: space-between;
   gap: 0.75rem;
   padding: 1.25rem 1.5rem;
-  border: 1px solid var(--gray-300, #e5e7eb);
+  border: 1px solid transparent;
   border-radius: 1rem;
-  background: linear-gradient(145deg, #ffffff 0%, var(--color-bg-card, #f5f6f6) 100%);
   text-decoration: none;
   transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  /* Background and border color applied via inline cardStyle */
 }
 
 .runtime-category-grid__card:hover {
   transform: translateY(-2px);
-  border-color: var(--color-primary, #003d29);
-  box-shadow: 0 14px 30px rgba(0, 61, 41, 0.12);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
 .runtime-category-grid__card--has-image {
@@ -180,12 +197,13 @@ const categories = computed<CategoryCard[]>(() => {
 .runtime-category-grid__card-label {
   font-size: 1.125rem;
   font-weight: 700;
-  color: var(--color-text-primary, #231f1e);
+  color: inherit;
 }
 
 .runtime-category-grid__card-meta {
   font-size: 0.875rem;
-  color: var(--color-text-secondary, #333333);
+  color: inherit;
+  opacity: 0.7;
 }
 
 .runtime-category-grid__empty {
@@ -193,13 +211,14 @@ const categories = computed<CategoryCard[]>(() => {
   align-items: center;
   justify-content: center;
   min-height: 6rem;
-  border: 1px dashed var(--gray-300, #e5e7eb);
+  border: 1px dashed transparent;
   border-radius: 1rem;
-  background: var(--color-bg-card, #f5f6f6);
+  /* Background and border color applied via inline cardStyle */
 }
 
 .runtime-category-grid__empty-text {
   font-size: 0.95rem;
-  color: var(--color-text-secondary, #333333);
+  color: inherit;
+  opacity: 0.7;
 }
 </style>

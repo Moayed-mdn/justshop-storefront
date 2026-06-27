@@ -37,10 +37,10 @@
 
       <template #center>
         <div
-          v-if="!isMinimal"
+          v-if="!isMinimal && shellConfig.variant !== 'auth-template'"
           class="hidden lg:flex flex-1 items-center justify-center gap-[--header-gap-wide]"
         >
-          <HeaderLinks v-if="!runtimeHeaderItems.length" />
+          <!-- <HeaderLinks v-if="!runtimeHeaderItems.length" /> -->
           <HeaderSearchInput
             v-if="shellConfig.showSearch"
             class="max-w-md hidden lg:flex"
@@ -50,7 +50,7 @@
 
       <template #end>
         <HeaderActions
-          v-if="shellConfig.showCart || shellConfig.showAccount || !isMinimal"
+          v-if="shellConfig.showCart || shellConfig.showAccount || (!isMinimal && shellConfig.variant !== 'auth-template')"
           :menu-open="showLinks"
           @open-menu="showLinks = !showLinks"
         />
@@ -66,7 +66,7 @@
   </header>
 
   <HeaderBurger
-    v-if="!isMinimal"
+    v-if="!isMinimal && shellConfig.variant !== 'auth-template'"
     v-model:show-links="showLinks"
     class="lg:hidden"
   />
@@ -94,3 +94,12 @@ watch(isDesktop, (val) => {
   }
 })
 </script>
+
+<style>
+/* Active state for runtime navigation links - unscoped for SSR compatibility */
+nav[aria-label="Storefront primary navigation"] a.router-link-active,
+nav[aria-label="Storefront primary navigation"] a.router-link-exact-active {
+  color: var(--color-primary) !important;
+  font-weight: 600 !important;
+}
+</style>

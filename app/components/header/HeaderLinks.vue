@@ -20,6 +20,8 @@
 </template>
 
 <script setup lang="ts">
+import { useStorefrontContext } from '~~/src/core/tenant/composables'
+
 const { t } = useI18n();
 defineProps({
     mobile:{
@@ -31,12 +33,26 @@ defineProps({
 const closeMenu = inject('closeMenu') 
 
 const routes = useStorefrontRoutes()
+const context = useStorefrontContext()
 
-const navLinks = computed(() => [
-  { name: t('header.links.home'), path: routes.home() },
-  { name: t('header.links.shop'), path: routes.shop() },
-  { name: t('header.links.contact'), path: '#' },
-])
+// Use navigation from API if available, otherwise fallback to hardcoded
+const navLinks = computed(() => {
+  // If we have navigation data from the API, use it
+  if (context.value.navigation?.header && context.value.navigation.header.length > 0) {
+    return context.value.navigation.header.map(item => ({
+      name: item.label,
+      path: item.path,
+      external: item.external || false,
+    }))
+  }
+  
+  // Fallback to default navigation (only shown if API returns no data)
+  return [
+    { name: t('header.links.home'), path: routes.home(), external: false },
+    { name: t('header.links.shop'), path: routes.shop(), external: false },
+    { name: t('header.links.contact'), path: '#', external: false },
+  ]
+})
 </script>
 
 <style scoped>

@@ -1,11 +1,11 @@
 <template>
-  <section class="rounded-3xl bg-[--color-bg-page] px-6 py-16">
+  <section class="rounded-3xl px-6 py-16" :style="sectionStyle">
     <div class="mx-auto max-w-7xl">
       <div v-if="title || subtitle" class="mb-12 text-center">
-        <h2 v-if="title" class="text-3xl font-bold tracking-tight text-[--color-text-primary] sm:text-4xl">
+        <h2 v-if="title" class="text-3xl font-bold tracking-tight sm:text-4xl" :style="{ color: colorScheme.color }">
           {{ title }}
         </h2>
-        <p v-if="subtitle" class="mt-3 text-base text-[--color-text-secondary] sm:text-lg">
+        <p v-if="subtitle" class="mt-3 text-base sm:text-lg" :style="{ color: colorScheme.color, opacity: 0.8 }">
           {{ subtitle }}
         </p>
       </div>
@@ -15,32 +15,31 @@
         <article
           v-for="(plan, index) in plans"
           :key="index"
-          class="relative flex flex-col rounded-2xl p-8 transition-all hover:-translate-y-1 hover:shadow-lg"
-          :class="plan.featured 
-            ? 'border-2 border-[--color-primary] bg-[--color-bg-card] shadow-md' 
-            : 'border border-[--color-border-default] bg-[--color-bg-card]'"
+          class="relative flex flex-col rounded-2xl p-8 transition-all hover:-translate-y-1 hover:shadow-lg border"
+          :style="plan.featured ? featuredCardStyle : cardStyle"
         >
           <!-- Badge for featured plan -->
           <div 
             v-if="plan.featured" 
-            class="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-[--color-primary] px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-white"
+            class="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-wider"
+            :style="badgeStyle"
           >
             {{ plan.badge || 'Most Popular' }}
           </div>
 
           <!-- Plan name -->
-          <h3 class="mb-2 text-2xl font-bold text-[--color-text-primary]">{{ plan.name }}</h3>
+          <h3 class="mb-2 text-2xl font-bold" :style="{ color: colorScheme.color }">{{ plan.name }}</h3>
 
           <!-- Plan description -->
-          <p v-if="plan.description" class="mb-6 text-sm leading-relaxed text-[--color-text-secondary]">
+          <p v-if="plan.description" class="mb-6 text-sm leading-relaxed" :style="{ color: colorScheme.color, opacity: 0.8 }">
             {{ plan.description }}
           </p>
 
           <!-- Price -->
-          <div class="mb-8 flex items-baseline gap-1 border-b border-[--color-border-default] pb-8">
-            <span class="text-2xl font-semibold text-[--color-text-primary]">{{ plan.currency || '$' }}</span>
-            <span class="text-5xl font-extrabold leading-none text-[--color-text-primary]">{{ plan.price }}</span>
-            <span v-if="plan.period" class="text-base text-[--color-text-secondary]">/{{ plan.period }}</span>
+          <div class="mb-8 flex items-baseline gap-1 border-b pb-8" :style="{ borderColor: colorScheme.borderColor }">
+            <span class="text-2xl font-semibold" :style="{ color: colorScheme.color }">{{ plan.currency || '$' }}</span>
+            <span class="text-5xl font-extrabold leading-none" :style="{ color: colorScheme.color }">{{ plan.price }}</span>
+            <span v-if="plan.period" class="text-base" :style="{ color: colorScheme.color, opacity: 0.7 }">{{ plan.period }}</span>
           </div>
 
           <!-- Features list -->
@@ -48,9 +47,10 @@
             <li
               v-for="(feature, fIndex) in plan.features"
               :key="fIndex"
-              class="flex items-start gap-3 text-sm text-[--color-text-primary]"
+              class="flex items-start gap-3 text-sm"
+              :style="{ color: colorScheme.color }"
             >
-              <span class="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-[--color-primary] bg-opacity-10 text-xs font-bold text-[--color-primary]">✓</span>
+              <span class="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full text-xs font-bold" :style="checkmarkStyle">✓</span>
               <span>{{ feature }}</span>
             </li>
           </ul>
@@ -60,16 +60,14 @@
             v-if="plan.cta_url"
             :to="plan.cta_url"
             class="block w-full rounded-xl px-6 py-3.5 text-center text-base font-semibold transition-colors"
-            :class="plan.featured 
-              ? 'bg-[--color-primary] text-white hover:opacity-90' 
-              : 'border-2 border-[--color-border-default] bg-[--color-bg-page] text-[--color-text-primary] hover:bg-[--color-border-default]'"
+            :style="plan.featured ? buttonPrimaryStyle : buttonSecondaryStyle"
           >
             {{ plan.cta_label || 'Get Started' }}
           </NuxtLink>
         </article>
       </div>
 
-      <p v-else class="py-12 text-center text-sm text-[--color-text-secondary]">
+      <p v-else class="py-12 text-center text-sm" :style="{ color: colorScheme.color, opacity: 0.7 }">
         No pricing plans available.
       </p>
     </div>
@@ -78,8 +76,55 @@
 
 <script setup lang="ts">
 import type { RuntimeSectionComponentProps } from '../types'
+import { applyColorScheme } from '../utils/colorScheme'
 
 const props = defineProps<RuntimeSectionComponentProps>()
+
+// Color scheme support
+const colorScheme = computed(() => {
+  const schemeKey = (props.data.settings as any)?.color_scheme
+  return applyColorScheme(props.theme, schemeKey)
+})
+
+const sectionStyle = computed(() => ({
+  backgroundColor: colorScheme.value.backgroundColor,
+  color: colorScheme.value.color,
+}))
+
+const cardStyle = computed(() => ({
+  backgroundColor: colorScheme.value.secondaryBackground,
+  color: colorScheme.value.color,
+  borderColor: colorScheme.value.borderColor,
+}))
+
+const featuredCardStyle = computed(() => ({
+  backgroundColor: colorScheme.value.secondaryBackground,
+  color: colorScheme.value.color,
+  borderColor: colorScheme.value.buttonBackground,
+  borderWidth: '2px',
+  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+}))
+
+const badgeStyle = computed(() => ({
+  backgroundColor: colorScheme.value.buttonBackground,
+  color: colorScheme.value.buttonColor,
+}))
+
+const checkmarkStyle = computed(() => ({
+  backgroundColor: `${colorScheme.value.buttonBackground}1A`,
+  color: colorScheme.value.buttonBackground,
+}))
+
+const buttonPrimaryStyle = computed(() => ({
+  backgroundColor: colorScheme.value.buttonBackground,
+  color: colorScheme.value.buttonColor,
+}))
+
+const buttonSecondaryStyle = computed(() => ({
+  backgroundColor: 'transparent',
+  color: colorScheme.value.color,
+  border: `2px solid ${colorScheme.value.borderColor}`,
+}))
 
 const title = computed(() => typeof props.data.title === 'string' ? props.data.title : '')
 const subtitle = computed(() => typeof props.data.subtitle === 'string' ? props.data.subtitle : '')

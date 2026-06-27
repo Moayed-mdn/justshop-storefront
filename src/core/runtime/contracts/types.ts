@@ -91,7 +91,7 @@ export interface RuntimeRouteMatch {
   status: RuntimeRouteStatus
   routeType: RuntimePageType
   pageId: string | null
-  resourceType: 'page' | 'product' | 'category' | 'none'
+  resourceType: 'page' | 'product' | 'category' | 'auth' | 'none'
   resourceId: string | null
   path: string
   locale: StorefrontRuntimeLocale
@@ -138,6 +138,19 @@ export interface RuntimeSeoPayload {
   jsonLd: Record<string, unknown>[]
 }
 
+export interface RuntimeTemplateSection {
+  type: string
+  settings: Record<string, unknown>
+  data: Record<string, unknown>
+}
+
+export interface RuntimePageTemplate {
+  id: number
+  handle: string
+  sections: Record<string, RuntimeTemplateSection>
+  section_order: string[]
+}
+
 export interface RuntimePagePayload {
   id: string
   pageType: RuntimePageType
@@ -150,6 +163,7 @@ export interface RuntimePagePayload {
   seo: RuntimeSeoPayload
   publishedAt: string | null
   updatedAt: string
+  template?: RuntimePageTemplate
 }
 
 export interface RuntimePagePayloadResponse {
@@ -177,6 +191,16 @@ export interface RuntimeNavigationResponse {
   cache: RuntimeCacheDescriptor
 }
 
+export interface ColorScheme {
+  name: string
+  background: string
+  text: string
+  button_background: string
+  button_text: string
+  secondary_background: string
+  border: string
+}
+
 export interface RuntimeThemeResponse {
   requestContext: RuntimeRequestContext
   data: {
@@ -201,9 +225,38 @@ export interface RuntimeThemeResponse {
     settings: {
       radius: 'none' | 'sm' | 'md' | 'lg'
       direction: 'ltr' | 'rtl'
+      colors?: {
+        primary: string
+        secondary: string
+        accent: string
+        background: string
+        text: string
+        [key: string]: string
+      }
+      color_schemes?: {
+        [key: string]: ColorScheme
+      }
+    }
+    buttons?: {
+      primary: ButtonConfig
+      secondary: ButtonConfig
+      outline: ButtonConfig
     }
   }
   cache: RuntimeCacheDescriptor
+}
+
+export interface ButtonConfig {
+  backgroundColor: string
+  textColor: string
+  borderColor: string
+  borderWidth: number
+  borderRadius: 'none' | 'sm' | 'md' | 'lg' | 'full'
+  paddingX: 'sm' | 'md' | 'lg' | 'xl'
+  paddingY: 'sm' | 'md' | 'lg'
+  fontSize: 'sm' | 'base' | 'lg'
+  fontWeight: 'normal' | 'medium' | 'semibold' | 'bold'
+  hoverEffect: 'opacity' | 'darken' | 'lift' | 'scale'
 }
 
 export interface RuntimePreviewValidationResponse {

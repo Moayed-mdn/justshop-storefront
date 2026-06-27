@@ -7,6 +7,7 @@ export const STOREFRONT_RUNTIME_PAGE_TYPES = [
   'marketing_page',
   'category_page',
   'product_page',
+  'auth_page',
 ] as const
 
 export const STOREFRONT_RUNTIME_LAYOUTS = [
@@ -14,6 +15,7 @@ export const STOREFRONT_RUNTIME_LAYOUTS = [
   'marketing',
   'catalog',
   'product',
+  'auth',
 ] as const
 
 export const STOREFRONT_RUNTIME_CACHE_ARTIFACTS = [

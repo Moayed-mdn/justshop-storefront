@@ -5,7 +5,7 @@
       :to="to"
       class="font-medium text-(--color-primary) hover:text-(--color-primary-hover)"
     >
-      {{ linkText }}
+      {{ linkText }} 
     </NuxtLinkLocale>
   </p>
 </template>

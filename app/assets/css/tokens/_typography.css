@@ -10,33 +10,60 @@
   --font-heading: var(--runtime-font-heading, var(--theme-font-heading, var(--font-primary)));
   --font-main: var(--font-body);
   
-  /* Font Sizes - Mobile First */
-  --text-xs: 0.75rem;    /* 12px */
-  --text-sm: 0.875rem;   /* 14px */
-  --text-base: 1rem;      /* 16px */
-  --text-lg: 1.125rem;    /* 18px */
-  --text-xl: 1.25rem;     /* 20px */
-  --text-2xl: 1.5rem;     /* 24px */
-  --text-3xl: 1.875rem;   /* 30px */
-  --text-4xl: 2.25rem;    /* 36px */
-  
-  /* Font Weights */
+  /* Font Weights - from theme or defaults */
+  --font-weight-heading: var(--theme-font-weight-heading, 600);
+  --font-weight-body: var(--theme-font-weight-body, 400);
   --weight-light: 300;
   --weight-normal: 400;
   --weight-medium: 500;
   --weight-semibold: 600;
   --weight-bold: 700;
   
+  /* Base Typography - from theme or defaults */
+  --font-size-base: var(--theme-font-size-base, 1rem); /* 16px default */
+  --line-height-base: var(--theme-line-height-base, 1.5);
+  --letter-spacing-base: var(--theme-letter-spacing-base, 0);
+  
+  /* Font Sizes - Mobile First - Relative to base */
+  --text-xs: 0.75rem;    /* 12px */
+  --text-sm: 0.875rem;   /* 14px */
+  --text-base: var(--font-size-base, 1rem); /* 16px */
+  --text-lg: 1.125rem;    /* 18px */
+  --text-xl: 1.25rem;     /* 20px */
+  --text-2xl: 1.5rem;     /* 24px */
+  --text-3xl: 1.875rem;   /* 30px */
+  --text-4xl: 2.25rem;    /* 36px */
+  
   /* Line Heights */
   --leading-none: 1;
   --leading-tight: 1.25;
   --leading-snug: 1.375;
-  --leading-normal: 1.5;
+  --leading-normal: var(--line-height-base, 1.5);
   --leading-relaxed: 1.625;
   --leading-loose: 2;
+}
+
+/* Global typography application */
+body {
+  font-family: var(--font-body);
+  font-weight: var(--font-weight-body, 400);
+  font-size: var(--font-size-base, 1rem);
+  line-height: var(--line-height-base, 1.5);
+  letter-spacing: var(--letter-spacing-base, 0);
 }
 
 /* Global heading font application */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
+  font-weight: var(--font-weight-heading, 600);
+  line-height: 1.2;
 }
+
+/* Scale heading sizes relative to base font size */
+h1 { font-size: calc(var(--font-size-base, 1rem) * 2.25); }
+h2 { font-size: calc(var(--font-size-base, 1rem) * 1.875); }
+h3 { font-size: calc(var(--font-size-base, 1rem) * 1.5); }
+h4 { font-size: calc(var(--font-size-base, 1rem) * 1.25); }
+h5 { font-size: calc(var(--font-size-base, 1rem) * 1.125); }
+h6 { font-size: var(--font-size-base, 1rem); }
+

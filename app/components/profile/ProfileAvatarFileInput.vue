@@ -1,7 +1,9 @@
 <template>
   <div class="flex flex-col gap-2">
     <label
-      class="px-4 py-2 text-sm font-medium text-(--color-primary) border border-(--color-primary) rounded-md cursor-pointer hover:bg-(--color-primary)/5 transition-colors text-center"
+      :style="{ borderColor: primary, color: primary }"
+      class="px-4 py-2 text-sm font-medium border rounded-md cursor-pointer transition-colors text-center
+             hover-outline-btn"
     >
       {{ buttonText }}
       <input
@@ -16,6 +18,21 @@
 </template>
 
 <script setup lang="ts">
+// Inline theme colors for SSR compatibility
+const getCSSVar = (varName: string, fallback: string): string => {
+  if (!process.client) return fallback
+  try {
+    const value = getComputedStyle(document.documentElement)
+      .getPropertyValue(varName)
+      .trim()
+    return value || fallback
+  } catch {
+    return fallback
+  }
+}
+
+const primary = computed(() => getCSSVar('--color-primary', '#3b82f6'))
+
 interface Props {
   buttonText: string
   hint?: string
@@ -37,3 +54,9 @@ const onChange = (event: Event) => {
   emit('change', file)
 }
 </script>
+
+<style scoped>
+.hover-outline-btn:hover {
+  background-color: rgba(59, 130, 246, 0.05);
+}
+</style>

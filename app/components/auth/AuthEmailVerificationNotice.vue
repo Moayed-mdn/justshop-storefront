@@ -13,10 +13,9 @@
       type="button"
       @click="onResend"
       :disabled="loading || !email"
-      class="w-full px-4 py-2 text-sm font-medium text-(--color-on-primary)
-             bg-(--color-primary) border border-transparent rounded-md
-             hover:bg-(--color-primary-hover) focus:outline-none focus:ring-2
-             focus:ring-(--color-primary)/30 disabled:opacity-50 transition-colors"
+      :style="{ backgroundColor: primary, color: onPrimary }"
+      class="w-full px-4 py-2 text-sm font-medium border border-transparent rounded-md
+             focus:outline-none focus:ring-2 disabled:opacity-50 transition-colors hover-primary-btn"
     >
       {{ loading ? sendingText : resendText }}
     </button>
@@ -35,6 +34,22 @@
 
 <script setup lang="ts">
 import type { ApiError } from '~~/types/api'
+
+// Inline theme colors for SSR compatibility
+const getCSSVar = (varName: string, fallback: string): string => {
+  if (!process.client) return fallback
+  try {
+    const value = getComputedStyle(document.documentElement)
+      .getPropertyValue(varName)
+      .trim()
+    return value || fallback
+  } catch {
+    return fallback
+  }
+}
+
+const primary = computed(() => getCSSVar('--color-primary', '#3b82f6'))
+const onPrimary = computed(() => getCSSVar('--color-on-primary', '#ffffff'))
 
 const props = defineProps<{
   email: string
@@ -86,3 +101,13 @@ const onResend = async () => {
   }
 }
 </script>
+
+<style scoped>
+.hover-primary-btn:hover:not(:disabled) {
+  filter: brightness(0.9);
+}
+
+.hover-primary-btn:focus {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+}
+</style>

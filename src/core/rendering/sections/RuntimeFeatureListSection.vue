@@ -1,10 +1,13 @@
 <template>
-  <section class="rounded-3xl border border-(--color-border-default) bg-(--color-bg-page) px-6 py-10 shadow-sm">
+  <section 
+    class="rounded-3xl border px-6 py-10 shadow-sm"
+    :style="sectionStyle"
+  >
     <div class="mx-auto max-w-5xl">
-      <h2 v-if="title" class="text-2xl font-semibold text-(--color-text-primary)">
+      <h2 v-if="title" class="text-2xl font-semibold" :style="{ color: colorScheme.color }">
         {{ title }}
       </h2>
-      <p v-if="subtitle" class="mt-3 text-base text-(--color-text-secondary)">
+      <p v-if="subtitle" class="mt-3 text-base" :style="{ color: colorScheme.color, opacity: 0.8 }">
         {{ subtitle }}
       </p>
 
@@ -16,10 +19,11 @@
         <li
           v-for="(item, index) in cardItems"
           :key="index"
-          class="rounded-2xl bg-(--color-bg-card) p-5 border border-(--color-border-default)"
+          class="rounded-2xl p-5 border"
+          :style="cardStyle"
         >
-          <p class="text-sm font-bold text-(--color-text-primary)">{{ item.title }}</p>
-          <p class="mt-1 text-sm text-(--color-text-secondary) leading-relaxed">{{ item.body }}</p>
+          <p class="text-sm font-bold" :style="{ color: colorScheme.color }">{{ item.title }}</p>
+          <p class="mt-1 text-sm leading-relaxed" :style="{ color: colorScheme.color, opacity: 0.8 }">{{ item.body }}</p>
         </li>
       </ul>
 
@@ -31,21 +35,41 @@
         <li
           v-for="(item, index) in featureItems"
           :key="`${index}-${item}`"
-          class="rounded-2xl bg-(--color-bg-card) p-4 text-(--color-text-primary)"
+          class="rounded-2xl p-4"
+          :style="cardStyle"
         >
           {{ item }}
         </li>
       </ul>
 
-      <pre v-else-if="content" class="mt-6 overflow-x-auto rounded-2xl bg-(--color-bg-card) p-4 text-sm text-(--color-text-primary)">{{ content }}</pre>
+      <pre v-else-if="content" class="mt-6 overflow-x-auto rounded-2xl p-4 text-sm" :style="cardStyle">{{ content }}</pre>
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
 import type { RuntimeSectionComponentProps } from '../types'
+import { applyColorScheme } from '../utils/colorScheme'
 
 const props = defineProps<RuntimeSectionComponentProps>()
+
+// Color scheme support
+const colorScheme = computed(() => {
+  const schemeKey = (props.data.settings as any)?.color_scheme
+  return applyColorScheme(props.theme, schemeKey)
+})
+
+const sectionStyle = computed(() => ({
+  backgroundColor: colorScheme.value.backgroundColor,
+  color: colorScheme.value.color,
+  borderColor: colorScheme.value.borderColor,
+}))
+
+const cardStyle = computed(() => ({
+  backgroundColor: colorScheme.value.secondaryBackground,
+  color: colorScheme.value.color,
+  borderColor: colorScheme.value.borderColor,
+}))
 
 type CardItem = { title: string; body: string; icon?: string }
 

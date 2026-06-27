@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen" :style="{ backgroundColor: 'var(--product-page-bg)' }">
+  <div class="min-h-screen" :style="sectionStyle">
     <ProductLoadingSkeleton v-if="!product && pending" />
     <template v-else>
       <!-- Breadcrumb -->
@@ -49,7 +49,7 @@
             </div>
 
             <!-- Description -->
-            <div class="prose prose-sm max-w-none" :style="{ color: 'var(--product-desc-text)' }">
+            <div class="prose prose-sm max-w-none" :style="descriptionStyle">
               {{ product.description }}
             </div>
 
@@ -62,7 +62,7 @@
             />
 
             <!-- Quantity + Actions -->
-            <div class="space-y-5 pb-8 border-b" :style="{ borderBottomColor: 'var(--product-divider)' }">
+            <div class="space-y-5 pb-8 border-b" :style="dividerStyle">
               <ProductQuantitySelector 
                 v-model="quantity"
                 :max-quantity="maxQuantity"
@@ -100,8 +100,8 @@
     <!-- Mobile Sticky Add-to-Cart (visible below md breakpoint) -->
     <div
       v-if="product"
-      class="fixed bottom-0 left-0 right-0 z-40 border-t bg-(--color-bg-page) p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] shadow-lg md:hidden"
-      :style="{ borderColor: 'var(--product-divider)' }"
+      class="fixed bottom-0 left-0 right-0 z-40 border-t p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] shadow-lg md:hidden"
+      :style="mobileBarStyle"
     >
       <div class="flex items-center justify-between gap-3">
         <div class="min-w-0 flex-1">
@@ -142,12 +142,37 @@ import type { RuntimeSectionComponentProps } from '../types'
 import type { ProductDetail, ProductVariant } from '~~/types/productDetail'
 import type { ProductRelated } from '~~/types/productRelated'
 import type { ProductRelatedResponse } from '~~/types/productRelated'
+import { applyColorScheme } from '../utils/colorScheme'
 
 const props = defineProps<RuntimeSectionComponentProps>()
 const { t } = useI18n()
 const api = useApi()
 
 const pending = ref(false)
+
+const colorScheme = computed(() => {
+  const scheme = props.settings?.color_scheme
+  return typeof scheme === 'string' ? scheme : 'default'
+})
+
+const { backgroundColor, textColor, mutedTextColor, borderColor } = applyColorScheme(colorScheme)
+
+const sectionStyle = computed(() => ({
+  backgroundColor: backgroundColor.value,
+}))
+
+const descriptionStyle = computed(() => ({
+  color: textColor.value,
+}))
+
+const dividerStyle = computed(() => ({
+  borderBottomColor: borderColor.value,
+}))
+
+const mobileBarStyle = computed(() => ({
+  backgroundColor: backgroundColor.value,
+  borderColor: borderColor.value,
+}))
 
 const product = computed<ProductDetail | null>(() => {
   if (!props.data.productId) return null

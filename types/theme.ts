@@ -41,14 +41,25 @@ export interface ThemeSettings {
   colors?: {
     primary?: string;
     secondary?: string;
-    accent?: string;
     background?: string;
     text?: string;
+    textMuted?: string;
+    border?: string;
+    success?: string;
+    error?: string;
+    warning?: string;
     [key: string]: string | undefined;
   };
   typography?: {
     heading?: string;
     body?: string;
+    headingFont?: string;
+    bodyFont?: string;
+    headingWeight?: string;
+    bodyWeight?: string;
+    baseFontSize?: string;
+    lineHeight?: string;
+    letterSpacing?: string;
     [key: string]: string | undefined;
   };
   layout?: {
@@ -56,6 +67,11 @@ export interface ThemeSettings {
     spacingUnit?: string;
     borderRadius?: string;
     [key: string]: string | undefined;
+  };
+  buttons?: {
+    primary?: any;
+    secondary?: any;
+    outline?: any;
   };
   [key: string]: any;
 }

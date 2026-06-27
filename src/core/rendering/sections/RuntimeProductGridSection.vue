@@ -1,12 +1,12 @@
 <template>
-  <section class="runtime-product-grid">
+  <section class="runtime-product-grid" :style="sectionStyle">
     <header v-if="title || subtitle" class="runtime-product-grid__header">
       <div class="runtime-product-grid__header-row">
         <div>
-          <h2 v-if="title" class="runtime-product-grid__title">
+          <h2 v-if="title" class="runtime-product-grid__title" :style="{ color: colorScheme.color }">
             {{ title }}
           </h2>
-          <p v-if="subtitle" class="runtime-product-grid__subtitle">
+          <p v-if="subtitle" class="runtime-product-grid__subtitle" :style="{ color: colorScheme.color, opacity: 0.8 }">
             {{ subtitle }}
           </p>
         </div>
@@ -27,10 +27,22 @@
 import type { ProductDto } from '../../api/dto/storefront'
 import type { RuntimeSectionComponentProps } from '../types'
 import ProductGrid from '../../../app/components/product/ProductGrid.vue'
+import { applyColorScheme } from '../utils/colorScheme'
 
 const props = defineProps<RuntimeSectionComponentProps>()
 
 provide('pending', ref(false))
+
+// Color scheme support
+const colorScheme = computed(() => {
+  const schemeKey = (props.data.settings as any)?.color_scheme
+  return applyColorScheme(props.theme, schemeKey)
+})
+
+const sectionStyle = computed(() => ({
+  backgroundColor: colorScheme.value.backgroundColor,
+  color: colorScheme.value.color,
+}))
 
 const title = computed(() => typeof props.data.title === 'string' ? props.data.title : '')
 const subtitle = computed(() => typeof props.data.subtitle === 'string' ? props.data.subtitle : '')
@@ -72,7 +84,7 @@ const products = computed<ProductDto[]>(() => {
 <style scoped>
 .runtime-product-grid {
   width: 100%;
-  background: var(--color-bg-page, #ffffff);
+  /* Background is now controlled by inline styles via color scheme */
 }
 
 .runtime-product-grid__header {

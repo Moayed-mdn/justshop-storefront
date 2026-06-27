@@ -4,16 +4,18 @@
     data-storefront-shell="root"
   >
     <Topbar v-if="shellConfig.showTopbar" />
-    <StorefrontShellHeader />
-    <main class="flex-1">
-      <slot />
-    </main>
-    <StorefrontShellFooter />
+    <template v-for="section in layoutOrder" :key="section">
+      <StorefrontShellHeader v-if="section === 'header'" />
+      <main v-else-if="section === 'content'" class="flex-1">
+        <slot />
+      </main>
+      <StorefrontShellFooter v-else-if="section === 'footer'" />
+    </template>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, inject } from 'vue'
 import {
   defaultStorefrontShellConfig,
   provideStorefrontShell,
@@ -29,4 +31,6 @@ const props = withDefaults(defineProps<{
 const shellConfig = computed(() => defaultStorefrontShellConfig(props.variant))
 
 provideStorefrontShell(shellConfig)
+
+const layoutOrder = inject<string[]>('layoutOrder', ['header', 'content', 'footer'])
 </script>

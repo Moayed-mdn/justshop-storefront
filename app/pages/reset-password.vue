@@ -9,7 +9,8 @@
       </p>
       <NuxtLinkLocale
         :to="routes.login()"
-        class="inline-block mt-4 px-6 py-2 text-sm font-medium text-(--color-on-primary) bg-(--color-primary) rounded-md hover:bg-(--color-primary-hover)"
+        :style="{ backgroundColor: primary, color: onPrimary }"
+        class="inline-block mt-4 px-6 py-2 text-sm font-medium rounded-md hover-primary-link"
       >
         {{ $t('auth.go_to_login') }}
       </NuxtLinkLocale>
@@ -48,6 +49,22 @@
 </template>
 
 <script setup lang="ts">
+// Inline theme colors for SSR compatibility
+const getCSSVar = (varName: string, fallback: string): string => {
+  if (!process.client) return fallback
+  try {
+    const value = getComputedStyle(document.documentElement)
+      .getPropertyValue(varName)
+      .trim()
+    return value || fallback
+  } catch {
+    return fallback
+  }
+}
+
+const primary = computed(() => getCSSVar('--color-primary', '#3b82f6'))
+const onPrimary = computed(() => getCSSVar('--color-on-primary', '#ffffff'))
+
 const { resetPassword, loading } = useAuth()
 const routes = useStorefrontRoutes()
 const route = useRoute()
@@ -114,3 +131,9 @@ const handleReset = async () => {
   }
 }
 </script>
+
+<style scoped>
+.hover-primary-link:hover {
+  filter: brightness(0.9);
+}
+</style>

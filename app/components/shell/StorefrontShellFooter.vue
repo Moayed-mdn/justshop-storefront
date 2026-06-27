@@ -72,8 +72,8 @@
     </footer>
 
     <!-- Static hardcoded Footer - fallback when no runtime navigation -->
-    <Footer v-else-if="shellConfig.showFooter && !isMinimal" />
-    <FooterAuth v-else-if="isMinimal" />
+    <Footer v-else-if="shellConfig.showFooter && !isMinimal && !isAuthTemplate" />
+    <FooterAuth v-else-if="isMinimal || isAuthTemplate" />
   </div>
 </template>
 
@@ -81,7 +81,7 @@
 import { useStorefrontContext } from '~~/src/core/tenant/composables'
 import { useStorefrontShell } from '~/composables/useStorefrontShell'
 
-const { config: shellConfig, isMinimal } = useStorefrontShell()
+const { config: shellConfig, isMinimal, isAuthTemplate } = useStorefrontShell()
 const context = useStorefrontContext()
 
 const runtimeFooterItems = computed(() => context.value.navigation?.footer ?? [])
@@ -97,5 +97,14 @@ watchEffect(() => {
 .footer-link:hover,
 .footer-heading:hover {
   color: var(--color-accent, #ec4899) !important;
+}
+</style>
+
+<style>
+/* Active state for footer navigation links - unscoped for SSR compatibility */
+nav[aria-label="Storefront footer navigation"] a.router-link-active,
+nav[aria-label="Storefront footer navigation"] a.router-link-exact-active {
+  color: var(--color-primary, #3b82f6) !important;
+  font-weight: 600 !important;
 }
 </style>
