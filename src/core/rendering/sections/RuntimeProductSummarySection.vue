@@ -142,7 +142,7 @@ import type { RuntimeSectionComponentProps } from '../types'
 import type { ProductDetail, ProductVariant } from '~~/types/productDetail'
 import type { ProductRelated } from '~~/types/productRelated'
 import type { ProductRelatedResponse } from '~~/types/productRelated'
-import { applyColorScheme } from '../utils/colorScheme'
+import { applyColorScheme, resolveColorSchemeKey } from '../utils/colorScheme'
 
 const props = defineProps<RuntimeSectionComponentProps>()
 const { t } = useI18n()
@@ -150,28 +150,27 @@ const api = useApi()
 
 const pending = ref(false)
 
+// Resolve color scheme for this section
 const colorScheme = computed(() => {
-  const scheme = props.settings?.color_scheme
-  return typeof scheme === 'string' ? scheme : 'default'
+  const schemeKey = resolveColorSchemeKey(props.data.settings)
+  return applyColorScheme(props.theme, schemeKey)
 })
 
-const { backgroundColor, textColor, mutedTextColor, borderColor } = applyColorScheme(colorScheme)
-
 const sectionStyle = computed(() => ({
-  backgroundColor: backgroundColor.value,
+  backgroundColor: colorScheme.value.backgroundColor,
 }))
 
 const descriptionStyle = computed(() => ({
-  color: textColor.value,
+  color: colorScheme.value.color,
 }))
 
 const dividerStyle = computed(() => ({
-  borderBottomColor: borderColor.value,
+  borderBottomColor: colorScheme.value.borderColor,
 }))
 
 const mobileBarStyle = computed(() => ({
-  backgroundColor: backgroundColor.value,
-  borderColor: borderColor.value,
+  backgroundColor: colorScheme.value.backgroundColor,
+  borderColor: colorScheme.value.borderColor,
 }))
 
 const product = computed<ProductDetail | null>(() => {

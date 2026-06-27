@@ -46,7 +46,7 @@
 <script setup lang="ts">
 import type { RuntimeSectionComponentProps } from '../types'
 import { useStorefrontRoutes } from '~/composables/useStorefrontRoutes'
-import { applyColorScheme } from '../utils/colorScheme'
+import { applyColorScheme, resolveColorSchemeKey } from '../utils/colorScheme'
 
 type Crumb = {
   name: string
@@ -56,24 +56,23 @@ type Crumb = {
 const props = defineProps<RuntimeSectionComponentProps>()
 const routes = useStorefrontRoutes()
 
+// Resolve color scheme for this section
 const colorScheme = computed(() => {
-  const scheme = props.settings?.color_scheme
-  return typeof scheme === 'string' ? scheme : 'default'
+  const schemeKey = resolveColorSchemeKey(props.data.settings)
+  return applyColorScheme(props.theme, schemeKey)
 })
 
-const { backgroundColor, textColor, mutedTextColor, borderColor } = applyColorScheme(colorScheme)
-
 const sectionStyle = computed(() => ({
-  backgroundColor: backgroundColor.value,
-  borderColor: borderColor.value,
+  backgroundColor: colorScheme.value.backgroundColor,
+  borderColor: colorScheme.value.borderColor,
 }))
 
 const primaryTextStyle = computed(() => ({
-  color: textColor.value,
+  color: colorScheme.value.color,
 }))
 
 const mutedTextStyle = computed(() => ({
-  color: mutedTextColor.value,
+  color: colorScheme.value.color, // Fallback to primary text color for muted
 }))
 
 const crumbs = computed<Crumb[]>(() => {
