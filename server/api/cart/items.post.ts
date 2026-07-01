@@ -2,11 +2,11 @@ import { useServerApi } from "../../utils/api"
 import { EXTERNAL_API_ROUTES } from "~~/shared/utils/routes"
 
 export default defineEventHandler(async (event) => {
-  const tenantId = event.context.tenantId as string
+  const tenantSlug = event.context.tenantSlug as string
   const body = await readBody(event)
   const api = useServerApi(event)
   
-  return await api(EXTERNAL_API_ROUTES.cart.addItem(tenantId), {
+  return await api(EXTERNAL_API_ROUTES.cart.addItem(tenantSlug), {
     method: 'POST',
     body
   })

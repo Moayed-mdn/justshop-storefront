@@ -23,7 +23,7 @@
 
 <script setup lang="ts">
 import type { CmsSection, RuntimeResolvedRoute, StorefrontRuntimeBundle } from '../../src/core/runtime/router/types'
-import type { RuntimePageTemplate, RuntimeTemplateSection, RuntimeNavigationItem } from '../../src/core/runtime/contracts/types'
+import type { RuntimePagePayload, RuntimePageTemplate, RuntimeTemplateSection, RuntimeNavigationItem } from '../../src/core/runtime/contracts/types'
 import { normalizeError } from '../../src/core/api/errors'
 import { createTenantCacheKey } from '../../src/core/cache/createTenantCacheKey'
 import { useRouteResolver } from '../../src/core/runtime/router/useRouteResolver'
@@ -335,7 +335,25 @@ const sectionsToRender = computed<CmsSection[]>(() => {
 provideTheme(runtimeTheme)
 
 // Provide layout_order so StorefrontShell can render sections in template-defined order
-provide('layoutOrder', runtimePage.value?.layout_order ?? ['header', 'content', 'footer'])
+const layoutOrderRef = ref<string[]>(runtimePage.value?.layout_order ?? ['header', 'content', 'footer'])
+watch(runtimePage, (page) => {
+  layoutOrderRef.value = page?.layout_order ?? ['header', 'content', 'footer']
+}, { immediate: true })
+provide('layoutOrder', layoutOrderRef)
+
+// Provide theme header section data (with blocks) for chrome rendering
+const themeHeaderSectionRef = ref<RuntimePagePayload['themeHeaderSection'] | null>(runtimePage.value?.themeHeaderSection ?? null)
+watch(runtimePage, (page) => {
+  themeHeaderSectionRef.value = page?.themeHeaderSection ?? null
+}, { immediate: true })
+provide('themeHeaderSection', themeHeaderSectionRef)
+
+// Provide chrome section settings (announcement_bar, copyright_bar, etc.)
+const chromeSectionsRef = ref<Record<string, Record<string, unknown>>>(runtimePage.value?.chrome_sections ?? {})
+watch(runtimePage, (page) => {
+  chromeSectionsRef.value = page?.chrome_sections ?? {}
+}, { immediate: true })
+provide('chromeSections', chromeSectionsRef)
 
 const runtimeShellStyle = computed<Record<string, string>>(() => {
   const theme = runtimeBundle.value?.theme

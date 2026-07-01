@@ -12,7 +12,6 @@ Code surfaces this file aligns with:
 - `app/pages/verify-email/[id]/[hash].vue`
 - `app/middleware/auth.ts`
 - `app/middleware/guest.ts`
-- `app/middleware/google-auth.ts`
 - `app/stores/auth.ts`
 - `server/api/auth/**`
 
@@ -26,7 +25,7 @@ Code surfaces this file aligns with:
 | Fetch current user | `app/composables/useAuth.ts`, `server/api/auth/me.get.ts` |
 | Email verification | `app/pages/verify-email/[id]/[hash].vue`, `server/api/auth/email/verify/[id]/[hash].get.ts` |
 | Resend verification | `app/composables/useAuth.ts`, `server/api/auth/email/resend.post.ts` |
-| Google sign-in | `app/composables/useAuth.ts`, `app/middleware/google-auth.ts`, `server/api/auth/google/**` |
+| Google sign-in | `app/composables/useAuth.ts`, `app/pages/auth/google/callback.vue`, `server/api/auth/google/**` |
 
 ## Current Token Handling
 
@@ -54,11 +53,4 @@ Current route protection behavior:
 
 ## Current Discrepancy To Track
 
-There are two visible Google callback handling paths today:
-
-- `app/middleware/google-auth.ts`
-- `app/pages/auth/google/callback.vue`
-
-Both process callback query parameters and call `handleGoogleCallback()`. Document this as the current state and reconcile carefully if the flow is simplified later.
-
-The preferred single-owner direction for that cleanup is recorded in `docs/reference/adr-003-google-callback-owner.md`.
+The Google callback handling is owned by `app/pages/auth/google/callback.vue`. The `google-auth` middleware was removed per ADR-003.

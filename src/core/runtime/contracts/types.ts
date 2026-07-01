@@ -91,7 +91,7 @@ export interface RuntimeRouteMatch {
   status: RuntimeRouteStatus
   routeType: RuntimePageType
   pageId: string | null
-  resourceType: 'page' | 'product' | 'category' | 'auth' | 'none'
+  resourceType: 'page' | 'product' | 'category' | 'auth' | 'cart' | 'search' | 'profile' | 'orders' | 'order' | 'none'
   resourceId: string | null
   path: string
   locale: StorefrontRuntimeLocale
@@ -163,7 +163,22 @@ export interface RuntimePagePayload {
   seo: RuntimeSeoPayload
   publishedAt: string | null
   updatedAt: string
+  layout_order?: string[]
   template?: RuntimePageTemplate
+  themeHeaderSection?: {
+    id: string
+    type: string
+    settings: Record<string, unknown>
+    blocks?: {
+      id: string
+      type: string
+      name: string | null
+      settings: Record<string, unknown>
+      content: Record<string, unknown> | null
+      position: number
+    }[]
+  }
+  chrome_sections?: Record<string, Record<string, unknown>>
 }
 
 export interface RuntimePagePayloadResponse {
@@ -279,4 +294,110 @@ export interface RuntimeErrorResponse {
     retryable: boolean
     details: Record<string, unknown>
   }
+}
+
+// ── System Template types (Phase 0: Template-Everything) ──────────────────
+
+export interface RuntimeBlockInstance {
+  id: string
+  type: string
+  name: string | null
+  settings: Record<string, unknown>
+  content: Record<string, unknown> | null
+  position: number
+  is_enabled?: boolean
+}
+
+export interface RuntimeTemplateSectionDetail {
+  id: string
+  type: string
+  settings: Record<string, unknown>
+  data: Record<string, unknown>
+  blocks?: RuntimeBlockInstance[]
+  enabled?: boolean
+}
+
+export interface RuntimeSystemTemplate {
+  id: number
+  type: string
+  handle: string
+  name: string
+  sections: Record<string, RuntimeTemplateSectionDetail>
+  section_order: string[]
+}
+
+export interface RuntimeTemplateResponse {
+  requestContext: RuntimeRequestContext
+  data: RuntimeSystemTemplate
+  cache: RuntimeCacheDescriptor
+}
+
+export interface RuntimeSectionGroupSection {
+  id: string
+  type: string
+  settings: Record<string, unknown>
+  data: Record<string, unknown>
+}
+
+export interface RuntimeSectionGroup {
+  handle: string
+  sections: RuntimeSectionGroupSection[]
+}
+
+export interface RuntimeSectionGroupResponse {
+  requestContext: RuntimeRequestContext
+  data: {
+    header: RuntimeSectionGroup
+    footer: RuntimeSectionGroup
+  }
+  cache: RuntimeCacheDescriptor
+}
+
+// ── Expanded Theme types (Phase 0) ────────────────────────────────────────
+
+export interface ThemeBranding {
+  logo_url: string | null
+  favicon_url: string | null
+  store_name: string
+  tagline: string
+}
+
+export interface ThemeSocialLinks {
+  facebook?: string
+  twitter?: string
+  instagram?: string
+  youtube?: string
+  tiktok?: string
+  linkedin?: string
+  pinterest?: string
+}
+
+export interface ThemeTopbarSettings {
+  show_topbar: boolean
+  phone: string
+  announcement_text: string
+  announcement_link: string
+}
+
+export interface ThemeFooterSettings {
+  show_newsletter: boolean
+  copyright_text: string
+  payment_icons: string[]
+}
+
+export interface ThemeSeoSettings {
+  default_title: string
+  default_description: string
+  default_og_image: string
+}
+
+export interface ThemeSearchSettings {
+  placeholder: string
+  show_suggestions: boolean
+  products_per_page: number
+}
+
+export interface ThemeMaintenanceSettings {
+  enabled: boolean
+  message: string
 }

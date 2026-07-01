@@ -39,7 +39,7 @@ Code surfaces this file aligns with:
 - Shared/Generic components: Directly under `app/components/` in PascalCase.
 - Keep composables in `useXxx.ts` form with one clear responsibility per file.
 - Keep Pinia store ids short and lowercase, matching the current `auth` and `cart` store pattern.
-- Keep route middleware files short and lowercase, matching `auth.ts`, `guest.ts`, and `google-auth.ts`.
+- Keep route middleware files short and lowercase, matching `auth.ts` and `guest.ts`.
 - Keep shared route literals centralized in `shared/utils/routes.ts` instead of duplicating strings in pages, components, or server handlers.
 - Keep Nitro route handlers aligned with Nuxt file-based routing and HTTP suffix naming such as `.get.ts`, `.post.ts`, `.put.ts`, `.patch.ts`, and `.delete.ts`.
 

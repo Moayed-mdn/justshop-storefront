@@ -151,13 +151,14 @@
   const onPrimary = computed(() => getCSSVar('--color-on-primary', '#ffffff'))
   
   definePageMeta({
-    layout: 'default',
+    layout: 'system',
   })
 
   const routes = useStorefrontRoutes()
   const route = useRoute()
   const { isLoggedIn } = useAuth()
-  const { getCheckoutStatus, clearCartAfterCheckout } = useCheckout()
+  const { clearCartAfterCheckout } = useCheckout()
+  const { fetchOrder } = useOrders()
   const { t } = useI18n()
 
   useHead({
@@ -172,7 +173,7 @@
     payment_status: string
     order_number: string
     order_status: string
-    customer_email: string
+    customer_email: string | null
   } | null>(null)
   
   // Payment status badge
@@ -198,28 +199,34 @@
     }
   })
   
+  const loadOrderByNumber = async (orderNumber: string) => {
+    const order = await fetchOrder(orderNumber)
+    orderData.value = {
+      payment_status: order.payment_status,
+      order_number: order.order_number,
+      order_status: order.status,
+      customer_email: null,
+    }
+  }
+
   onMounted(async () => {
-    const sessionId = route.query.session_id as string
-  
-    if (!sessionId) {
+    const orderNumber = route.query.order as string | undefined
+
+    if (!orderNumber) {
       status.value = 'error'
       return
     }
-  
+
     try {
-      const data = await getCheckoutStatus(sessionId)
-      orderData.value = data
+      await loadOrderByNumber(orderNumber)
       status.value = 'success'
-  
-      // Clear the frontend cart
       clearCartAfterCheckout()
-    } catch (err) {
-      // Retry once after 2 seconds (webhook might not have processed yet)
+    } catch {
+      // Retry once after 2 seconds in case the order/webhook state is still settling.
       await new Promise((resolve) => setTimeout(resolve, 2000))
-  
+
       try {
-        const data = await getCheckoutStatus(sessionId)
-        orderData.value = data
+        await loadOrderByNumber(orderNumber)
         status.value = 'success'
         clearCartAfterCheckout()
       } catch {

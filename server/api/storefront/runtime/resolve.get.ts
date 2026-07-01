@@ -1,5 +1,5 @@
 import { EXTERNAL_API_ROUTES } from '~~/shared/utils/routes'
-import { useRuntimeServerApi } from '../../../utils/api'
+import { useRuntimeServerApi } from '~~/server/utils/api'
 
 export default defineEventHandler(async (event) => {
   const api = useRuntimeServerApi(event)

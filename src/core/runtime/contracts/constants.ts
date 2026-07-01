@@ -1,4 +1,4 @@
-export const STOREFRONT_RUNTIME_CONTRACT_VERSION = '2026-05-28' as const
+export const STOREFRONT_RUNTIME_CONTRACT_VERSION = '2026-06-26' as const
 
 export const STOREFRONT_RUNTIME_SUPPORTED_LOCALES = ['en', 'ar'] as const
 
@@ -8,6 +8,23 @@ export const STOREFRONT_RUNTIME_PAGE_TYPES = [
   'category_page',
   'product_page',
   'auth_page',
+  'cart',
+  'checkout',
+  'checkout_success',
+  'checkout_cancel',
+  'search',
+  'login',
+  'register',
+  'forgot_password',
+  'reset_password',
+  'verify_email',
+  'profile',
+  'orders',
+  'order',
+  'order_track',
+  'categories',
+  'error_404',
+  'error_500',
 ] as const
 
 export const STOREFRONT_RUNTIME_LAYOUTS = [
@@ -16,6 +33,7 @@ export const STOREFRONT_RUNTIME_LAYOUTS = [
   'catalog',
   'product',
   'auth',
+  'minimal',
 ] as const
 
 export const STOREFRONT_RUNTIME_CACHE_ARTIFACTS = [
@@ -24,6 +42,7 @@ export const STOREFRONT_RUNTIME_CACHE_ARTIFACTS = [
   'navigation',
   'theme',
   'seo',
+  'template',
 ] as const
 
 export const STOREFRONT_RUNTIME_LOG_FIELDS = [

@@ -41,9 +41,6 @@ export default defineNuxtPlugin((nuxtApp) => {
     })
   }
 
-  console.log('Logger plugin initialized')
-  sendLog('info', ['Logger plugin initialized'])
-
   console.warn = (...args: any[]) => {
     originalWarn(...args)
     sendLog('warn', args)

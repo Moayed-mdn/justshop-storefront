@@ -154,10 +154,6 @@ export const useStorefrontPayload = () => {
       throw makeError(500, 'The storefront runtime payload is incomplete.')
     }
 
-    // #region debug-point B:payload-navigation-response
-    fetch('http://127.0.0.1:7777/event', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sessionId: 'storefront-footer-nav', runId: 'pre-fix', hypothesisId: 'B', location: 'src/core/runtime/router/useStorefrontPayload.ts:117', msg: '[DEBUG] runtime payload fetched navigation response', data: { resolvedPath: resolved.path, hasNavigation: Boolean(navigationResponse.data?.data), headerCount: navigationResponse.data?.data?.header?.length ?? null, footerCount: navigationResponse.data?.data?.footer?.length ?? null, navigationKeys: Object.keys(navigationResponse.data?.data ?? {}) }, ts: Date.now() }) }).catch(() => {})
-    // #endregion
-
     syncTenantContext(pageResponse.data, navigationResponse.data, themeResponse.data)
 
     return {
@@ -232,9 +228,6 @@ export const useStorefrontPayload = () => {
     context.value.navigation = navigationResponse.data
     context.value.themePayload = themeResponse.data
 
-    // #region debug-point C:context-sync
-    fetch('http://127.0.0.1:7777/event', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sessionId: 'storefront-footer-nav', runId: 'pre-fix', hypothesisId: 'C', location: 'src/core/runtime/router/useStorefrontPayload.ts:191', msg: '[DEBUG] storefront context navigation synced', data: { host, tenantId: context.value.tenant?.id ?? null, navigationHeaderCount: context.value.navigation?.header?.length ?? null, navigationFooterCount: context.value.navigation?.footer?.length ?? null }, ts: Date.now() }) }).catch(() => {})
-    // #endregion
   }
 
   return { fetchPayload }

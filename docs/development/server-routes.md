@@ -67,7 +67,9 @@ Mutation handlers typically read the body and forward it unchanged to the backen
 
 - `auth/login.post.ts`
 - `cart/items.post.ts`
-- `checkout/session.post.ts`
+- `checkout/complete.post.ts`
+- `checkout/payment-intent.post.ts`
+- `checkout/shipping-methods.post.ts`
 - `orders/[orderNumber]/cancel.post.ts`
 
 ### Query And Param Forwarding
@@ -75,7 +77,6 @@ Mutation handlers typically read the body and forward it unchanged to the backen
 Dynamic or signed routes pass path params and query values through to the backend:
 
 - `auth/email/verify/[id]/[hash].get.ts`
-- `checkout/status/[sessionId].get.ts`
 - `products/category/[slug].get.ts`
 - `orders/[orderNumber].get.ts`
 

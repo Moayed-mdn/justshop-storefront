@@ -1,0 +1,20 @@
+{
+  "common": {
+    "back": "رجوع",
+    "continue": "متابعة",
+    "cancel": "إلغاء",
+    "save": "حفظ",
+    "saving": "جار الحفظ",
+    "add": "إضافة",
+    "edit": "تعديل",
+    "delete": "حذف",
+    "update": "تحديث",
+    "submit": "إرسال",
+    "optional": "اختياري",
+    "required": "مطلوب",
+    "loading": "جار التحميل",
+    "error": "خطأ",
+    "success": "نجاح",
+    "try_again": "حاول مرة أخرى"
+  }
+}

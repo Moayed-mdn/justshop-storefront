@@ -21,12 +21,14 @@ export const useTenant = () => {
   
   const tenant = computed(() => context.value.tenant)
   const tenantId = computed(() => context.value.tenant?.id)
+  const tenantSlug = computed(() => context.value.tenant?.slug)
   
   const isActive = computed(() => context.value.tenant?.status === 'active')
   
   return {
     tenant,
     tenantId,
+    tenantSlug,
     isActive,
   }
 }

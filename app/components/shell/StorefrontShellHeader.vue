@@ -32,7 +32,7 @@
 
     <HeaderTopRow>
       <template #start>
-        <HeaderLogo />
+        <HeaderLogo :logo-settings="logoSettings" />
       </template>
 
       <template #center>
@@ -51,8 +51,6 @@
       <template #end>
         <HeaderActions
           v-if="shellConfig.showCart || shellConfig.showAccount || (!isMinimal && shellConfig.variant !== 'auth-template')"
-          :menu-open="showLinks"
-          @open-menu="showLinks = !showLinks"
         />
       </template>
     </HeaderTopRow>
@@ -64,35 +62,50 @@
       <HeaderSearchInput />
     </div>
   </header>
-
-  <HeaderBurger
-    v-if="!isMinimal && shellConfig.variant !== 'auth-template'"
-    v-model:show-links="showLinks"
-    class="lg:hidden"
-  />
 </template>
 
 <script setup lang="ts">
+import type { Ref } from '#imports'
+import { inject, isRef } from '#imports'
 import { useStorefrontContext } from '~~/src/core/tenant/composables'
 import { useStorefrontShell } from '~/composables/useStorefrontShell'
+import type { RuntimeTemplateSectionDetail } from '~~/src/core/runtime/contracts/types'
+
+const props = defineProps<{
+  headerSection?: RuntimeTemplateSectionDetail | null
+}>()
 
 const { config: shellConfig, isMinimal } = useStorefrontShell()
 const context = useStorefrontContext()
 
+interface ThemeHeaderSection {
+  id: string
+  type: string
+  settings: Record<string, unknown>
+  blocks?: {
+    id: string
+    type: string
+    name: string | null
+    settings: Record<string, unknown>
+    content: Record<string, unknown> | null
+    position: number
+    is_enabled?: boolean
+  }[]
+}
+
+const themeHeaderSection = inject<Ref<ThemeHeaderSection | null> | ThemeHeaderSection | null>('themeHeaderSection', null)
+
+const logoSettings = computed(() => {
+  // Priority: SystemSectionRenderer prop (with blocks) > ThemeTemplate inject > empty
+  const source = props.headerSection?.blocks?.length
+    ? props.headerSection
+    : (isRef(themeHeaderSection) ? themeHeaderSection.value : themeHeaderSection)
+  const blocks = source?.blocks ?? []
+  const logoBlock = blocks.find(b => b.type === 'logo')
+  return logoBlock?.settings as Record<string, unknown> ?? {}
+})
+
 const runtimeHeaderItems = computed(() => context.value.navigation?.header ?? [])
-
-const showLinks = ref(false)
-const isDesktop = useMediaQuery('(min-width: 1024px)')
-
-provide('closeMenu', () => {
-  showLinks.value = false
-})
-
-watch(isDesktop, (val) => {
-  if (val) {
-    showLinks.value = false
-  }
-})
 </script>
 
 <style>

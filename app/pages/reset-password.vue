@@ -71,7 +71,7 @@ const route = useRoute()
 const { t } = useI18n()
 
 definePageMeta({
-  layout: 'auth',
+  layout: 'system',
   middleware: 'guest',
 })
 

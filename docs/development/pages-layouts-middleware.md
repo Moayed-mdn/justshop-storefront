@@ -66,7 +66,7 @@ The route-backed pages currently group into these feature areas:
 |---|---|
 | `auth.ts` | Redirects unauthenticated users to login and fetches the user if the token exists but user data is missing |
 | `guest.ts` | Redirects logged-in users away from guest-only pages |
-| `google-auth.ts` | Handles Google callback token or error query params and redirects accordingly |
+<!-- google-auth middleware was removed per ADR-003; callback handling is in pages/auth/google/callback.vue -->
 
 ## Current Usage Pattern
 

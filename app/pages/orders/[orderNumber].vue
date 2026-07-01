@@ -64,6 +64,7 @@
   import { formatPrice } from '../../utils/price'
   import { formatDate } from '../../utils/date'
   definePageMeta({
+    layout: 'system',
     middleware: 'auth',
   })
 

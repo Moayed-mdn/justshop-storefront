@@ -54,7 +54,7 @@ See `docs/architecture/storefront-routes.md` for the canonical path table.
 |---|---|
 | `auth` | Redirects unauthenticated users to localized login and fetches user data if token exists but user state is missing |
 | `guest` | Redirects authenticated users away from guest-only auth pages |
-| `google-auth` | Processes token or error query params from Google callback flow |
+<!-- google-auth middleware was removed per ADR-003; callback handling is in pages/auth/google/callback.vue -->
 
 ## Current Protection State
 

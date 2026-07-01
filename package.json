@@ -29,6 +29,7 @@
     "@nuxt/ui": "^4.5.1",
     "@nuxtjs/i18n": "^10.2.1",
     "@pinia/nuxt": "^0.11.3",
+    "@stripe/stripe-js": "^9.8.0",
     "@tailwindcss/vite": "^4.2.1",
     "@vueuse/nuxt": "^14.1.0",
     "graphql": "^16.13.2",
@@ -44,7 +45,6 @@
   "devDependencies": {
     "@iconify-json/circle-flags": "^1.2.10",
     "@playwright/test": "^1.60.0",
-    "baseline-browser-mapping": "^2.10.37",
     "playwright": "^1.60.0",
     "stylelint-config-tailwindcss": "^1.0.1",
     "vitest": "^3.2.6"

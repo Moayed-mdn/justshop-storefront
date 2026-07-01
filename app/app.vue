@@ -23,6 +23,11 @@ const { theme: storeTheme, fetchTheme, getThemeCSS } = useStoreTheme()
 const storefrontContext = useStorefrontContext()
 const { locale } = useI18n()
 
+// Sync i18n locale to storefront context so API calls use the correct locale
+watch(locale, (newLocale) => {
+  storefrontContext.value.locale = newLocale
+})
+
 const head = useLocaleHead({
   // 'addDirAttribute' is now just 'dir'
   dir: true,

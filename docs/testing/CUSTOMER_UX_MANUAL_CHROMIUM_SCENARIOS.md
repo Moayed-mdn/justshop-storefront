@@ -320,8 +320,8 @@ Verify guest users can complete checkout without account.
 ### Steps
 
 1. As a guest with items in cart, proceed to checkout.
-2. Observe checkout page or Stripe redirect.
-3. Fill in required information (if not using Stripe hosted).
+2. Confirm you are redirected to login, then back to the merchant checkout flow after authentication.
+3. Complete the merchant checkout steps (address, shipping method, payment).
 4. Use test card: `4242 4242 4242 4242`
 5. Complete payment.
 6. Observe confirmation page.
@@ -329,18 +329,19 @@ Verify guest users can complete checkout without account.
 ### Expected
 
 - checkout process is clear and guided
-- guest email field is available
-- Stripe hosted checkout loads correctly
+- guest users are routed through authentication before checkout
+- merchant-driven checkout loads correctly
+- merchant-configured address validation is enforced
 - test payment processes successfully
 - order confirmation page shows order number
 - order details are accurate
-- "create account" prompt appears (if implemented)
 - cart clears after successful checkout
 
 ### Watch For
 
 - checkout page not loading
-- Stripe redirect failing
+- login redirect losing the checkout target
+- address validation not matching merchant rules
 - payment errors with test card
 - missing order confirmation
 - cart not clearing after order
@@ -1096,15 +1097,17 @@ Verify checkout completion and cancellation flows work correctly.
 
 1. Complete a successful checkout.
 2. Observe checkout success page.
-3. In a separate test, cancel checkout on Stripe page.
-4. Observe checkout cancellation page.
-5. Verify cart state in both scenarios.
+3. Verify the primary success URL uses `order` and still renders the order confirmation.
+4. In a separate test, cancel checkout from the checkout flow.
+5. Observe checkout cancellation page.
+6. Verify cart state in both scenarios.
 
 ### Expected
 
 **Success Flow:**
 - success page shows order confirmation
 - order number is displayed
+- order lookup works when redirected to `/checkout/success?order=ORD-...`
 - order details are accurate
 - cart clears after successful checkout
 - user can view order in order history
@@ -1118,6 +1121,7 @@ Verify checkout completion and cancellation flows work correctly.
 ### Watch For
 
 - missing order confirmation
+- success page failing when only `order` is present in the URL
 - cart not clearing after success
 - cart clearing after cancellation
 - missing order in history

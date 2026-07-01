@@ -2,15 +2,15 @@
  * Centralized Cache Key Generation for Network/Data Deduplication
  * 
  * All cache keys MUST include locale to prevent mixing EN/AR data.
- * Multi-tenant keys SHOULD include tenantId for data isolation.
+ * Multi-tenant keys SHOULD include tenantSlug for data isolation.
  * 
- * Format: `{locale}:{tenantId}:{resource}:{identifier}:{variant}`
+ * Format: `{locale}:{tenantSlug}:{resource}:{identifier}:{variant}`
  * 
  * Examples:
- * - en:123:product:laptop-slug
- * - ar:123:categories:page
- * - en:456:cart:items
- * - ar:789:user:profile
+ * - en:demo-store:product:laptop-slug
+ * - ar:acme-shop:categories:page
+ * - en:merchant-store:cart:items
+ * - ar:fashion-store:user:profile
  */
 
 import type { StorefrontContext } from '../tenant/types'
@@ -18,7 +18,7 @@ import { useStorefrontContext } from '../tenant/composables'
 
 export interface CacheKeyOptions {
   locale: string
-  tenantId?: string | number | null
+  tenantSlug?: string | null
   resource: string
   identifier?: string | number
   variant?: string
@@ -29,8 +29,8 @@ export interface CacheKeyOptions {
  * Generate a structured cache key for useAsyncData
  * 
  * @example
- * createCacheKey({ locale: 'en', tenantId: 123, resource: 'product', identifier: 'laptop-x1' })
- * // => 'en:123:product:laptop-x1'
+ * createCacheKey({ locale: 'en', tenantSlug: 'demo-store', resource: 'product', identifier: 'laptop-x1' })
+ * // => 'en:demo-store:product:laptop-x1'
  * 
  * @example
  * createCacheKey({ locale: 'ar', resource: 'categories', variant: 'page' })
@@ -50,9 +50,9 @@ export const createCacheKey = (options: CacheKeyOptions): string => {
   // 1. Locale (REQUIRED - prevents EN/AR data mixing)
   parts.push(options.locale)
 
-  // 2. Tenant ID (optional but recommended for multi-tenant data)
-  if (options.tenantId) {
-    parts.push(String(options.tenantId))
+  // 2. Tenant Slug (optional but recommended for multi-tenant data)
+  if (options.tenantSlug) {
+    parts.push(String(options.tenantSlug))
   }
 
   // 3. Resource type (REQUIRED)
@@ -88,7 +88,7 @@ export const createCacheKey = (options: CacheKeyOptions): string => {
 
 /**
  * Helper to create cache keys from storefront context
- * Automatically extracts locale and tenantId
+ * Automatically extracts locale and tenantSlug
  * 
  * @example
  * const context = useStorefrontContext()
@@ -99,11 +99,11 @@ export const createCacheKey = (options: CacheKeyOptions): string => {
  */
 export const createContextCacheKey = (
   context: StorefrontContext,
-  options: Omit<CacheKeyOptions, 'locale' | 'tenantId'>
+  options: Omit<CacheKeyOptions, 'locale' | 'tenantSlug'>
 ): string => {
   return createCacheKey({
     locale: context.locale || 'en',
-    tenantId: context.tenant?.id,
+    tenantSlug: context.tenant?.slug,
     ...options,
   })
 }
@@ -118,14 +118,14 @@ export const createContextCacheKey = (
 export const useCacheKey = () => {
   // Lazy evaluation - only call composables when getCacheKey is called
   const getCacheKey = (
-    options: Omit<CacheKeyOptions, 'locale' | 'tenantId'>
+    options: Omit<CacheKeyOptions, 'locale' | 'tenantSlug'>
   ): string => {
     const context = useStorefrontContext()
     const { locale } = useI18n()
     
     return createCacheKey({
       locale: locale.value,
-      tenantId: context.value.tenant?.id,
+      tenantSlug: context.value.tenant?.slug,
       ...options,
     })
   }
@@ -187,18 +187,15 @@ export const CacheResources = {
  * // After updating product, invalidate all related caches
  * await clearResourceCache(['product', 'products', 'product-related'])
  */
-export const clearResourceCache = (resource: string | string[]) => {
+export const clearResourceCache = (resource: string | string[], options?: { locale?: string; tenantSlug?: string | null }) => {
   const resources = Array.isArray(resource) ? resource : [resource]
-  const { locale } = useI18n()
-  const context = useStorefrontContext()
+  const loc = options?.locale ?? ''
+  const ts = options?.tenantSlug
   
-  // Build pattern to match all keys for these resources
-  const patterns = resources.flatMap(r => [
-    `${locale.value}:${r}:`,
-    `${locale.value}:${context.value.tenant?.id}:${r}:`,
-  ])
+  const patterns = resources.flatMap(r =>
+    ts ? [`${loc}:${r}:`, `${loc}:${ts}:${r}:`] : [`${loc}:${r}:`]
+  )
   
-  // Clear matching keys
   for (const pattern of patterns) {
     clearNuxtData((key) => key.startsWith(pattern))
   }
@@ -212,15 +209,14 @@ export const clearResourceCache = (resource: string | string[]) => {
  * // After adding to cart, refresh cart data
  * await refreshResourceCache('cart')
  */
-export const refreshResourceCache = async (resource: string | string[]) => {
+export const refreshResourceCache = async (resource: string | string[], options?: { locale?: string; tenantSlug?: string | null }) => {
   const resources = Array.isArray(resource) ? resource : [resource]
-  const { locale } = useI18n()
-  const context = useStorefrontContext()
+  const loc = options?.locale ?? ''
+  const ts = options?.tenantSlug
   
-  const patterns = resources.flatMap(r => [
-    `${locale.value}:${r}:`,
-    `${locale.value}:${context.value.tenant?.id}:${r}:`,
-  ])
+  const patterns = resources.flatMap(r =>
+    ts ? [`${loc}:${r}:`, `${loc}:${ts}:${r}:`] : [`${loc}:${r}:`]
+  )
   
   for (const pattern of patterns) {
     await refreshNuxtData((key) => key.startsWith(pattern))

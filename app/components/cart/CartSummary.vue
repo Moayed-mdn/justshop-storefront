@@ -74,19 +74,14 @@
       </Transition>
     </div>
 
-    <!-- Checkout Error -->
-    <div v-if="checkoutError" data-testid="checkout-error" class="p-3 text-sm text-(--color-error) bg-(--color-error-bg) rounded-md">
-      {{ checkoutError }}
-    </div>
-
     <!-- Checkout Button -->
     <button
       @click="handleCheckout"
-      :disabled="checkoutLoading"
       data-testid="cart-checkout-button"
+      :disabled="checkoutLoading"
       :style="{ backgroundColor: primary, color: onPrimary }"
       class="w-full py-3 px-4 font-semibold rounded-md transition-colors text-sm sm:text-base cursor-pointer
-             disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2
+             flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed
              hover-primary-btn"
     >
       <svg
@@ -99,7 +94,7 @@
         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
       </svg>
-      {{ checkoutLoading ? $t('checkout.redirecting') : $t('cart.checkout') }}
+      {{ $t('cart.checkout') }}
     </button>
 
     <!-- Continue Shopping -->
@@ -154,7 +149,10 @@
 </template>
 
 <script setup lang="ts">
+import { computed, ref } from 'vue'
 import { formatPrice } from '../../utils/price'
+import { useCheckout } from '../../composables/useCheckout'
+import { useStorefrontRoutes } from '../../composables/useStorefrontRoutes'
 
 // Inline theme colors for SSR compatibility
 const getCSSVar = (varName: string, fallback: string): string => {
@@ -178,8 +176,7 @@ defineProps<{
 }>()
 
 const routes = useStorefrontRoutes()
-const { startCheckout, loading: checkoutLoading, error: checkoutError } = useCheckout()
-const toast = useToast()
+const { startCheckout, loading: checkoutLoading } = useCheckout()
 
 const showPromo = ref(false)
 const promoCode = ref('')

@@ -11,7 +11,7 @@ const error = ref<string | null>(null)
 const success = ref(false)
 const api = useApi()
 definePageMeta({
-  layout: 'auth'
+  layout: 'system'
 })
 onMounted(async () => {
  

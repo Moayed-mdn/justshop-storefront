@@ -48,6 +48,8 @@
           @submit="handleUpdatePassword"
         />
 
+        <ProfileAddressesSection />
+
         <ProfileDangerZoneSection
           :title="t('profile.dangerZone.title')"
           :subtitle="t('profile.dangerZone.subtitle')"
@@ -72,6 +74,7 @@
   
   <script setup lang="ts">
   definePageMeta({
+    layout: 'system',
     middleware: 'auth',
   })
 

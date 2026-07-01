@@ -35,6 +35,7 @@ export function useStorefrontRoutes() {
   const checkoutCancel = () => paths.checkout.cancel
   const verifyEmail = (id: string | number, hash: string) =>
     paths.verifyEmail(id, hash)
+  const googleCallback = () => paths.auth.googleCallback
 
   return {
     paths: paths satisfies StorefrontRoutePaths,
@@ -55,5 +56,6 @@ export function useStorefrontRoutes() {
     checkoutSuccess,
     checkoutCancel,
     verifyEmail,
+    googleCallback,
   }
 }

@@ -16,7 +16,7 @@ To support a multi-tenant platform, the API boundary must shift from a simple pr
 | `/api/products` | `products` | GET | `useProduct` | Catalog discovery & filtering. |
 | `/api/cart` | `cart` | GET | `useCartStore` | Server-side cart retrieval. |
 | `/api/cart/items` | `cart/items` | POST | `useCartStore` | Item addition with backend validation. |
-| `/api/checkout/session`| `checkout/session` | POST | `useCheckout` | Stripe session creation (Guest). |
+| `/api/checkout/initiate-enhanced`| `storefront/stores/{storeId}/checkout/initiate-enhanced` | POST | `useCheckout` | Merchant-driven checkout initialization for authenticated users. |
 | `/api/orders` | `orders` | GET | `useOrders` | Customer order history. |
 | `/api/search` | GraphQL Engine | POST | `apollo.client.ts` | External search indexing (Apollo). |
 

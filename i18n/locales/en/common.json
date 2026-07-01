@@ -1,0 +1,20 @@
+{
+  "common": {
+    "back": "Back",
+    "continue": "Continue",
+    "cancel": "Cancel",
+    "save": "Save",
+    "saving": "Saving",
+    "add": "Add",
+    "edit": "Edit",
+    "delete": "Delete",
+    "update": "Update",
+    "submit": "Submit",
+    "optional": "Optional",
+    "required": "Required",
+    "loading": "Loading",
+    "error": "Error",
+    "success": "Success",
+    "try_again": "Try Again"
+  }
+}

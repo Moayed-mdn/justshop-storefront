@@ -27,8 +27,15 @@ export default defineNuxtPlugin((nuxtApp) => {
   const authLink = setContext(() => {
     const extraHeaders: Record<string, string> = {}
 
-    if (tenantId.value) {
-      extraHeaders['X-Tenant-Id'] = String(tenantId.value)
+    let resolvedTenantId = tenantId.value
+
+    if (import.meta.server && !resolvedTenantId) {
+      const event = useRequestEvent()
+      resolvedTenantId = (event?.context?.tenantId as string | undefined) || null
+    }
+
+    if (resolvedTenantId) {
+      extraHeaders['X-Tenant-Id'] = String(resolvedTenantId)
     }
 
     if (locale?.value) {

@@ -2,27 +2,22 @@
  * Checkout E2E Tests
  *
  * Architecture note:
- * There is NO multi-step checkout form in this app.
- * The full checkout flow is:
+ * The active storefront flow is merchant-driven enhanced checkout:
  *   1. User fills cart
- *   2. Clicks checkout button on /cart (CartSummary or CartMobileCheckout)
- *   3. Frontend POSTs to /api/checkout/session (guest) or /api/checkout/session/auth (auth)
- *   4. Backend returns a Stripe session_url
- *   5. Browser is redirected to Stripe hosted checkout via window.location.href
- *   6. After payment, Stripe redirects to /checkout/success?session_id=... or /checkout/cancel
+ *   2. Clicks checkout button on /cart or Buy Now on product detail
+ *   3. Guest users are redirected to /login?redirect=/checkout
+ *   4. Authenticated users are routed to /checkout
+ *   5. After enhanced payment completes, the app redirects to /checkout/success?order=...
  *
  * All API calls are mocked via Playwright route interception.
- * The Stripe redirect is intercepted so tests stay within the app domain.
  */
 
 import { test, expect } from '@playwright/test';
 import { CheckoutPage } from '../../pages/CheckoutPage';
 import {
   mockCartAPI,
-  mockCheckoutSessionAPI,
-  mockCheckoutSessionFailure,
-  mockCheckoutStatusAPI,
   mockAuthAPI,
+  mockOrderDetailAPI,
 } from '../../helpers/mocks';
 import { clearTestState, setupGuestCart, setupAuthenticatedContext } from '../../fixtures';
 import { basicProduct } from '../../helpers/mocks';
@@ -61,16 +56,7 @@ test.describe('Cart Page — Checkout Button', () => {
     await checkout.assertCartReadyForCheckout();
   });
 
-  test('checkout button is disabled while checkout is loading', async ({ page }) => {
-    // Use a slow mock so we can observe the loading state
-    await page.route('**/api/checkout/session*', async (route) => {
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({ status: true, message: 'ok', data: { session_id: 'x', session_url: '/checkout/cancel' } }),
-      });
-    });
+  test('guest checkout redirects to login with checkout redirect target', async ({ page }) => {
     await mockCartAPI(page);
 
     await setupGuestCart(page, {
@@ -93,87 +79,13 @@ test.describe('Cart Page — Checkout Button', () => {
 
     // Click and immediately check disabled state
     await checkout.checkoutButton.click();
-    await expect(checkout.checkoutButton).toBeDisabled();
+    await expect(page).toHaveURL(/\/login\?redirect=%2Fcheckout|\/login\?redirect=\/checkout/);
   });
 
-  test('checkout button shows error message on API failure', async ({ page }) => {
+  test('authenticated checkout navigates directly to the enhanced checkout page', async ({ page }) => {
     await mockCartAPI(page);
-    await mockCheckoutSessionFailure(page, 'Unable to create checkout session.');
-
-    await setupGuestCart(page, {
-      items: [{
-        id: 'local_1',
-        quantity: 1,
-        name: basicProduct.name,
-        image: basicProduct.image,
-        price: parseFloat(basicProduct.price),
-        max_quantity: 10,
-        product: { id: basicProduct.id },
-        variant: { id: 1 },
-      }],
-      total_items: 1,
-      total_price: parseFloat(basicProduct.price),
-    });
-
-    const checkout = new CheckoutPage(page);
-    await checkout.gotoCart();
-    await checkout.clickCheckout();
-
-    await checkout.assertCheckoutError();
-  });
-
-  test('guest checkout POSTs to /api/checkout/session (not /auth)', async ({ page }) => {
-    await mockCartAPI(page);
-
-    const requests: string[] = [];
-    await page.route('**/api/checkout/**', async (route) => {
-      requests.push(route.request().url());
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({ status: true, message: 'ok', data: { session_id: 'x', session_url: '/checkout/cancel' } }),
-      });
-    });
-
-    await setupGuestCart(page, {
-      items: [{
-        id: 'local_1',
-        quantity: 1,
-        name: basicProduct.name,
-        image: basicProduct.image,
-        price: parseFloat(basicProduct.price),
-        max_quantity: 10,
-        product: { id: basicProduct.id },
-        variant: { id: 1 },
-      }],
-      total_items: 1,
-      total_price: parseFloat(basicProduct.price),
-    });
-
-    const checkout = new CheckoutPage(page);
-    await checkout.gotoCart();
-    await checkout.clickCheckout();
-    await page.waitForTimeout(500);
-
-    const usedGuestEndpoint = requests.some((url) => url.includes('/checkout/session') && !url.includes('/auth'));
-    expect(usedGuestEndpoint).toBe(true);
-  });
-
-  test('authenticated checkout POSTs to /api/checkout/session/auth', async ({ page }) => {
     await mockAuthAPI(page);
-    await mockCartAPI(page);
 
-    const requests: string[] = [];
-    await page.route('**/api/checkout/**', async (route) => {
-      requests.push(route.request().url());
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({ status: true, message: 'ok', data: { session_id: 'x', session_url: '/checkout/cancel' } }),
-      });
-    });
-
-    // Set up authenticated state via cookie
     await setupAuthenticatedContext(page, {
       isAuthenticated: true,
       user: {
@@ -190,10 +102,39 @@ test.describe('Cart Page — Checkout Button', () => {
     const checkout = new CheckoutPage(page);
     await checkout.gotoCart();
     await checkout.clickCheckout();
+
+    await expect(page).toHaveURL(/\/checkout$/);
+  });
+
+  test('cart checkout no longer uses the retired hosted checkout session endpoints', async ({ page }) => {
+    const requests: string[] = [];
+    await page.route('**/api/checkout/**', async (route) => {
+      requests.push(route.request().url());
+      await route.continue();
+    });
+    await mockCartAPI(page);
+    await setupGuestCart(page, {
+      items: [{
+        id: 'local_1',
+        quantity: 1,
+        name: basicProduct.name,
+        image: basicProduct.image,
+        price: parseFloat(basicProduct.price),
+        max_quantity: 10,
+        product: { id: basicProduct.id },
+        variant: { id: 1 },
+      }],
+      total_items: 1,
+      total_price: parseFloat(basicProduct.price),
+    });
+
+    const checkout = new CheckoutPage(page);
+    await checkout.gotoCart();
+    await checkout.clickCheckout();
     await page.waitForTimeout(500);
 
-    const usedAuthEndpoint = requests.some((url) => url.includes('/checkout/session/auth'));
-    expect(usedAuthEndpoint).toBe(true);
+    const usedHostedSessionEndpoint = requests.some((url) => url.includes('/checkout/session'));
+    expect(usedHostedSessionEndpoint).toBe(false);
   });
 
   test('cart summary displays total amount', async ({ page }) => {
@@ -222,9 +163,7 @@ test.describe('Cart Page — Checkout Button', () => {
     expect(totalText).toMatch(/\d+/);
   });
 
-  test('checkout redirects browser after session is created', async ({ page }) => {
-    // Mock session to return cancel page URL (stays in-app)
-    await mockCheckoutSessionAPI(page, '/checkout/cancel');
+  test('checkout button navigates away from cart into the enhanced flow', async ({ page }) => {
     await mockCartAPI(page);
 
     await setupGuestCart(page, {
@@ -247,7 +186,7 @@ test.describe('Cart Page — Checkout Button', () => {
     await checkout.clickCheckout();
 
     // Should navigate away from /cart
-    await page.waitForURL(/\/(checkout|cart)/, { timeout: 10000 });
+    await page.waitForURL(/\/(checkout|login)/, { timeout: 10000 });
     expect(page.url()).not.toContain('/cart');
   });
 
@@ -336,8 +275,7 @@ test.describe('Checkout Success Page', () => {
   });
 
   test('shows loading state while fetching status', async ({ page }) => {
-    // Delay the status API so we can catch the loading state
-    await page.route('**/api/checkout/status/**', async (route) => {
+    await page.route('**/api/orders/ORD-TEST-001', async (route) => {
       await new Promise((resolve) => setTimeout(resolve, 1000));
       await route.fulfill({
         status: 200,
@@ -348,8 +286,8 @@ test.describe('Checkout Success Page', () => {
           data: {
             payment_status: 'paid',
             order_number: 'ORD-TEST-001',
-            order_status: 'processing',
-            customer_email: 'test@example.com',
+            payment_status: 'paid',
+            status: 'processing',
           },
         }),
       });
@@ -357,25 +295,45 @@ test.describe('Checkout Success Page', () => {
 
     const checkout = new CheckoutPage(page);
     // Don't await — navigate and immediately check loading
-    checkout.gotoSuccess('cs_test_mock123');
+    checkout.gotoSuccess('ORD-TEST-001');
     await expect(checkout.successLoadingState).toBeVisible({ timeout: 3000 });
   });
 
   test('shows success state with order number after paid status', async ({ page }) => {
-    await mockCheckoutStatusAPI(page, 'paid', 'ORD-2024-001');
+    await mockOrderDetailAPI(page, 'ORD-2024-001', {
+      payment_status: 'paid',
+      status: 'processing',
+    });
 
     const checkout = new CheckoutPage(page);
-    await checkout.gotoSuccess('cs_test_mock123');
+    await checkout.gotoSuccess('ORD-2024-001');
 
     await checkout.assertSuccessPageLoaded();
     await checkout.assertOrderNumber('ORD-2024-001');
   });
 
-  test('shows paid payment status badge', async ({ page }) => {
-    await mockCheckoutStatusAPI(page, 'paid', 'ORD-2024-001');
+  test('loads success page from enhanced checkout order query', async ({ page }) => {
+    await mockOrderDetailAPI(page, 'ORD-ENHANCED-001', {
+      payment_status: 'paid',
+      status: 'processing',
+    });
+
+    await page.goto('/checkout/success?order=ORD-ENHANCED-001');
+    await page.waitForLoadState('networkidle');
 
     const checkout = new CheckoutPage(page);
-    await checkout.gotoSuccess('cs_test_mock123');
+    await checkout.assertSuccessPageLoaded();
+    await checkout.assertOrderNumber('ORD-ENHANCED-001');
+  });
+
+  test('shows paid payment status badge', async ({ page }) => {
+    await mockOrderDetailAPI(page, 'ORD-2024-001', {
+      payment_status: 'paid',
+      status: 'processing',
+    });
+
+    const checkout = new CheckoutPage(page);
+    await checkout.gotoSuccess('ORD-2024-001');
 
     await checkout.assertSuccessPageLoaded();
     await expect(checkout.paymentStatus).toBeVisible();
@@ -384,10 +342,13 @@ test.describe('Checkout Success Page', () => {
   });
 
   test('shows unpaid payment status badge', async ({ page }) => {
-    await mockCheckoutStatusAPI(page, 'unpaid', 'ORD-2024-002');
+    await mockOrderDetailAPI(page, 'ORD-2024-002', {
+      payment_status: 'unpaid',
+      status: 'pending',
+    });
 
     const checkout = new CheckoutPage(page);
-    await checkout.gotoSuccess('cs_test_mock123');
+    await checkout.gotoSuccess('ORD-2024-002');
 
     await checkout.assertSuccessPageLoaded();
     await expect(checkout.paymentStatus).toBeVisible();
@@ -395,17 +356,16 @@ test.describe('Checkout Success Page', () => {
     expect(statusText?.toLowerCase()).toMatch(/unpaid/);
   });
 
-  test('shows error state when no session_id in URL', async ({ page }) => {
+  test('shows error state when no order query is present', async ({ page }) => {
     const checkout = new CheckoutPage(page);
-    // Navigate without session_id — triggers error branch in onMounted
     await page.goto('/checkout/success');
     await page.waitForLoadState('networkidle');
 
     await expect(checkout.successErrorState).toBeVisible();
   });
 
-  test('shows error state when status API fails', async ({ page }) => {
-    await page.route('**/api/checkout/status/**', async (route) => {
+  test('shows error state when order lookup fails', async ({ page }) => {
+    await page.route('**/api/orders/ORD-TEST-BAD', async (route) => {
       await route.fulfill({
         status: 500,
         contentType: 'application/json',
@@ -414,24 +374,29 @@ test.describe('Checkout Success Page', () => {
     });
 
     const checkout = new CheckoutPage(page);
-    await checkout.gotoSuccess('cs_test_mock_bad');
+    await checkout.gotoSuccess('ORD-TEST-BAD');
 
-    // Page retries once after 2s — wait long enough for both attempts to fail
     await expect(checkout.successErrorState).toBeVisible({ timeout: 8000 });
   });
 
   test('shows continue shopping link', async ({ page }) => {
-    await mockCheckoutStatusAPI(page, 'paid', 'ORD-2024-001');
+    await mockOrderDetailAPI(page, 'ORD-2024-001', {
+      payment_status: 'paid',
+      status: 'processing',
+    });
 
     const checkout = new CheckoutPage(page);
-    await checkout.gotoSuccess('cs_test_mock123');
+    await checkout.gotoSuccess('ORD-2024-001');
     await checkout.assertSuccessPageLoaded();
 
     await expect(checkout.successContinueShopping).toBeVisible();
   });
 
   test('shows view orders link when authenticated', async ({ page }) => {
-    await mockCheckoutStatusAPI(page, 'paid', 'ORD-2024-001');
+    await mockOrderDetailAPI(page, 'ORD-2024-001', {
+      payment_status: 'paid',
+      status: 'processing',
+    });
     await mockAuthAPI(page);
 
     await setupAuthenticatedContext(page, {
@@ -448,24 +413,30 @@ test.describe('Checkout Success Page', () => {
     });
 
     const checkout = new CheckoutPage(page);
-    await checkout.gotoSuccess('cs_test_mock123');
+    await checkout.gotoSuccess('ORD-2024-001');
     await checkout.assertSuccessPageLoaded();
 
     await expect(checkout.viewOrdersLink).toBeVisible();
   });
 
   test('does NOT show view orders link for guests', async ({ page }) => {
-    await mockCheckoutStatusAPI(page, 'paid', 'ORD-2024-001');
+    await mockOrderDetailAPI(page, 'ORD-2024-001', {
+      payment_status: 'paid',
+      status: 'processing',
+    });
 
     const checkout = new CheckoutPage(page);
-    await checkout.gotoSuccess('cs_test_mock123');
+    await checkout.gotoSuccess('ORD-2024-001');
     await checkout.assertSuccessPageLoaded();
 
     await expect(checkout.viewOrdersLink).not.toBeVisible();
   });
 
   test('view orders link navigates to /orders', async ({ page }) => {
-    await mockCheckoutStatusAPI(page, 'paid', 'ORD-2024-001');
+    await mockOrderDetailAPI(page, 'ORD-2024-001', {
+      payment_status: 'paid',
+      status: 'processing',
+    });
     await mockAuthAPI(page);
 
     await setupAuthenticatedContext(page, {
@@ -482,7 +453,7 @@ test.describe('Checkout Success Page', () => {
     });
 
     const checkout = new CheckoutPage(page);
-    await checkout.gotoSuccess('cs_test_mock123');
+    await checkout.gotoSuccess('ORD-2024-001');
     await checkout.assertSuccessPageLoaded();
 
     await checkout.viewOrdersLink.click();
@@ -490,10 +461,13 @@ test.describe('Checkout Success Page', () => {
   });
 
   test('continue shopping link navigates to home', async ({ page }) => {
-    await mockCheckoutStatusAPI(page, 'paid', 'ORD-2024-001');
+    await mockOrderDetailAPI(page, 'ORD-2024-001', {
+      payment_status: 'paid',
+      status: 'processing',
+    });
 
     const checkout = new CheckoutPage(page);
-    await checkout.gotoSuccess('cs_test_mock123');
+    await checkout.gotoSuccess('ORD-2024-001');
     await checkout.assertSuccessPageLoaded();
 
     await checkout.successContinueShopping.click();
@@ -501,10 +475,14 @@ test.describe('Checkout Success Page', () => {
   });
 
   test('displays customer email in order card', async ({ page }) => {
-    await mockCheckoutStatusAPI(page, 'paid', 'ORD-2024-001');
+    await mockOrderDetailAPI(page, 'ORD-2024-001', {
+      payment_status: 'paid',
+      status: 'processing',
+      customer_email: 'test@example.com',
+    });
 
     const checkout = new CheckoutPage(page);
-    await checkout.gotoSuccess('cs_test_mock123');
+    await checkout.gotoSuccess('ORD-2024-001');
     await checkout.assertSuccessPageLoaded();
 
     // Customer email section is inside the order card
@@ -514,19 +492,25 @@ test.describe('Checkout Success Page', () => {
 
   test('success page renders correctly on mobile', async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 667 });
-    await mockCheckoutStatusAPI(page, 'paid', 'ORD-2024-001');
+    await mockOrderDetailAPI(page, 'ORD-2024-001', {
+      payment_status: 'paid',
+      status: 'processing',
+    });
 
     const checkout = new CheckoutPage(page);
-    await checkout.gotoSuccess('cs_test_mock123');
+    await checkout.gotoSuccess('ORD-2024-001');
     await checkout.assertSuccessPageLoaded();
   });
 
   test('success page renders correctly on desktop', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
-    await mockCheckoutStatusAPI(page, 'paid', 'ORD-2024-001');
+    await mockOrderDetailAPI(page, 'ORD-2024-001', {
+      payment_status: 'paid',
+      status: 'processing',
+    });
 
     const checkout = new CheckoutPage(page);
-    await checkout.gotoSuccess('cs_test_mock123');
+    await checkout.gotoSuccess('ORD-2024-001');
     await checkout.assertSuccessPageLoaded();
   });
 
@@ -592,17 +576,14 @@ test.describe('Checkout Cancel Page', () => {
 // Full flow integration
 // ---------------------------------------------------------------------------
 
-test.describe('Full Checkout Flow (mocked)', () => {
+test.describe('Checkout Entry Flow (mocked)', () => {
 
   test.beforeEach(async ({ page }) => {
     await clearTestState(page);
   });
 
-  test('guest: cart → checkout → success page', async ({ page }) => {
+  test('guest: cart → checkout redirects to login with checkout target', async ({ page }) => {
     await mockCartAPI(page);
-    // Return a relative URL so the browser stays in-app
-    await mockCheckoutSessionAPI(page, '/checkout/success?session_id=cs_test_flow');
-    await mockCheckoutStatusAPI(page, 'paid', 'ORD-FLOW-001');
 
     await setupGuestCart(page, {
       items: [{
@@ -625,40 +606,33 @@ test.describe('Full Checkout Flow (mocked)', () => {
     await checkout.gotoCart();
     await checkout.assertCartReadyForCheckout();
 
-    // Step 2: click checkout — redirects to mocked success URL
+    // Step 2: click checkout — guest users are routed to login first
     await checkout.clickCheckout();
-    await page.waitForURL(/\/checkout\/success/, { timeout: 10000 });
-
-    // Step 3: success page resolves status
-    await checkout.assertSuccessPageLoaded();
-    await checkout.assertOrderNumber('ORD-FLOW-001');
+    await page.waitForURL(/\/login\?redirect=%2Fcheckout|\/login\?redirect=\/checkout/, { timeout: 10000 });
   });
 
-  test('guest: cart → checkout → cancel page', async ({ page }) => {
+  test('authenticated: cart → checkout goes straight to enhanced checkout page', async ({ page }) => {
+    await mockAuthAPI(page);
     await mockCartAPI(page);
-    await mockCheckoutSessionAPI(page, '/checkout/cancel');
 
-    await setupGuestCart(page, {
-      items: [{
-        id: 'local_1',
-        quantity: 1,
-        name: basicProduct.name,
-        image: basicProduct.image,
-        price: parseFloat(basicProduct.price),
-        max_quantity: 10,
-        product: { id: basicProduct.id },
-        variant: { id: 1 },
-      }],
-      total_items: 1,
-      total_price: parseFloat(basicProduct.price),
+    await setupAuthenticatedContext(page, {
+      isAuthenticated: true,
+      user: {
+        id: 1,
+        email: 'test@example.com',
+        name: 'Test User',
+        email_verified_at: '2024-01-01T00:00:00Z',
+        created_at: '2024-01-01T00:00:00Z',
+        updated_at: '2024-01-01T00:00:00Z',
+      },
+      isLoading: false,
     });
 
     const checkout = new CheckoutPage(page);
     await checkout.gotoCart();
     await checkout.clickCheckout();
 
-    await page.waitForURL(/\/checkout\/cancel/, { timeout: 10000 });
-    await checkout.assertCancelPageLoaded();
+    await page.waitForURL(/\/checkout$/, { timeout: 10000 });
   });
 
   test('cancel page: return to cart restores the cart', async ({ page }) => {

@@ -27,7 +27,7 @@ Code surfaces this file aligns with:
 | docs owner file | The primary documentation file responsible for one topic area, as defined by the implementation plan. |
 | guest cart | Cart state stored client-side for users who are not logged in. |
 | locale cookie | The `i18n_redirected` cookie used by the current locale detection setup. |
-| middleware | Nuxt route middleware under `app/middleware/` such as `auth`, `guest`, and `google-auth`. |
+| middleware | Nuxt route middleware under `app/middleware/` such as `auth` and `guest`. |
 | Nitro | Nuxt's server runtime used here for `server/api` handlers and server middleware. |
 | page route | A route generated from a file in `app/pages/`. |
 | persisted auth | The current auth token persistence behavior configured through the Pinia persisted-state integration. |

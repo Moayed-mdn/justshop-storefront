@@ -67,6 +67,7 @@ export const useServerApi = (event: H3Event) => {
   const apiBase = String(config.apiBase || '').replace(/\/+$/, '')
   const locale = getCookie(event, 'i18n_redirected') || getHeader(event, 'accept-language') || 'en'
   const tenantId = event.context.tenantId || ''
+  const tenantSlug = event.context.tenantSlug || ''
   const normalizedHost = getNormalizedRequestHost(event)
 
   // Token from auth cookie (try new namespaced key then legacy key)
@@ -115,11 +116,22 @@ export const useServerApi = (event: H3Event) => {
     headers.set('Accept', 'application/json')
     headers.set('Host', normalizedHost)
     headers.set('X-Tenant-Id', String(tenantId))
+    headers.set('X-Tenant-Slug', String(tenantSlug))
     headers.set('X-Storefront-Locale', locale)
     headers.set('X-Storefront-Version', '1.0.0')
 
     if (locale) {
       headers.set('Accept-Language', locale)
+    }
+
+    const origin = getHeader(event, 'origin')
+    if (origin) {
+      headers.set('Origin', origin)
+    }
+
+    const referer = getHeader(event, 'referer')
+    if (referer) {
+      headers.set('Referer', referer)
     }
 
     if (token) {
@@ -197,6 +209,7 @@ export const proxySessionAuthRequest = async (event: H3Event, path: string, opti
   const apiRoot = buildApiRoot(apiBase)
   const locale = String(getCookie(event, 'i18n_redirected') || getHeader(event, 'accept-language') || 'en')
   const tenantId = String(event.context.tenantId || '')
+  const tenantSlug = String(event.context.tenantSlug || '')
   const normalizedHost = getNormalizedRequestHost(event)
   let token: string | null = null
   try {
@@ -213,6 +226,7 @@ export const proxySessionAuthRequest = async (event: H3Event, path: string, opti
   headers.set('Accept', 'application/json')
   headers.set('Host', normalizedHost)
   headers.set('X-Tenant-Id', tenantId)
+  headers.set('X-Tenant-Slug', tenantSlug)
   headers.set('X-Storefront-Locale', locale)
   headers.set('X-Storefront-Version', STOREFRONT_RUNTIME_CONTRACT_VERSION)
 

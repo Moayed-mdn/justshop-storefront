@@ -51,6 +51,24 @@
         :text="$t('register.register')"
         :loading-text="$t('register.creating_account')"
       />
+
+      <!-- Divider -->
+      <div class="relative">
+        <div class="absolute inset-0 flex items-center">
+          <div class="w-full border-t" :style="{ borderColor: 'var(--color-border-default)' }"></div>
+        </div>
+        <div class="relative flex justify-center text-sm">
+          <span class="px-2 bg-(--color-bg-page) text-(--color-text-secondary)">
+            {{ $t('register.or_continue_with') }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Google OAuth Button -->
+      <AuthGoogleButton
+        :text="$t('register.sign_up_with_google')"
+        @click="handleGoogleLogin"
+      />
     </form>
 
     <AuthFooterLink
@@ -63,15 +81,20 @@
 
 <script setup lang='ts'>
 import type { ApiError } from '~~/types/api'
+import { API_ROUTES } from '~~/shared/utils/routes'
 
 definePageMeta({
-  layout: 'auth',
+  layout: 'system',
   middleware: 'guest',
 })
 
 const { t } = useI18n()
 const routes = useStorefrontRoutes()
 const { register, loading } = useAuth()
+
+const handleGoogleLogin = () => {
+  window.location.href = API_ROUTES.auth.googleRedirect
+}
 
 useHead({
   title: t('register.page_title'),

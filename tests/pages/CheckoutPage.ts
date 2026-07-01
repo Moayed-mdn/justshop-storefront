@@ -1,14 +1,14 @@
 /**
  * CheckoutPage — Page Object Model
  *
- * Covers the checkout entry point (cart page) and the two Stripe return pages:
+ * Covers the checkout entry point (cart page) and the checkout return pages:
  *   /checkout/success  — post-payment landing page
  *   /checkout/cancel   — cancelled payment landing page
  *
- * There is no multi-step checkout form in this app. The checkout flow is:
- *   cart page → click checkout button → backend creates Stripe session →
- *   window.location.href = session_url (Stripe hosted page) →
- *   Stripe redirects to /checkout/success?session_id=... or /checkout/cancel
+ * The active storefront flow is merchant-driven enhanced checkout:
+ *   cart page → click checkout button → /checkout →
+ *   custom multi-step checkout completes payment →
+ *   redirect to /checkout/success?order=...
  *
  * Extends BasePage so all header/cart/locale helpers are available.
  */
@@ -51,7 +51,7 @@ export class CheckoutPage extends BasePage {
 
   // ── /checkout/success page ───────────────────────────────────────────────
 
-  /** Spinner shown while the status API call is in-flight. */
+  /** Spinner shown while the order lookup is in-flight. */
   get successLoadingState() {
     return this.page.locator('[data-testid="checkout-success-loading"]');
   }
@@ -117,11 +117,11 @@ export class CheckoutPage extends BasePage {
   }
 
   /**
-   * Navigate to the success page with a mock session_id query param.
-   * The status API is mocked by mockCheckoutStatusAPI before calling this.
+   * Navigate to the success page with a mock order query param.
+   * The order detail API should be mocked before calling this.
    */
-  async gotoSuccess(sessionId = 'cs_test_mock123'): Promise<void> {
-    await this.page.goto(`/checkout/success?session_id=${sessionId}`);
+  async gotoSuccess(orderNumber = 'ORD-TEST-001'): Promise<void> {
+    await this.page.goto(`/checkout/success?order=${orderNumber}`);
     await this.page.waitForLoadState('networkidle');
   }
 
@@ -134,10 +134,7 @@ export class CheckoutPage extends BasePage {
   // ── Actions ──────────────────────────────────────────────────────────────
 
   /**
-   * Click the desktop checkout button and wait for navigation or error.
-   * When using mockCheckoutSessionAPI with a same-domain URL, this will
-   * navigate within the app. When the real Stripe URL is returned this will
-   * navigate away — use page.route to intercept.
+   * Click the desktop checkout button.
    */
   async clickCheckout(): Promise<void> {
     await this.checkoutButton.click();

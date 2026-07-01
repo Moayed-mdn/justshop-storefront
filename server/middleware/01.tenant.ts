@@ -38,6 +38,7 @@ export default defineEventHandler(async (event) => {
   // 4. Inject tenant into context
   event.context.tenant = tenant
   event.context.tenantId = tenant.id
+  event.context.tenantSlug = tenant.slug
   
   // 5. Setup initial storefront context for SSR
   // This will be picked up by useStorefrontContext on the client

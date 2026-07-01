@@ -56,7 +56,6 @@ High-priority anchors for future documentation or audit work:
 - `/home/leader/projects/laravel/tenant/justshop-frontend/app/composables/useClientApi.ts`
 - `/home/leader/projects/laravel/tenant/justshop-frontend/app/plugins/api.ts`
 - `/home/leader/projects/laravel/tenant/justshop-frontend/app/utils/serverApi.ts`
-- `/home/leader/projects/laravel/tenant/justshop-frontend/app/middleware/google-auth.ts`
 - `/home/leader/projects/laravel/tenant/justshop-frontend/app/pages/auth/google/callback.vue`
 - `/home/leader/projects/laravel/tenant/justshop-frontend/app/pages/orders/index.vue`
 - `/home/leader/projects/laravel/tenant/justshop-frontend/app/pages/orders/[orderNumber].vue`

@@ -1,0 +1,19 @@
+{
+  "address": {
+    "default_shipping": "الشحن الافتراضي",
+    "default_billing": "الفواتير الافتراضية",
+    "add_new": "إضافة عنوان جديد",
+    "edit": "تعديل العنوان",
+    "delete": "حذف العنوان",
+    "set_default": "تعيين كافتراضي",
+    "set_as_default": "تعيين كافتراضي",
+    "shipping_address": "عنوان الشحن",
+    "billing_address": "عنوان الفواتير",
+    "no_addresses": "لا توجد عناوين محفوظة",
+    "saved_addresses": "العناوين المحفوظة",
+    "default": "افتراضي",
+    "confirm_delete": "هل أنت متأكد من حذف هذا العنوان؟",
+    "deleted_successfully": "تم حذف العنوان بنجاح",
+    "default_set": "تم تعيين العنوان الافتراضي"
+  }
+}

@@ -56,7 +56,7 @@ const routes = useStorefrontRoutes()
 const { t } = useI18n()
 
 definePageMeta({
-  layout: 'auth',
+  layout: 'system',
   middleware: 'guest',
 })
 

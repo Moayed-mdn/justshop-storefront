@@ -52,7 +52,7 @@ function apiPaginated<T>(items: T[], page = 1, perPage = 12) {
   };
 }
 
-function apiError(message: string, errorCode = 'ERROR', status = 422) {
+function apiError(message: string, errorCode = 'ERROR') {
   return { status: false, message, error_code: errorCode, errors: null };
 }
 
@@ -445,99 +445,6 @@ export async function mockGuestOrderLookupAPI(
 
 /** Expose fixture builder so spec files can create custom orders */
 export { makeOrder as makeOrderFixture };
-
-// ---------------------------------------------------------------------------
-// Checkout API mocks
-// ---------------------------------------------------------------------------
-
-/**
- * Mock checkout session creation:
- *   POST /api/checkout/session      → guest checkout session
- *   POST /api/checkout/session/auth → authenticated checkout session
- *
- * Returns a fake session_url pointing to /checkout/cancel so the browser
- * does NOT actually navigate away from the test domain during tests.
- * Tests that verify the redirect itself should check window.location was set.
- *
- * @param page        Playwright page
- * @param sessionUrl  Override the session_url returned (defaults to cancel page
- *                    to keep tests within the app domain)
- */
-export async function mockCheckoutSessionAPI(
-  page: Page,
-  sessionUrl = '/checkout/cancel',
-): Promise<void> {
-  const body = JSON.stringify(
-    apiSuccess({ session_id: 'cs_test_mock123', session_url: sessionUrl }),
-  );
-
-  await page.route('**/api/checkout/session/auth', async (route: Route) => {
-    if (route.request().method() === 'POST') {
-      await route.fulfill({ status: 200, contentType: 'application/json', body });
-    } else {
-      await route.continue();
-    }
-  });
-
-  await page.route('**/api/checkout/session', async (route: Route) => {
-    if (route.request().method() === 'POST') {
-      await route.fulfill({ status: 200, contentType: 'application/json', body });
-    } else {
-      await route.continue();
-    }
-  });
-}
-
-/**
- * Mock a failed checkout session (e.g. empty cart, backend error).
- */
-export async function mockCheckoutSessionFailure(page: Page, message = 'Checkout failed'): Promise<void> {
-  const body = JSON.stringify(apiError(message, 'CHECKOUT_ERROR'));
-
-  await page.route('**/api/checkout/session/auth', async (route: Route) => {
-    if (route.request().method() === 'POST') {
-      await route.fulfill({ status: 422, contentType: 'application/json', body });
-    } else {
-      await route.continue();
-    }
-  });
-
-  await page.route('**/api/checkout/session', async (route: Route) => {
-    if (route.request().method() === 'POST') {
-      await route.fulfill({ status: 422, contentType: 'application/json', body });
-    } else {
-      await route.continue();
-    }
-  });
-}
-
-/**
- * Mock GET /api/checkout/status/:sessionId
- *
- * @param page          Playwright page
- * @param paymentStatus 'paid' | 'unpaid' | 'no_payment_required'
- * @param orderNumber   Order number to return
- */
-export async function mockCheckoutStatusAPI(
-  page: Page,
-  paymentStatus: 'paid' | 'unpaid' | 'no_payment_required' = 'paid',
-  orderNumber = 'ORD-TEST-001',
-): Promise<void> {
-  await page.route('**/api/checkout/status/**', async (route: Route) => {
-    await route.fulfill({
-      status: 200,
-      contentType: 'application/json',
-      body: JSON.stringify(
-        apiSuccess({
-          payment_status: paymentStatus,
-          order_number: orderNumber,
-          order_status: paymentStatus === 'paid' ? 'processing' : 'pending',
-          customer_email: 'test@example.com',
-        }),
-      ),
-    });
-  });
-}
 
 // ---------------------------------------------------------------------------
 // Auth API mocks

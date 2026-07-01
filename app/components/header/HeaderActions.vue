@@ -1,7 +1,7 @@
 <template>
   <div class="flex items-center gap-(--header-gap-wide)">
 
-    <!-- ═══ NOT LOGGED IN ═══ -->
+    <!-- ══ NOT LOGGED IN ═══ -->
     <NuxtLinkLocale
       v-if="!isLoggedIn"
       :to="routes.login()"
@@ -33,21 +33,6 @@
       </div>
       </client-only>
     </NuxtLinkLocale>
-    
-    <!-- ThemeToggle disabled - dark mode not fully implemented -->
-
-    <!-- ═══ BURGER MENU ═══ -->
-    <button
-      @click="emit('openMenu')"
-      class="lg:hidden hover:opacity-(--header-opacity) cursor-pointer"
-      id="burger-menu-trigger"
-      type="button"
-      aria-controls="header-mobile-nav"
-      :aria-expanded="menuOpen ? 'true' : 'false'"
-      aria-label="Open menu"
-    >
-      <div class="text-2xl leading-none">☰</div>
-    </button>
   </div>
 </template>
 
@@ -57,8 +42,4 @@
 const cart = useCart()
 const { isLoggedIn } = useAuth()
 const routes = useStorefrontRoutes()
-
-
-defineProps<{ menuOpen?: boolean }>()
-const emit = defineEmits(['openMenu'])
 </script>

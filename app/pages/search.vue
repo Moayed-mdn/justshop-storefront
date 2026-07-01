@@ -152,6 +152,11 @@
 
 <script setup lang="ts">
 import { SEARCH_QUERY } from '~/graphql/queries/search'
+
+definePageMeta({
+  layout: 'system',
+})
+import { useStorefrontContext } from '~~/src/core/tenant/composables'
 import type { SearchResult, ProductSearchResult } from '~~/types/search'
 import type { ProductDto } from '~~/src/core/api/dto/storefront'
 
@@ -162,21 +167,17 @@ const routes = useStorefrontRoutes()
 // ── Reactive search term from URL ────────────────
 const searchTerm = computed(() => ((route.query.q as string) ?? '').trim())
 
+const storefrontContext = useStorefrontContext()
+const tenantId = computed(() => storefrontContext.value.tenant?.id)
+
 // ─── Fetch logic (SSR-safe) ────────────────────
 const { data, pending, error: fetchError } = await useAsyncData(
-  () => `search-${searchTerm.value}-${locale.value}`,
+  () => `search-${tenantId.value}-${searchTerm.value}-${locale.value}`,
   async () => {
     if (!searchTerm.value) return null
 
     const apollo = useNuxtApp().$apollo
-    
-    // Debug logging
-    if (import.meta.dev) {
-      console.log('[Search] Apollo client available:', !!apollo)
-      console.log('[Search] GraphQL URL:', useRuntimeConfig().public.graphqlUrl)
-      console.log('[Search] Search term:', searchTerm.value)
-    }
-    
+
     if (!apollo) {
       console.error('[Search] Apollo GraphQL client is not initialized')
       throw new Error('Apollo GraphQL client not available. Check if apollo plugin is loaded.')

@@ -20,8 +20,10 @@
 <script setup lang="ts">
 import type { OrderItem } from '~~/types/order'
 
-defineProps<{
-  items: OrderItem[]
+const props = withDefaults(defineProps<{
+  items?: OrderItem[] | null
   formatPrice: (price: number) => string
-}>()
+}>(), {
+  items: () => [],
+})
 </script>

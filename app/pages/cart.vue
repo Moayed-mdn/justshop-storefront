@@ -1,53 +1,28 @@
 <template>
-  <div class="min-h-[60vh]" :style="{ backgroundColor: 'var(--cart-page-bg)' }">
-    <!-- Show skeleton on initial load if not initialized or actively loading -->
+  <div class="cart-page" :style="{ backgroundColor: 'var(--cart-page-bg)' }">
     <ClientOnly>
       <CartSkeleton v-if="loading && !initialized" />
-
-      <!-- Main content -->
       <div v-else>
         <CartBreadcrumb />
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-          <!-- Loading State (Subsequent loads) -->
           <CartLoading v-if="loading && items.length > 0" />
 
-          <!-- Empty Cart -->
-          <CartEmpty v-else-if="isEmpty" />
-
-          <!-- Cart Content -->
-          <div v-else>
+          <div v-if="!isEmpty">
             <CartHeader
               :items-count="itemsCount"
               @clear="handleClearCart"
             />
-
-            <!-- Two Column Layout -->
-            <div class="flex flex-col lg:flex-row gap-6 lg:gap-8">
-              <CartItemsList :items="items" />
-
-              <!-- Order Summary -->
-              <div class="w-full lg:w-[380px] flex-shrink-0">
-                <div class="lg:sticky lg:top-4">
-                  <CartSummary
-                    :total="total"
-                    :items-count="itemsCount"
-                  />
-                </div>
-              </div>
-            </div>
           </div>
         </div>
 
-        <!-- Mobile Sticky Checkout Bar -->
         <CartMobileCheckout
           :show="!isEmpty && !loading"
-          :total="total"
+          :total="total || 0"
           :loading="checkoutLoading"
           @checkout="handleMobileCheckout"
         />
 
-        <!-- Clear Cart Confirmation Modal -->
         <CartClearModal
           :show="showClearConfirm"
           @cancel="showClearConfirm = false"
@@ -62,24 +37,21 @@
 </template>
 
 <script setup lang="ts">
-// Composables
 const cart = useCart()
 const { startCheckout, loading: checkoutLoading } = useCheckout()
 const { showSuccessToast } = useAppToast()
 
-// State
 const {
   items,
   total,
   itemsCount,
   isEmpty,
   loading,
-  initialized
+  initialized,
 } = cart
 
 const showClearConfirm = ref(false)
 
-// Methods
 const handleClearCart = () => {
   showClearConfirm.value = true
 }
@@ -96,9 +68,8 @@ const handleMobileCheckout = async () => {
   await startCheckout()
 }
 
-// Meta
 definePageMeta({
-  layout: 'default',
+  layout: 'system',
 })
 
 useHead({
@@ -113,9 +84,8 @@ useHead({
 </script>
 
 <style scoped>
-/* Add padding at the bottom for mobile sticky bar */
 @media (max-width: 1023px) {
-  .min-h-\[60vh\] {
+  .cart-page {
     padding-bottom: 100px;
   }
 }

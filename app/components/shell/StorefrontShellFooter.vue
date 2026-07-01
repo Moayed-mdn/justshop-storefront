@@ -86,11 +86,6 @@ const context = useStorefrontContext()
 
 const runtimeFooterItems = computed(() => context.value.navigation?.footer ?? [])
 
-// #region debug-point D:footer-render-state
-watchEffect(() => {
-  fetch('http://127.0.0.1:7777/event', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sessionId: 'storefront-footer-nav', runId: 'pre-fix', hypothesisId: 'D', location: 'app/components/shell/StorefrontShellFooter.vue', msg: '[DEBUG] storefront shell footer render state', data: { showRuntimeNavigation: shellConfig.value.showRuntimeNavigation, showFooter: shellConfig.value.showFooter, isMinimal: isMinimal.value, runtimeFooterCount: runtimeFooterItems.value.length, runtimeFooterLabels: runtimeFooterItems.value.map(item => item.label) }, ts: Date.now() }) }).catch(() => {})
-})
-// #endregion
 </script>
 
 <style scoped>

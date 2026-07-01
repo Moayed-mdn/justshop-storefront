@@ -27,7 +27,7 @@
   /* Burger */
   --header-burger-bg: var(--color-bg-elevated);
   --header-burger-duration: var(--duration-500);
-  --header-burger-z: var(--z-burger-menu);
+  --header-burger-z: var(--z-base);
   --header-burger-top: var(--header-total-height);
   --header-burger-top-mobile: var(--header-total-height-mobile);
 

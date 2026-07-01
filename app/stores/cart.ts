@@ -4,6 +4,7 @@ import { useApi } from '~/composables/useApi';
 import { API_ROUTES } from '~~/shared/utils/routes';
 import { useTenant } from '~~/src/core/tenant/composables';
 import { clearResourceCache, CacheResources } from '~~/src/core/cache/createCacheKey';
+import { useNuxtApp } from '#imports';
 import type {
   AddToCartPayload,
   Cart,
@@ -17,21 +18,31 @@ import type {
 const BASE_STORAGE_KEY = 'js_cart';
 let localIdCounter = Date.now();
 
-// ─── Helper Functions ────────────────────────────────────────
+// ─── Helper Functions ──────────────────────────────────────────
+const getLocale = () => {
+  try {
+    const nuxtApp = useNuxtApp()
+    const i18n = (nuxtApp as any).$i18n
+    return i18n?.locale?.value || 'en'
+  } catch {
+    return 'en'
+  }
+}
+
 const cartHelpers = {
   generateLocalId: (): string => `local_${++localIdCounter}`,
 
-  getStorageKey(tenantId?: string | number): string {
-    return tenantId ? `${BASE_STORAGE_KEY}_${tenantId}` : BASE_STORAGE_KEY;
+  getStorageKey(tenantSlug?: string): string {
+    return tenantSlug ? `${BASE_STORAGE_KEY}_${tenantSlug}` : BASE_STORAGE_KEY;
   },
 
-  loadGuestCart(tenantId?: string | number): GuestCart {
+  loadGuestCart(tenantSlug?: string): GuestCart {
     if (import.meta.server) {
       return { items: [], total_price: 0, total_items: 0 };
     }
 
     try {
-      const key = this.getStorageKey(tenantId);
+      const key = this.getStorageKey(tenantSlug);
       const raw = localStorage.getItem(key);
 
       // One-time migration from the legacy global key
@@ -65,14 +76,14 @@ const cartHelpers = {
     return { items: [], total_price: 0, total_items: 0 };
   },
 
-  saveGuestCart(cart: GuestCart, tenantId?: string | number): void {
+  saveGuestCart(cart: GuestCart, tenantSlug?: string): void {
     if (import.meta.server) return;
-    localStorage.setItem(this.getStorageKey(tenantId), JSON.stringify(cart));
+    localStorage.setItem(this.getStorageKey(tenantSlug), JSON.stringify(cart));
   },
 
-  clearGuestCart(tenantId?: string | number): void {
+  clearGuestCart(tenantSlug?: string): void {
     if (import.meta.server) return;
-    localStorage.removeItem(this.getStorageKey(tenantId));
+    localStorage.removeItem(this.getStorageKey(tenantSlug));
   },
 
   recalculateGuestCart(items: GuestCartItem[]): GuestCart {
@@ -85,13 +96,12 @@ const cartHelpers = {
   },
 };
 
-// ─── Store ───────────────────────────────────────────────────
+// ─── Store ─────────────────────────────────────────────────────
 export const useCartStore = defineStore('cart', () => {
   const authStore = useAuthStore()
-  const { tenantId } = useTenant()
   const api = useApi()
 
-  // ── State ──────────────────────────────────────────────────────
+  // ── State ────────────────────────────────────────────────────────
   const items = ref<(CartItem | GuestCartItem)[]>([])
   const total = ref(0)
   const itemsCount = ref(0)
@@ -100,7 +110,7 @@ export const useCartStore = defineStore('cart', () => {
   const error = ref<string | null>(null)
   const initialized = ref(false);
 
-  // ── Computed ─────────────────────────────────────────────
+  // ── Computed ─────────────────────────────────────────────────
   const isEmpty = computed(() => items.value.length === 0);
 
   const isItemLoading = computed(() => {
@@ -123,11 +133,12 @@ export const useCartStore = defineStore('cart', () => {
     };
   });
 
-  // ── Helpers ──────────────────────────────────────────────
+  // ── Helpers ────────────────────────────────────────────────────
   function syncGuestCart(itemsList: GuestCartItem[]) {
+    const { tenantSlug } = useTenant();
     const cart = cartHelpers.recalculateGuestCart(itemsList);
     setCart(cart);
-    cartHelpers.saveGuestCart(cart, tenantId.value);
+    cartHelpers.saveGuestCart(cart, tenantSlug.value);
   }
 
   function findGuestItem(productId: number, variantId?: number | null) {
@@ -154,15 +165,25 @@ export const useCartStore = defineStore('cart', () => {
     }
   }
 
-  // ── API Actions ──────────────────────────────────────────
+  async function invalidateCartCache(locale?: string, tenantSlug?: string) {
+    const localeValue = locale || getLocale();
+    const tenantSlugValue = tenantSlug || useTenant().tenantSlug.value;
+    await clearResourceCache(CacheResources.CART_ITEMS, {
+      locale: localeValue,
+      tenantSlug: tenantSlugValue,
+    });
+  }
+
+  // ── API Actions ───────────────────────────────────────────────
   async function fetchCart() {
+    const { tenantSlug } = useTenant();
     loading.value = true;
     error.value = null;
 
     try {
       if (authStore.isLoggedIn) {
         // Automatically merge guest cart if it exists before fetching
-        const guestCart = cartHelpers.loadGuestCart(tenantId.value);
+        const guestCart = cartHelpers.loadGuestCart(tenantSlug.value);
         if (guestCart.items.length > 0) {
           await mergeGuestCartToServer();
         }
@@ -171,7 +192,7 @@ export const useCartStore = defineStore('cart', () => {
         if (apiError) throw apiError;
         if (data) setCart(data.data);
       } else {
-        const guestCart = cartHelpers.loadGuestCart(tenantId.value);
+        const guestCart = cartHelpers.loadGuestCart(tenantSlug.value);
         setCart(guestCart);
       }
     } catch (err) {
@@ -205,7 +226,7 @@ export const useCartStore = defineStore('cart', () => {
         if (data) setCart(data.data);
         
         // ✅ Invalidate cart cache after adding item
-        await clearResourceCache(CacheResources.CART_ITEMS);
+        await invalidateCartCache(getLocale(), useTenant().tenantSlug.value);
       } finally {
         delete itemLoading.value[tempId];
       }
@@ -260,7 +281,7 @@ export const useCartStore = defineStore('cart', () => {
         if (data) setCart(data.data);
         
         // ✅ Invalidate cart cache after updating item
-        await clearResourceCache(CacheResources.CART_ITEMS);
+        await invalidateCartCache(getLocale(), useTenant().tenantSlug.value);
       } else {
         const item = items.value.find((i) => i.id === itemId) as GuestCartItem | undefined;
         if (!item) {
@@ -298,7 +319,7 @@ export const useCartStore = defineStore('cart', () => {
         if (data) setCart(data.data);
         
         // ✅ Invalidate cart cache after removing item
-        await clearResourceCache(CacheResources.CART_ITEMS);
+        await invalidateCartCache(getLocale(), useTenant().tenantSlug.value);
       } else {
         items.value = items.value.filter((i) => i.id !== itemId);
         syncGuestCart(items.value as GuestCartItem[]);
@@ -312,6 +333,7 @@ export const useCartStore = defineStore('cart', () => {
   }
 
   async function clear() {
+    const { tenantSlug } = useTenant();
     loading.value = true;
     error.value = null;
 
@@ -319,12 +341,12 @@ export const useCartStore = defineStore('cart', () => {
       if (authStore.isLoggedIn) {
         await api(API_ROUTES.cart.clear, { method: 'DELETE' });
       } else {
-        cartHelpers.clearGuestCart(tenantId.value);
+        cartHelpers.clearGuestCart(tenantSlug.value);
       }
       setCart({ items: [], total_price: 0, total_items: 0 });
       
-      // ✅ Invalidate cart cache after clearing
-      await clearResourceCache(CacheResources.CART_ITEMS);
+      // ✅ Invalidate cart cache after clearing cart
+      await invalidateCartCache(getLocale(), useTenant().tenantSlug.value);
     } catch (err) {
       handleError(err);
       throw err;
@@ -334,7 +356,8 @@ export const useCartStore = defineStore('cart', () => {
   }
 
   async function mergeGuestCartToServer() {
-    const guestCart = cartHelpers.loadGuestCart(tenantId.value);
+    const { tenantSlug } = useTenant();
+    const guestCart = cartHelpers.loadGuestCart(tenantSlug.value);
     if (guestCart.items.length === 0) return;
 
     try {
@@ -349,7 +372,7 @@ export const useCartStore = defineStore('cart', () => {
       });
       if (apiError) throw apiError;
       if (data) setCart(data.data);
-      cartHelpers.clearGuestCart(tenantId.value);
+      cartHelpers.clearGuestCart(tenantSlug.value);
     } catch (err) {
       handleError(err);
       // If bulk fails, we keep the guest cart for next attempt
@@ -361,16 +384,17 @@ export const useCartStore = defineStore('cart', () => {
     await fetchCart();
     
     // ✅ Invalidate cart cache after login (merged cart)
-    await clearResourceCache(CacheResources.CART_ITEMS);
+    await invalidateCartCache(getLocale(), useTenant().tenantSlug.value);
   }
 
   function onLogout() {
+    const { tenantSlug } = useTenant();
     setCart({ items: [], total_price: 0, total_items: 0 });
-    cartHelpers.clearGuestCart(tenantId.value);
+    cartHelpers.clearGuestCart(tenantSlug.value);
     initialized.value = false;
     
     // ✅ Invalidate cart cache after logout
-    clearResourceCache(CacheResources.CART_ITEMS);
+    void invalidateCartCache(getLocale(), useTenant().tenantSlug.value);
   }
 
   return {

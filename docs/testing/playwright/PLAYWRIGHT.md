@@ -1170,18 +1170,17 @@ test('authenticated user checkout', async ({ page }) => {
 #### C. **Checkout Success Flow**
 ```typescript
 test('checkout success page', async ({ page, context }) => {
-  // Mock successful checkout callback
-  const mockSessionId = 'cs_test_mock123';
+  const orderNumber = 'ORD-12345';
   
-  // Intercept status check API
-  await page.route('/api/checkout/status/**', async (route) => {
+  // Intercept order lookup API
+  await page.route(`/api/orders/${orderNumber}`, async (route) => {
     await route.fulfill({
       status: 200,
       body: JSON.stringify({
         data: {
-          order_number: 'ORD-12345',
+          order_number: orderNumber,
           payment_status: 'paid',
-          order_status: 'processing',
+          status: 'processing',
           customer_email: 'test@example.com',
         },
       }),
@@ -1189,7 +1188,7 @@ test('checkout success page', async ({ page, context }) => {
   });
   
   // Navigate to success page
-  await page.goto(`/checkout/success?session_id=${mockSessionId}`);
+  await page.goto(`/checkout/success?order=${orderNumber}`);
   
   // Should show success state
   await expect(page.locator('text=/success/i')).toBeVisible();
@@ -1855,23 +1854,27 @@ test('cart page (Arabic)', async ({ page }) => {
 });
 ```
 
-### 4. **Stripe Checkout Redirect**
+### 4. **Enhanced Checkout Completion**
 
-**Challenge:** Checkout redirects to external Stripe page.
+**Challenge:** The active storefront flow completes payment inside the merchant checkout and redirects to `/checkout/success?order=...`.
 
 **Solution:**
 ```typescript
-// Option 1: Mock the checkout session creation
-await page.route('/api/checkout/session*', async (route) => {
+// Option 1: Mock the order lookup used by the success page
+await page.route('/api/orders/ORD-TEST-001', async (route) => {
   await route.fulfill({
     body: JSON.stringify({
-      data: { session_url: '/checkout/success?session_id=mock_123' },
+      data: {
+        order_number: 'ORD-TEST-001',
+        payment_status: 'paid',
+        status: 'processing',
+      },
     }),
   });
 });
 
-// Option 2: Use Stripe test mode and complete flow
-// (requires Stripe test credentials)
+// Option 2: Navigate directly to the enhanced success URL
+await page.goto('/checkout/success?order=ORD-TEST-001');
 
 // Option 3: Test up to redirect, verify redirect occurs
 await page.click('button:has-text("Checkout")');
@@ -2149,4 +2152,3 @@ await page.waitForTimeout(1000); // Give extra time in CI
 **Last Updated:** Based on codebase investigation as of project state
 
 **Maintainer:** Update this file when adding new features or changing auth/cart/routing patterns.
-

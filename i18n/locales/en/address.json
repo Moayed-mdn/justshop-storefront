@@ -1,0 +1,19 @@
+{
+  "address": {
+    "default_shipping": "Default Shipping",
+    "default_billing": "Default Billing",
+    "add_new": "Add New Address",
+    "edit": "Edit Address",
+    "delete": "Delete Address",
+    "set_default": "Set as Default",
+    "set_as_default": "Set as Default",
+    "shipping_address": "Shipping Address",
+    "billing_address": "Billing Address",
+    "no_addresses": "No saved addresses",
+    "saved_addresses": "Saved Addresses",
+    "default": "Default",
+    "confirm_delete": "Are you sure you want to delete this address?",
+    "deleted_successfully": "Address deleted successfully",
+    "default_set": "Default address set"
+  }
+}

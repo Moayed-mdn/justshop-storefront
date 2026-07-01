@@ -84,9 +84,10 @@
 
 <script setup lang='ts'>
 import type { ApiError } from '~~/types/api'
+import { API_ROUTES } from '~~/shared/utils/routes'
 
 definePageMeta({
-  layout: 'auth',
+  layout: 'system',
   middleware: 'guest',  
 })
 
@@ -121,11 +122,7 @@ const form = reactive({
 })
 
 const handleGoogleLogin = () => {
-  const config = useRuntimeConfig()
-  const apiBase = config.public.apiBase || 'http://localhost:8000/api/v1'
-  const googleAuthUrl = `${apiBase}/users/auth/google/redirect`
-  
-  // Redirect to backend OAuth endpoint
+  const googleAuthUrl = API_ROUTES.auth.googleRedirect
   window.location.href = googleAuthUrl
 }
 

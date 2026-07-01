@@ -87,7 +87,7 @@ Current flow:
 
 Current implementation note:
 
-- callback handling is split between `app/middleware/google-auth.ts` and `app/pages/auth/google/callback.vue`
+- callback handling is owned by `app/pages/auth/google/callback.vue` (google-auth middleware was removed per ADR-003)
 
 ## Current Integration Constraints
 

@@ -98,6 +98,10 @@
 
 <script setup lang="ts">
 import { createCacheKey, CacheResources } from '~~/src/core/cache/createCacheKey'
+
+definePageMeta({
+  layout: 'system',
+})
 import { useStorefrontContext } from '~~/src/core/tenant/composables'
 
 // Inline theme colors for SSR compatibility

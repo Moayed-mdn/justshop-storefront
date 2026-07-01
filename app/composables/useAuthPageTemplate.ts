@@ -27,7 +27,7 @@ export const useAuthPageTemplate = () => {
   const { data, pending, error } = useAsyncData(
     () => createCacheKey({
       locale: locale.value,
-      tenantId: context.value.tenant?.id,
+      tenantSlug: context.value.tenant?.slug,
       resource: 'auth-page-template',
       identifier: pageType.value,
     }),

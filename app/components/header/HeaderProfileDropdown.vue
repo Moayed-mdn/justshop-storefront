@@ -47,7 +47,7 @@
       <div
         v-if="isOpen"
         data-testid="profile-dropdown-trigger"
-        class="header-profile-dropdown absolute ltr:right-0 rtl:left-0 mt-2 w-56 rounded-lg shadow-lg z-50 py-1"
+        class="header-profile-dropdown absolute ltr:right-0 rtl:left-0 mt-2 w-56 rounded-lg shadow-lg z-(--z-dropdown) py-1"
         :style="{ background: 'var(--color-bg-elevated)', border: '1px solid var(--color-border-default)' }"
       >
         <!-- User Info Header -->
@@ -61,29 +61,27 @@
         </div>
 
         <!-- Menu Items -->
-        <NuxtLinkLocale
-          :to="routes.profile()"
-          @click="closeDropdown"
-          class="header-profile-item flex items-center gap-3 px-4 py-2.5 text-sm transition-colors"
-          :style="{ color: 'var(--color-text-secondary)' }"
-        >
-          <svg class="w-4 h-4" :style="{ color: 'var(--color-text-muted)' }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-          </svg>
-          {{ $t('header.dropdown.my_profile') }}
-        </NuxtLinkLocale>
+    <NuxtLinkLocale
+      :to="routes.profile()"
+      class="header-profile-item flex items-center gap-3 px-4 py-2.5 text-sm transition-colors"
+      :style="{ color: 'var(--color-text-secondary)' }"
+    >
+      <svg class="w-4 h-4" :style="{ color: 'var(--color-text-muted)' }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+      </svg>
+      {{ $t('header.dropdown.my_profile') }}
+    </NuxtLinkLocale>
 
-        <NuxtLinkLocale
-          :to="routes.orders()"
-          @click="closeDropdown"
-          class="header-profile-item flex items-center gap-3 px-4 py-2.5 text-sm transition-colors"
-          :style="{ color: 'var(--color-text-secondary)' }"
-        >
-          <svg class="w-4 h-4" :style="{ color: 'var(--color-text-muted)' }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-          </svg>
-          {{ $t('header.dropdown.my_orders') }}
-        </NuxtLinkLocale>
+    <NuxtLinkLocale
+      :to="routes.orders()"
+      class="header-profile-item flex items-center gap-3 px-4 py-2.5 text-sm transition-colors"
+      :style="{ color: 'var(--color-text-secondary)' }"
+    >
+      <svg class="w-4 h-4" :style="{ color: 'var(--color-text-muted)' }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+      </svg>
+      {{ $t('header.dropdown.my_orders') }}
+    </NuxtLinkLocale>
 
         <!-- Divider -->
         <div class="border-t my-1" :style="{ borderColor: 'var(--color-border-default)' }"></div>
@@ -119,12 +117,8 @@ const toggleDropdown = () => {
   isOpen.value = !isOpen.value
 }
 
-const closeDropdown = () => {
-  isOpen.value = false
-}
-
 const handleLogout = async () => {
-  closeDropdown()
+  isOpen.value = false
   await logout()
 }
 

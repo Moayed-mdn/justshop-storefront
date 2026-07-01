@@ -46,7 +46,7 @@
       <OrdersCancelModal
         :show="!!cancelTarget"
         :cancelling="cancelling"
-        @cancel="cancelTarget = null"
+        @close="cancelTarget = null"
         @confirm="confirmCancel"
       />
     </div>
@@ -192,6 +192,7 @@ onMounted(async () => {
 
 // Meta
 definePageMeta({
+  layout: 'system',
   middleware: 'auth',
 })
 

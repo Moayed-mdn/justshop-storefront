@@ -63,7 +63,7 @@
   const { t } = useI18n()
 
   definePageMeta({
-    layout: 'default',
+    layout: 'system',
   })
 
   useHead({
