@@ -6,6 +6,8 @@ export interface ProductApiFilters {
   max_price?: number
   earliest_manufacture?: string
   latest_expiry?: string
+  brand_slugs?: string[]
+  min_rating?: number
   per_page?: number
   page?: number
 }
@@ -18,6 +20,9 @@ export interface UIProductListFilters {
   max_price: number
   earliest_manufacture?: string
   latest_expiry?: string
+  brands?: FilterDescendant[]
+  min_rating?: number | null
+  max_rating?: number | null
 }
 
 

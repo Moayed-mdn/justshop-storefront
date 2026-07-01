@@ -27,6 +27,9 @@ export interface ProductListFilters {
   max_price: number | null;
   earliest_manufacture: string | null; // ISO 8601 date string
   latest_expiry: string | null; // ISO 8601 date string
+  brands?: FilterDescendant[];
+  min_rating?: number | null;
+  max_rating?: number | null;
 }
 
 export interface BreadcrumbItem {

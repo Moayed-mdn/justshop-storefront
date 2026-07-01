@@ -4,5 +4,7 @@ export interface ShopFilters {
   maxPrice?: number | null
   manufactureFrom?: string | null
   expiryTo?: string | null
+  brandSlugs?: string[]
+  minRating?: number | null
 }
 

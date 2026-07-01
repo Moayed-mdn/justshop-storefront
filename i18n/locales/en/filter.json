@@ -18,6 +18,9 @@
       "months3": "3 months",
       "months6": "6 months",
       "later_year": "Later year",
-      "reset": "Reset Filters"
+      "reset": "Reset Filters",
+      "brands": "Brand",
+      "clear_brand": "Clear brand",
+      "rating": "Rating"
     }
   }

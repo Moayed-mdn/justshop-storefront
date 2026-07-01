@@ -9,6 +9,7 @@
         <FilterSidebar
           v-if="backendFilters"
           :backend-filters="backendFilters"
+          :filter-config="filterConfig"
         />
       </aside>
 
@@ -32,11 +33,28 @@
 <script setup lang="ts">
 import type { PaginationMeta } from '~~/types/api';
 import type { ProductListFilters, ProductListResponse } from '~~/types/product'
+import type { ProductFilterConfig } from '~~/app/composables/useFilterConfig'
 import { transformProduct } from '~~/src/core/api/dto/storefront'
 
 const props = defineProps<{
   data: ProductListResponse | null
 }>()
+
+const { filterConfig: systemFilterConfig, fetchFilterConfig } = useFilterConfig()
+const route = useRoute()
+
+const filterConfig = ref<ProductFilterConfig | null>(null)
+
+onMounted(async () => {
+  const path = route.path.replace(/\/$/, '')
+  const segments = path.split('/').filter(Boolean)
+  const localePrefix = new Set(['en', 'ar'])
+  const relevant = segments.filter(s => !localePrefix.has(s))
+  const last = relevant[relevant.length - 1]
+  const type = last === 'search' ? 'search' : 'shop'
+  await fetchFilterConfig(type)
+  filterConfig.value = systemFilterConfig.value
+})
 
 const products = computed(() => {
   const rawProducts = props.data?.data

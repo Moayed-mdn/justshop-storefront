@@ -57,6 +57,20 @@
         v-model="expiryPreset"
       />
 
+      <!-- Rating -->
+      <RatingFilter
+        v-if="showRatingFilter && FiltersData.max_rating != null"
+        v-model="filters.minRating"
+      />
+
+      <!-- Brands -->
+      <BrandFilter
+        v-if="showBrandFilter && FiltersData.brands?.length"
+        :brands="FiltersData.brands"
+        :selected-slugs="filters.brandSlugs"
+        @update="setBrands"
+      />
+
       <!-- Reset -->
       <button
         class="w-full border rounded py-(--filter-button-padding-y) text-(--filter-clear-size) hover:bg-(--filter-button-hover-bg)"
@@ -92,7 +106,7 @@ const effectiveConfig = computed<ProductFilterConfig>(() => props.filterConfig ?
   showPriceFilter: true,
   showManufactureFilter: true,
   showExpiryFilter: true,
-  showBrandFilter: false,
+  showBrandFilter: true,
   showRatingFilter: false,
 })
 
@@ -100,6 +114,8 @@ const showCategoryFilter = computed(() => effectiveConfig.value.showCategoryFilt
 const showPriceFilter = computed(() => effectiveConfig.value.showPriceFilter)
 const showManufactureFilter = computed(() => effectiveConfig.value.showManufactureFilter)
 const showExpiryFilter = computed(() => effectiveConfig.value.showExpiryFilter)
+const showBrandFilter = computed(() => effectiveConfig.value.showBrandFilter)
+const showRatingFilter = computed(() => effectiveConfig.value.showRatingFilter)
 
 const FiltersData = computed(() => mapToUIFilters(props.backendFilters));
 
@@ -108,7 +124,8 @@ const {
   filters,
   manufacturePreset,
   expiryPreset,
-  resetFilters
+  resetFilters,
+  syncToUrl
 } = useProductFilters()
 
 /* Price helpers */
@@ -140,6 +157,7 @@ const onPriceChange = () => {
   // Always ensure min < max
   filters.value.minPrice = Math.min(left, right)
   filters.value.maxPrice = Math.max(left, right)
+  syncToUrl()
 }
 
 // ✅ This watcher syncs priceRange when resetFilters() clears minPrice/maxPrice
@@ -164,19 +182,38 @@ watch(locale, () => {
 })
 
 /* Category helpers */
+const syncFilters = () => {
+  syncToUrl()
+}
+
 const setCategory = (slug: string) => {
   filters.value.categorySlug = slug
+  syncFilters()
 }
 const clearCategory = () => {
   filters.value.categorySlug = null
+  syncFilters()
+}
+
+/* Rating watcher */
+watch(() => filters.value.minRating, (val) => {
+  syncToUrl()
+})
+
+/* Brand helpers */
+const setBrands = (slugs: string[]) => {
+  filters.value.brandSlugs = slugs
+  syncFilters()
 }
 
 /* Date watchers */
 watch(manufacturePreset, (preset) => {
   filters.value.manufactureFrom = manufactureDateFromPreset(preset)
+  syncToUrl()
 })
 watch(expiryPreset, (preset) => {
   filters.value.expiryTo = expiryDateFromPreset(preset)
+  syncToUrl()
 })
 
 const manufactureOptions = [

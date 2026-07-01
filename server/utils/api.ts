@@ -96,7 +96,7 @@ export const useServerApi = (event: H3Event) => {
       if (Array.isArray(value)) {
         for (const entry of value) {
           if (entry !== undefined && entry !== null) {
-            params.append(key, String(entry))
+            params.append(`${key}[]`, String(entry))
           }
         }
         continue
@@ -359,7 +359,7 @@ export const useRuntimeServerApi = (event: H3Event) => {
       if (Array.isArray(value)) {
         for (const entry of value) {
           if (entry !== undefined && entry !== null) {
-            url.searchParams.append(key, String(entry))
+            url.searchParams.append(`${key}[]`, String(entry))
           }
         }
         continue

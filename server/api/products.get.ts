@@ -17,6 +17,13 @@ export default defineEventHandler(async (event) => {
       : undefined,
     earliest_manufacture: rawQuery.earliest_manufacture as string | undefined,
     latest_expiry: rawQuery.latest_expiry as string | undefined,
+    brand_slugs: (rawQuery['brand_slugs[]'] as string[] | undefined)
+      ?? (rawQuery.brand_slugs
+        ? (Array.isArray(rawQuery.brand_slugs) ? rawQuery.brand_slugs : [rawQuery.brand_slugs])
+        : undefined),
+    min_rating: rawQuery.min_rating
+      ? Number(rawQuery.min_rating as string)
+      : undefined,
     per_page: rawQuery.per_page
       ? Number(rawQuery.per_page as string)
       : 10,
