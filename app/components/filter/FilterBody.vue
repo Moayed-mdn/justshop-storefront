@@ -12,7 +12,7 @@
     <div class="p-(--filter-sidebar-padding) space-y-(--filter-sidebar-gap)">
       <!-- Categories -->
       <CategoryFilter
-        v-if="backendFilters?.descendants?.length"
+        v-if="showCategoryFilter && backendFilters?.descendants?.length"
         :categories="backendFilters.descendants"
         :selected-slug="filters.categorySlug"
         @select="setCategory"
@@ -20,7 +20,7 @@
       />
 
       <!-- Price -->
-      <div>
+      <div v-if="showPriceFilter">
         <h3 class="font-semibold mb-2">{{ t('filter.price') }}</h3>
         <USlider
           v-model="priceRange"
@@ -43,6 +43,7 @@
 
       <!-- Manufacture -->
       <FilterDateSection
+        v-if="showManufactureFilter"
         :title="t('filter.manufactured')"
         :options="manufactureOptions"
         v-model="manufacturePreset"
@@ -50,6 +51,7 @@
 
       <!-- Expiry -->
       <FilterDateSection
+        v-if="showExpiryFilter"
         :title="t('filter.expiry')"
         :options="expiryOptions"
         v-model="expiryPreset"
@@ -69,7 +71,8 @@
 <script setup lang="ts">
 import { manufactureDateFromPreset, expiryDateFromPreset } from '../../utils/dateFilters'
 import type { UIProductListFilters } from '../../../types/api/product'
-import type { ProductListFilters } from '~~/types/product';
+import type { ProductListFilters } from '~~/types/product'
+import type { ProductFilterConfig } from '~~/app/composables/useFilterConfig'
 
 const { t } = useI18n()
 const { locale } = useI18n()
@@ -77,11 +80,26 @@ const isRtl = computed(() => locale.value === 'ar')
 
 const props = defineProps<{
   backendFilters: ProductListFilters | null
+  filterConfig?: ProductFilterConfig | null
 }>()
 
 const emit = defineEmits<{
   (e: 'close'): void
 }>()
+
+const effectiveConfig = computed<ProductFilterConfig>(() => props.filterConfig ?? {
+  showCategoryFilter: true,
+  showPriceFilter: true,
+  showManufactureFilter: true,
+  showExpiryFilter: true,
+  showBrandFilter: false,
+  showRatingFilter: false,
+})
+
+const showCategoryFilter = computed(() => effectiveConfig.value.showCategoryFilter)
+const showPriceFilter = computed(() => effectiveConfig.value.showPriceFilter)
+const showManufactureFilter = computed(() => effectiveConfig.value.showManufactureFilter)
+const showExpiryFilter = computed(() => effectiveConfig.value.showExpiryFilter)
 
 const FiltersData = computed(() => mapToUIFilters(props.backendFilters));
 

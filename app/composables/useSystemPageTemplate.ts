@@ -7,6 +7,7 @@ type NavData = { header: RuntimeNavigationItem[]; footer: RuntimeNavigationItem[
 const SYSTEM_PAGE_TYPES: Record<string, string> = {
   'cart': 'cart',
   'search': 'search',
+  'shop': 'shop',
   'profile': 'account',
   'categories': 'categories',
   'login': 'login',

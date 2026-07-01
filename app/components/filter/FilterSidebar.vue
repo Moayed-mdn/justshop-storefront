@@ -11,18 +11,19 @@
 
     <!-- Desktop sidebar -->
     <div class="hidden md:block md:h-(--filter-sidebar-height) bg-(--filter-sidebar-bg) sticky top-0 overflow-y-auto rounded thin-scrollbar">
-      <FilterBody :backend-filters="backendFilters" />
+      <FilterBody :backend-filters="backendFilters" :filter-config="filterConfig" />
     </div>
 
     <!-- Mobile drawer -->
     <UiDrawer v-model="isOpen">
-      <FilterBody :backend-filters="backendFilters" @close="isOpen = false" />
+      <FilterBody :backend-filters="backendFilters" :filter-config="filterConfig" @close="isOpen = false" />
     </UiDrawer>
   </div>
 </template>
 
 <script setup lang="ts">
 import type { ProductListFilters } from '~~/types/product'
+import type { ProductFilterConfig } from '~~/app/composables/useFilterConfig'
 
 // Inline theme colors for SSR compatibility
 const getCSSVar = (varName: string, fallback: string): string => {
@@ -44,6 +45,7 @@ const { t } = useI18n()
 
 defineProps<{
   backendFilters: ProductListFilters | null
+  filterConfig?: ProductFilterConfig | null
 }>()
 
 const isOpen = ref(false)

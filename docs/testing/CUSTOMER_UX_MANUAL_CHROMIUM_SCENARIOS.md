@@ -1254,6 +1254,58 @@ Login → Profile → Update Info → Upload Avatar → Change Password
 ### Journey 5: Order Management
 Login → Orders → View Details → Track Order → Cancel or Reorder
 
+### Journey 6: Configurable Product Filters
+Merchant → Template Editor → Shop/Search Template → Configure Filters → Storefront reflects changes
+
+---
+
+## Scenario 13: Merchant Configures Product Filters via Template Editor
+
+### Goal
+Verify that a merchant can enable/disable product filter options (category, price, dates) through the system template editor, and that the storefront respects those settings.
+
+### Setup
+- Logged in as merchant with `manage_theme` permission
+- Store has at least 2 products in different categories with different prices
+- Store has a theme with default shop template
+
+### Steps
+1. Navigate to **Storefront → Themes → [Active Theme] → System Templates**
+2. Click on the **Shop Page** template (or **Search Results** template)
+3. Click the **Product Filters** section in the template
+4. In the right panel, verify the following settings appear:
+   - Category filter (checkbox, default ON)
+   - Price range filter (checkbox, default ON)
+   - Manufacture date filter (checkbox, default ON)
+   - Expiry date filter (checkbox, default ON)
+   - Brand filter (checkbox, default OFF)
+   - Rating filter (checkbox, default OFF)
+5. Turn OFF the **Price range filter** checkbox
+6. Turn OFF the **Expiry date filter** checkbox
+7. Save the template
+8. Navigate to the storefront shop page (`/shop`)
+9. Verify that:
+   - Category filter IS visible
+   - Price range slider is NOT visible
+   - Manufacture date filter IS visible
+   - Expiry date filter is NOT visible
+10. Go back to the template editor and re-enable the disabled filters
+11. Save and verify they reappear on the storefront
+
+### Expected
+- Template editor shows all 6 filter toggle settings with correct defaults
+- Storefront filter sidebar only shows filters that are enabled in the template
+- Toggling a filter in the editor immediately changes the storefront after save
+- Category filter still works (selecting a category filters products correctly)
+- Price filter works when enabled (range slider updates product listing)
+
+### Watch For
+- Template editor not showing "Product Filters" as an available section type
+- Section settings not saving (check API response for `section_overrides` payload)
+- Storefront not reflecting setting changes (browser cache / CDN cache)
+- Price range slider showing even when `show_price_filter` is OFF
+- Default fallback (all filters ON) when no `search_filters` section exists in template
+
 ---
 
 ## Final Validation Checklist

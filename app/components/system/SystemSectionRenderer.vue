@@ -37,6 +37,11 @@
       v-else-if="sectionMap[sectionId]?.type === 'cart_empty'"
       :section="sectionMap[sectionId]"
     />
+    <SystemSectionProductFilters
+      v-else-if="sectionMap[sectionId]?.type === 'search_filters'"
+      :backend-filters="productListFilters ?? null"
+      :section="sectionMap[sectionId]"
+    />
     <template v-else-if="sectionMap[sectionId]">
       <StorefrontShellHeader v-if="sectionMap[sectionId].type === 'header'" :header-section="sectionMap[sectionId]" />
       <main v-else-if="sectionMap[sectionId].type === 'content'" class="flex-1">
@@ -55,11 +60,13 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { RuntimeTemplateSectionDetail } from '~~/src/core/runtime/contracts/types'
+import type { ProductListFilters } from '~~/types/product'
 
 const props = defineProps<{
   sectionOrder: string[]
   sectionMap: Record<string, RuntimeTemplateSectionDetail>
   noShellFallbacks?: boolean
+  productListFilters?: ProductListFilters | null
 }>()
 
 const { locale } = useI18n()

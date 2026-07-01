@@ -269,6 +269,7 @@ const COMPONENT_FOR_TYPE: Record<string, string> = {
   category_grid: 'CategoryGridSection',
   product_grid: 'ProductGridSection',
   products: 'ProductGridSection',
+  search_filters: 'SystemSectionProductFilters',
   faq: 'FaqSection',
   gallery: 'GallerySection',
   video: 'VideoSection',
