@@ -49,9 +49,24 @@ const props = defineProps<{
   showLanguageSwitcher?: boolean
 }>()
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 const merged = computed(() => props.settings ?? {})
+
+const resolveLocalizedString = (value: unknown): string => {
+  if (typeof value === 'string') return value
+
+  if (value && typeof value === 'object' && !Array.isArray(value)) {
+    const localized = value as Record<string, unknown>
+    const active = localized[locale.value]
+    const fallback = localized.en
+
+    if (typeof active === 'string' && active !== '') return active
+    if (typeof fallback === 'string') return fallback
+  }
+
+  return ''
+}
 
 const visible = computed(() => {
   const v = merged.value.enabled
@@ -59,8 +74,8 @@ const visible = computed(() => {
 })
 
 const phone = computed(() => String(merged.value.phone ?? ''))
-const offerText = computed(() => String(merged.value.offer_text ?? merged.value.text ?? ''))
-const shopNowText = computed(() => String(merged.value.shop_now_text ?? ''))
+const offerText = computed(() => resolveLocalizedString(merged.value.offer_text ?? merged.value.text))
+const shopNowText = computed(() => resolveLocalizedString(merged.value.shop_now_text))
 const shopNowLink = computed(() => {
   const v = merged.value.shop_now_link ?? merged.value.link ?? merged.value.url ?? null
   return v ? String(v) : null

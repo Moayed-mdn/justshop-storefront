@@ -34,6 +34,7 @@ import {
   provideStorefrontShell,
   type StorefrontShellVariant,
 } from '~/composables/useStorefrontShell'
+const { locale } = useI18n()
 
 const props = withDefaults(defineProps<{
   variant?: StorefrontShellVariant
@@ -86,13 +87,27 @@ const chromeSections = computed(() => {
 
 // ── Copyright bar ───────────────────────────────────────────
 const copyrightSettings = computed(() => chromeSections.value?.copyright_bar ?? {})
+const resolveLocalizedString = (value: unknown): string => {
+  if (typeof value === 'string') return value
+
+  if (value && typeof value === 'object' && !Array.isArray(value)) {
+    const localized = value as Record<string, unknown>
+    const active = localized[locale.value]
+    const fallback = localized.en
+
+    if (typeof active === 'string' && active !== '') return active
+    if (typeof fallback === 'string') return fallback
+  }
+
+  return ''
+}
 const copyrightVisible = computed(() => {
   const v = copyrightSettings.value.enabled
   return v !== false && v !== 'false'
 })
 const copyrightText = computed(() => {
   const year = new Date().getFullYear()
-  const raw = String(copyrightSettings.value.text ?? copyrightSettings.value.copyright_text ?? '')
+  const raw = resolveLocalizedString(copyrightSettings.value.text ?? copyrightSettings.value.copyright_text)
   return raw.replace(/\{year\}/g, String(year))
 })
 const copyrightBgColor = computed(() => String(copyrightSettings.value.background_color ?? copyrightSettings.value.bg_color ?? 'transparent'))

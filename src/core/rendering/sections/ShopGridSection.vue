@@ -20,7 +20,9 @@ const props = defineProps<RuntimeSectionComponentProps>()
 const storefrontContext = useStorefrontContext()
 const { locale } = useI18n()
 const route = useRoute()
-const { filters, apiQuery } = useProductFilters()
+const { filters, apiQuery, syncFromUrl } = useProductFilters()
+// Sync filter state from URL during setup (works for both SSR and client)
+syncFromUrl()
 const api = useApi()
 
 // Extract props from runtime payload

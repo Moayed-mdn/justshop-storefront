@@ -14,17 +14,17 @@ const DEFAULTS: ProductFilterConfig = {
   showPriceFilter: true,
   showManufactureFilter: true,
   showExpiryFilter: true,
-  showBrandFilter: false,
+  showBrandFilter: true,
   showRatingFilter: false,
 }
 
 function parseSectionSettings(settings: Record<string, unknown>): ProductFilterConfig {
   return {
-    showCategoryFilter: settings.show_category_filter !== false,
-    showPriceFilter: settings.show_price_filter !== false,
+    showCategoryFilter: (settings.show_category_filter ?? settings.show_categories) !== false,
+    showPriceFilter: (settings.show_price_filter ?? settings.show_price_range) !== false,
     showManufactureFilter: settings.show_manufacture_filter !== false,
     showExpiryFilter: settings.show_expiry_filter !== false,
-    showBrandFilter: settings.show_brand_filter === true,
+    showBrandFilter: (settings.show_brand_filter ?? settings.show_brands) === true,
     showRatingFilter: settings.show_rating_filter === true,
   }
 }
@@ -61,7 +61,10 @@ export function useFilterConfig() {
       )
 
       if (filterSection?.settings) {
-        filterConfig.value = parseSectionSettings(filterSection.settings)
+        filterConfig.value = parseSectionSettings({
+          ...filterSection.settings,
+          ...filterSection.data,
+        })
       } else {
         filterConfig.value = { ...DEFAULTS }
       }
