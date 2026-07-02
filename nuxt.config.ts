@@ -102,6 +102,11 @@ export default defineNuxtConfig({
           'Expires': '0',
         }
       },
+      '/storage/**': {
+        cache: false,
+        // Serve storage paths from nitro server, not vue router
+        prerender: false,
+      },
     },
   },
 

@@ -99,6 +99,7 @@ import type { RuntimeTemplateSectionDetail, RuntimeBlockInstance } from '~~/src/
 const props = defineProps<{
   section: RuntimeTemplateSectionDetail
 }>()
+const { resolveMediaUrl } = useMediaUrl()
 
 const enabledBlocks = computed(() =>
   (props.section.blocks ?? []).filter((b: RuntimeBlockInstance) => {
@@ -119,7 +120,21 @@ function textContent(block: RuntimeBlockInstance): string {
 }
 
 function imageSrc(block: RuntimeBlockInstance): string {
-  return String(block.settings?.src ?? block.content?.src ?? block.settings?.image_url ?? '')
+  return resolveMediaUrl(
+    String(
+      block.settings?.src
+      ?? block.content?.src
+      ?? block.settings?.image_url
+      ?? block.content?.image_url
+      ?? block.settings?.url
+      ?? block.content?.url
+      ?? block.settings?.full_url
+      ?? block.content?.full_url
+      ?? block.settings?.logo_url
+      ?? block.content?.logo_url
+      ?? '',
+    ),
+  )
 }
 
 function imageClass(block: RuntimeBlockInstance): string {

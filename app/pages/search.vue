@@ -163,6 +163,7 @@ import type { ProductDto } from '~~/src/core/api/dto/storefront'
 const route = useRoute()
 const { locale, t } = useI18n()
 const routes = useStorefrontRoutes()
+const { resolveMediaUrl } = useMediaUrl()
 
 // ── Reactive search term from URL ────────────────
 const searchTerm = computed(() => ((route.query.q as string) ?? '').trim())
@@ -225,7 +226,7 @@ function toProductDto(p: ProductSearchResult): ProductDto {
     slug: p.slug,
     price: p.price ?? 0,
     currency: 'USD',
-    image: p.image_url ?? '',
+    image: resolveMediaUrl(p.image_url),
     description: p.description ?? '',
   }
 }

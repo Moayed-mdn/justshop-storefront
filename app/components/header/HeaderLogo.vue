@@ -18,13 +18,14 @@ const props = defineProps<{
 
 const { theme: themeData } = useTheme()
 const routes = useStorefrontRoutes()
+const { resolveMediaUrl } = useMediaUrl()
 
 const logoSrc = computed(() => {
     if (props.logoSettings?.logo_url && typeof props.logoSettings.logo_url === 'string' && props.logoSettings.logo_url) {
-        return props.logoSettings.logo_url
+        return resolveMediaUrl(props.logoSettings.logo_url)
     }
     if (themeData.value?.assets?.logoUrl) {
-        return themeData.value.assets.logoUrl
+        return resolveMediaUrl(themeData.value.assets.logoUrl)
     }
     return null
 })

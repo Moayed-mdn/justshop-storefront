@@ -13,6 +13,7 @@ const legacyPassthroughPrefixes = [
   '/profile',
   '/verify-email',
   '/auth',
+  '/storage',
 ]
 
 const isLegacyPassthroughPath = (path: string): boolean => {

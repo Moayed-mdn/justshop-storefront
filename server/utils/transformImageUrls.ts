@@ -1,53 +1,52 @@
 import type { H3Event } from 'h3'
 
 /**
- * Transform image URLs from backend domain to frontend domain
+ * Transform storage URLs from backend domain to relative storage paths
  * 
- * This utility recursively traverses response data and rewrites any URLs
- * that point to the backend domain to use the frontend domain instead.
+ * This utility recursively traverses response data and rewrites any storage URLs
+ * that point to the backend domain to use relative /storage/ paths instead.
  * 
  * Example:
  * - Input:  http://localhost:8000/storage/variants/default.png
- * - Output: http://demo.justshop.test:3000/storage/variants/default.png
+ * - Output: /storage/variants/default.png
  * 
  * @param data - The response data (object, array, or primitive)
  * @param backendUrl - The backend base URL (e.g., "http://localhost:8000")
- * @param frontendUrl - The frontend base URL (e.g., "http://demo.justshop.test:3000")
  * @returns Transformed data with rewritten URLs
  */
-export const transformImageUrls = (data: any, backendUrl: string, frontendUrl: string): any => {
+export const transformImageUrls = (data: any, backendUrl: string): any => {
   if (!data || typeof data !== 'object') {
     return data
   }
 
   if (Array.isArray(data)) {
-    return data.map(item => transformImageUrls(item, backendUrl, frontendUrl))
+    return data.map(item => transformImageUrls(item, backendUrl))
   }
 
   const transformed: any = {}
   for (const [key, value] of Object.entries(data)) {
-    if (typeof value === 'string' && value.startsWith(backendUrl)) {
-      // Rewrite backend URL to frontend URL
-      transformed[key] = value.replace(backendUrl, frontendUrl)
+    if (typeof value === 'string') {
+      // Check if it's a backend storage URL (with or without trailing slash on backendUrl)
+      const backendStoragePrefix1 = backendUrl + '/storage/'
+      const backendStoragePrefix2 = backendUrl + 'storage/'
+      
+      if (value.startsWith(backendStoragePrefix1)) {
+        // Transform to relative path: /storage/...
+        transformed[key] = value.replace(backendUrl, '')
+      } else if (value.startsWith(backendStoragePrefix2)) {
+        // Transform to relative path (add leading slash if needed)
+        transformed[key] = '/' + value.replace(backendUrl, '')
+      } else {
+        // Leave all other URLs as-is
+        transformed[key] = value
+      }
     } else if (typeof value === 'object') {
-      transformed[key] = transformImageUrls(value, backendUrl, frontendUrl)
+      transformed[key] = transformImageUrls(value, backendUrl)
     } else {
       transformed[key] = value
     }
   }
   return transformed
-}
-
-/**
- * Get the frontend URL from the request headers
- * 
- * @param event - The H3 event
- * @returns The frontend URL (protocol + host)
- */
-export const getFrontendUrl = (event: H3Event): string => {
-  const protocol = getHeader(event, 'x-forwarded-proto') || 'http'
-  const host = getHeader(event, 'host') || 'localhost:3000'
-  return `${protocol}://${host}`
 }
 
 /**
@@ -58,13 +57,15 @@ export const getFrontendUrl = (event: H3Event): string => {
  */
 export const getBackendUrl = (event: H3Event): string => {
   const config = useRuntimeConfig(event)
-  return String(config.apiBase || 'http://localhost:8000').replace(/\/api\/v1.*$/, '')
+  return String(config.apiBase || 'http://localhost:8000')
+    .replace(/\/api\/v1.*$/, '')
+    .replace(/\/$/, '') // Ensure no trailing slash
 }
 
 /**
- * Transform response data to use frontend URLs for images
+ * Transform response data to use relative storage paths for images
  * 
- * Convenience function that automatically gets backend and frontend URLs
+ * Convenience function that automatically gets backend URL
  * from the event context and applies the transformation.
  * 
  * @param event - The H3 event
@@ -73,6 +74,5 @@ export const getBackendUrl = (event: H3Event): string => {
  */
 export const transformResponseUrls = (event: H3Event, data: any): any => {
   const backendUrl = getBackendUrl(event)
-  const frontendUrl = getFrontendUrl(event)
-  return transformImageUrls(data, backendUrl, frontendUrl)
+  return transformImageUrls(data, backendUrl)
 }

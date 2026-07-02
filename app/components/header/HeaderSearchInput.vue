@@ -87,6 +87,7 @@ const { locale } = useI18n()
 const router = useRouter()
 const routes = useStorefrontRoutes()
 const inputId = useId()
+const { resolveMediaUrl } = useMediaUrl()
 
 // ── Refs ─────────────────────────────────────────
 const containerRef = ref<HTMLElement>()
@@ -133,7 +134,10 @@ async function fetchSuggestions(query: string) {
       fetchPolicy: 'no-cache',
     })
 
-    suggestions.value = data?.autocomplete ?? []
+    suggestions.value = (data?.autocomplete ?? []).map(item => ({
+      ...item,
+      image_url: resolveMediaUrl(item.image_url),
+    }))
     isDropdownOpen.value = true
     highlightedIndex.value = -1
   }

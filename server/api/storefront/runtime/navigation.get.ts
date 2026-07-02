@@ -1,5 +1,6 @@
 import { EXTERNAL_API_ROUTES } from '~~/shared/utils/routes'
 import { useRuntimeServerApi } from '../../../utils/api'
+import { transformResponseUrls } from '../../../utils/transformImageUrls'
 
 export default defineEventHandler(async (event) => {
   const api = useRuntimeServerApi(event)
@@ -8,5 +9,5 @@ export default defineEventHandler(async (event) => {
     query: getQuery(event),
   })
 
-  return response
+  return transformResponseUrls(event, response)
 })
