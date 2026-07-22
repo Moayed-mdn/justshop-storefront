@@ -154,7 +154,7 @@
 import { SEARCH_QUERY } from '~/graphql/queries/search'
 
 definePageMeta({
-  layout: 'system',
+  layout: 'default',
 })
 import { useStorefrontContext } from '~~/src/core/tenant/composables'
 import type { SearchResult, ProductSearchResult } from '~~/types/search'

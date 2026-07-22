@@ -18,6 +18,9 @@ export const useCheckout = () => {
      * This keeps merchant-configured address and shipping rules authoritative.
      */
     const startCheckout = async () => {
+      if (cartStore.isEmpty) {
+        return
+      }
       loading.value = true
       error.value = null
 

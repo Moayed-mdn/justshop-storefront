@@ -3,68 +3,69 @@
 <template>
   <div ref="containerRef" class="relative w-full">
     <!-- ── Search Input Bar ───────────────── -->
-    <div class="
-      w-full flex items-center overflow-hidden transition-all duration-(--header-duration)
-      bg-(--header-search-bg)
-      border border-(--header-search-border) rounded-(--header-search-radius) px-3
-      focus-within:border-(--header-search-focus) focus-within:ring-1 focus-within:ring-(--header-search-focus)
-      h-(--header-mobile-search-height) lg:h-10
-    ">
-      <!-- Search Icon -->
-      <label
-        :for="inputId"
-        class="cursor-pointer text-(--header-search-placeholder) hover:text-(--header-search-text) shrink-0"
-      >
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path
-            d="M8.33317 3.33317C5.57175 3.33317 3.33317 5.57175 3.33317 8.33317C3.33317 11.0946 5.57175 13.3332 8.33317 13.3332C11.0946 13.3332 13.3332 11.0946 13.3332 8.33317C13.3332 5.57175 11.0946 3.33317 8.33317 3.33317ZM1.6665 8.33317C1.6665 4.65127 4.65127 1.6665 8.33317 1.6665C12.0151 1.6665 14.9998 4.65127 14.9998 8.33317C14.9998 9.87376 14.4773 11.2923 13.5997 12.4212L18.0891 16.9106C18.4145 17.236 18.4145 17.7637 18.0891 18.0891C17.7637 18.4145 17.236 18.4145 16.9106 18.0891L12.4212 13.5997C11.2923 14.4773 9.87376 14.9998 8.33317 14.9998C4.65127 14.9998 1.6665 12.0151 1.6665 8.33317Z"
-            fill="currentColor"
-          />
+    <form @submit.prevent="handleSubmit" class="w-full">
+      <div class="
+        w-full flex items-center overflow-hidden transition-all duration-(--header-duration)
+        bg-(--header-search-bg)
+        border border-(--header-search-border) rounded-(--header-search-radius) px-3
+        focus-within:border-(--header-search-focus) focus-within:ring-1 focus-within:ring-(--header-search-focus)
+        h-(--header-mobile-search-height) lg:h-10
+      ">
+        <!-- Search Icon -->
+        <label
+          :for="inputId"
+          class="cursor-pointer text-(--header-search-placeholder) hover:text-(--header-search-text) shrink-0"
+        >
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M8.33317 3.33317C5.57175 3.33317 3.33317 5.57175 3.33317 8.33317C3.33317 11.0946 5.57175 13.3332 8.33317 13.3332C11.0946 13.3332 13.3332 11.0946 13.3332 8.33317C13.3332 5.57175 11.0946 3.33317 8.33317 3.33317ZM1.6665 8.33317C1.6665 4.65127 4.65127 1.6665 8.33317 1.6665C12.0151 1.6665 14.9998 4.65127 14.9998 8.33317C14.9998 9.87376 14.4773 11.2923 13.5997 12.4212L18.0891 16.9106C18.4145 17.236 18.4145 17.7637 18.0891 18.0891C17.7637 18.4145 17.236 18.4145 16.9106 18.0891L12.4212 13.5997C11.2923 14.4773 9.87376 14.9998 8.33317 14.9998C4.65127 14.9998 1.6665 12.0151 1.6665 8.33317Z"
+              fill="currentColor"
+            />
+          </svg>
+          <span class="sr-only">{{ $t('header.search_placeholder') }}</span>
+        </label>
+
+        <!-- Input -->
+        <input
+          :id="inputId"
+          ref="inputRef"
+          v-model="searchQuery"
+          type="search"
+          :placeholder="$t('header.search_placeholder')"
+          autocomplete="off"
+          class="
+            bg-transparent outline-none border-none flex-1 px-2
+            text-base lg:text-sm
+            text-(--header-search-text) placeholder:text-(--header-search-placeholder)
+          "
+          @input="onUserInput"
+          @focus="onFocus"
+          @keydown.down.prevent="onArrowDown"
+          @keydown.up.prevent="onArrowUp"
+          @keydown.escape="onEscape"
+        />
+
+        <!-- Loading Spinner -->
+        <svg
+          v-if="loading"
+          class="search-spinner w-4 h-4 text-(--header-search-placeholder) shrink-0"
+          xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+        >
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
         </svg>
-        <span class="sr-only">{{ $t('header.search_placeholder') }}</span>
-      </label>
 
-      <!-- Input -->
-      <input
-        :id="inputId"
-        ref="inputRef"
-        v-model="searchQuery"
-        type="search"
-        :placeholder="$t('header.search_placeholder')"
-        autocomplete="off"
-        class="
-          bg-transparent outline-none border-none flex-1 px-2
-          text-base lg:text-sm
-          text-(--header-search-text) placeholder:text-(--header-search-placeholder)
-        "
-        @input="onUserInput"
-        @focus="onFocus"
-        @keydown.enter.prevent="onEnter"
-        @keydown.down.prevent="onArrowDown"
-        @keydown.up.prevent="onArrowUp"
-        @keydown.escape="onEscape"
-      />
-
-      <!-- Loading Spinner -->
-      <svg
-        v-if="loading"
-        class="search-spinner w-4 h-4 text-(--header-search-placeholder) shrink-0"
-        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-      >
-        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
-        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-      </svg>
-
-      <!-- Clear Button -->
-      <button
-        v-if="searchQuery && !loading"
-        type="button"
-        class="text-xs text-(--header-search-placeholder) hover:text-(--header-search-text) px-1 cursor-pointer shrink-0"
-        @click="clearSearch"
-      >
-        ✕
-      </button>
-    </div>
+        <!-- Clear Button -->
+        <button
+          v-if="searchQuery && !loading"
+          type="button"
+          class="text-xs text-(--header-search-placeholder) hover:text-(--header-search-text) px-1 cursor-pointer shrink-0"
+          @click="clearSearch"
+        >
+          ✕
+        </button>
+      </div>
+    </form>
 
     <!-- ── Autocomplete Dropdown ──────────── -->
     <SearchDropdown
@@ -84,7 +85,7 @@ import { AUTOCOMPLETE_QUERY } from '~/graphql/queries/search'
 import type { Suggestion, AutocompleteResult } from '~~/types/search'
 
 const { locale } = useI18n()
-const router = useRouter()
+const localePath = useLocalePath()
 const routes = useStorefrontRoutes()
 const inputId = useId()
 const { resolveMediaUrl } = useMediaUrl()
@@ -187,15 +188,20 @@ function onArrowUp() {
   highlightedIndex.value = highlightedIndex.value <= 0 ? max : highlightedIndex.value - 1
 }
 
-function onEnter() {
+function handleSubmit() {
+  console.log('[HeaderSearchInput] Form submitted with query:', searchQuery.value)
   const selectedSuggestion = suggestions.value[highlightedIndex.value]
   if (highlightedIndex.value >= 0 && selectedSuggestion) {
+    console.log('[HeaderSearchInput] Navigating to selected suggestion:', selectedSuggestion)
     onSelectSuggestion(selectedSuggestion)
     return
   }
 
   if (searchQuery.value.trim()) {
+    console.log('[HeaderSearchInput] Navigating to search page with query:', searchQuery.value.trim())
     navigateToSearch(searchQuery.value.trim())
+  } else {
+    console.log('[HeaderSearchInput] Empty query, not navigating')
   }
 }
 
@@ -203,17 +209,24 @@ function onSelectSuggestion(item: Suggestion) {
   isDropdownOpen.value = false
   highlightedIndex.value = -1
 
+  let targetRoute: string | { path: string; query?: Record<string, string> }
+  
   switch (item.type) {
     case 'PRODUCT':
-      router.push(routes.product(item.slug))
+      targetRoute = localePath(routes.product(item.slug))
       break
     case 'CATEGORY':
-      router.push(routes.category(item.slug))
+      targetRoute = localePath(routes.category(item.slug))
       break
     case 'BRAND':
-      router.push(routes.search(item.text))
+      targetRoute = localePath(routes.search(item.text))
       break
+    default:
+      return
   }
+  
+  console.log('[HeaderSearchInput] Navigating to suggestion:', targetRoute)
+  navigateTo(targetRoute)
 }
 
 function onSeeAll() {
@@ -223,9 +236,18 @@ function onSeeAll() {
 }
 
 function navigateToSearch(query: string) {
+  console.log('[HeaderSearchInput] navigateToSearch called with:', query)
   isDropdownOpen.value = false
   highlightedIndex.value = -1
-  router.push(routes.search(query))
+  
+  const searchRoute = routes.search(query)
+  console.log('[HeaderSearchInput] Computed search route:', searchRoute)
+  
+  const localizedRoute = localePath(searchRoute)
+  console.log('[HeaderSearchInput] Localized route:', localizedRoute)
+  
+  navigateTo(localizedRoute)
+  console.log('[HeaderSearchInput] navigateTo called')
 }
 
 function clearSearch() {

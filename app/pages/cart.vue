@@ -8,11 +8,32 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
           <CartLoading v-if="loading && items.length > 0" />
 
+          <div v-if="isEmpty && !loading">
+            <CartEmpty />
+          </div>
+
           <div v-if="!isEmpty">
             <CartHeader
               :items-count="itemsCount"
               @clear="handleClearCart"
             />
+
+            <div class="mt-6 lg:grid lg:grid-cols-12 lg:gap-8">
+              <!-- Cart Items List -->
+              <div class="lg:col-span-7">
+                <CartItemsList :items="items" />
+              </div>
+
+              <!-- Cart Summary (Desktop) -->
+              <div class="lg:col-span-5 mt-6 lg:mt-0">
+                <div class="sticky top-24">
+                  <CartSummary
+                    :total="total || 0"
+                    :items-count="itemsCount"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 

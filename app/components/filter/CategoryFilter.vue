@@ -11,7 +11,8 @@
         :key="cat.id"
       >
         <button
-          class="text-start w-full cursor-pointer transition-colors"
+          type="button"
+          class="block text-start w-full transition-colors"
           :class="cat.slug === selectedSlug
             ? 'text-(--filter-text-active) font-(--filter-text-weight)'
             : 'hover:underline'"

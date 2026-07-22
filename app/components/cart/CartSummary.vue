@@ -78,7 +78,7 @@
     <button
       @click="handleCheckout"
       data-testid="cart-checkout-button"
-      :disabled="checkoutLoading"
+      :disabled="checkoutLoading || cart.isEmpty"
       :style="{ backgroundColor: primary, color: onPrimary }"
       class="w-full py-3 px-4 font-semibold rounded-md transition-colors text-sm sm:text-base cursor-pointer
              flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed
@@ -153,6 +153,7 @@ import { computed, ref } from 'vue'
 import { formatPrice } from '../../utils/price'
 import { useCheckout } from '../../composables/useCheckout'
 import { useStorefrontRoutes } from '../../composables/useStorefrontRoutes'
+import { useCart } from '../../composables/useCart'
 
 // Inline theme colors for SSR compatibility
 const getCSSVar = (varName: string, fallback: string): string => {
@@ -177,6 +178,7 @@ defineProps<{
 
 const routes = useStorefrontRoutes()
 const { startCheckout, loading: checkoutLoading } = useCheckout()
+const cart = useCart()
 
 const showPromo = ref(false)
 const promoCode = ref('')

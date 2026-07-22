@@ -19,7 +19,7 @@
         </div>
         <button
           @click="$emit('checkout')"
-          :disabled="loading"
+          :disabled="loading || cart.isEmpty"
           data-testid="cart-mobile-checkout-button"
           :style="{ backgroundColor: primary, color: onPrimary }"
           class="w-full py-3 font-semibold rounded-md transition-colors cursor-pointer
@@ -44,6 +44,7 @@
   
   <script setup lang="ts">
   import { formatPrice } from '../../utils/price'
+  import { useCart } from '../../composables/useCart'
   
   // Inline theme colors for SSR compatibility
   const getCSSVar = (varName: string, fallback: string): string => {
@@ -60,6 +61,8 @@
 
   const primary = computed(() => getCSSVar('--color-primary', '#3b82f6'))
   const onPrimary = computed(() => getCSSVar('--color-on-primary', '#ffffff'))
+  
+  const cart = useCart()
   
   defineProps<{
     show: boolean

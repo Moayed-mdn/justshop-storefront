@@ -41,6 +41,7 @@ import type { RuntimeSectionComponentProps } from '../types'
 import { applyColorScheme } from '../utils/colorScheme'
 
 const localePath = useLocalePath()
+const { locale } = useI18n()
 
 type CategoryCard = {
   id: string | number
@@ -72,6 +73,30 @@ const cardStyle = computed(() => ({
 const title = computed(() => typeof props.data.title === 'string' ? props.data.title : '')
 const subtitle = computed(() => typeof props.data.subtitle === 'string' ? props.data.subtitle : '')
 
+// Helper function to extract localized string
+const getLocalizedValue = (value: unknown): string => {
+  if (typeof value === 'string') {
+    return value
+  }
+  if (value && typeof value === 'object' && !Array.isArray(value)) {
+    const obj = value as Record<string, unknown>
+    // Try current locale first
+    if (typeof obj[locale.value] === 'string') {
+      return obj[locale.value] as string
+    }
+    // Fallback to 'en' if available
+    if (typeof obj.en === 'string') {
+      return obj.en as string
+    }
+    // Return first available string value
+    const firstValue = Object.values(obj).find(v => typeof v === 'string')
+    if (firstValue) {
+      return firstValue as string
+    }
+  }
+  return ''
+}
+
 const categories = computed<CategoryCard[]>(() => {
   if (!Array.isArray(props.data.categories)) {
     return []
@@ -79,19 +104,28 @@ const categories = computed<CategoryCard[]>(() => {
 
   return props.data.categories
     .filter((item): item is Record<string, unknown> => Boolean(item) && typeof item === 'object' && !Array.isArray(item))
-    .map((item) => ({
-      id: (item.id as string | number) ?? item.slug ?? item.name,
-      name: typeof item.name === 'string' ? item.name : 'Category',
-      path: typeof item.path === 'string'
-        ? (item.path.startsWith('/') && !item.path.startsWith('/en/') && !item.path.startsWith('/ar/')
-          ? localePath(item.path)
-          : item.path)
-        : '#',
-      productCount: typeof item.productCount === 'number' ? item.productCount : null,
-      image: typeof item.image === 'string' ? item.image
-        : (typeof item.primary_image === 'string' ? item.primary_image
-          : (typeof item.thumbnail === 'string' ? item.thumbnail : null)),
-    }))
+    .map((item) => {
+      const name = getLocalizedValue(item.name) || 'Category'
+      const pathValue = getLocalizedValue(item.path) || '#'
+      
+      // Apply localePath if the path doesn't already have a locale prefix
+      const finalPath = pathValue !== '#' && 
+                       pathValue.startsWith('/') && 
+                       !pathValue.startsWith('/en/') && 
+                       !pathValue.startsWith('/ar/')
+        ? localePath(pathValue)
+        : pathValue
+      
+      return {
+        id: (item.id as string | number) ?? item.slug ?? name,
+        name,
+        path: finalPath,
+        productCount: typeof item.productCount === 'number' ? item.productCount : null,
+        image: typeof item.image === 'string' ? item.image
+          : (typeof item.primary_image === 'string' ? item.primary_image
+            : (typeof item.thumbnail === 'string' ? item.thumbnail : null)),
+      }
+    })
 })
 </script>
 

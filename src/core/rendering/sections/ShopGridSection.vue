@@ -29,11 +29,19 @@ const api = useApi()
 const categorySlug = computed(() => props.data?.categorySlug || null)
 const storeId = computed(() => props.data?.storeId || storefrontContext.value.tenant?.id)
 
-// Sync category from runtime props to filter state (only once)
+// Determine if this is a category page (from runtime system)
+const isCategoryPage = computed(() => {
+  // If we have a categorySlug prop from runtime payload, it's a category page
+  return !!categorySlug.value
+})
+
+// Sync category from runtime props to filter state (only for shop page, not category page)
 watch(
   categorySlug,
   (newSlug) => {
-    if (newSlug && filters.value.categorySlug !== newSlug) {
+    // Only sync if we're NOT on a category page
+    // On category pages, the category is in the URL path, not a filter
+    if (!isCategoryPage.value && newSlug && filters.value.categorySlug !== newSlug) {
       filters.value.categorySlug = newSlug
     }
   },
@@ -41,12 +49,25 @@ watch(
 )
 
 // Build complete query with filters and pagination
-const query = computed(() => ({
-  ...apiQuery.value,
-  category_slug: categorySlug.value || apiQuery.value.category_slug || undefined,
-  page: route.query.page ? Number(route.query.page as string) : 1,
-  per_page: route.query.per_page ? Number(route.query.per_page as string) : 10,
-}))
+const query = computed(() => {
+  const baseQuery = {
+    ...apiQuery.value,
+    page: route.query.page ? Number(route.query.page as string) : 1,
+    per_page: route.query.per_page ? Number(route.query.per_page as string) : 10,
+  }
+  
+  if (isCategoryPage.value) {
+    // On category page: main category is in URL path, filter category goes as query param
+    // Don't override category_slug from apiQuery, it's the subcategory filter
+    return baseQuery
+  } else {
+    // On shop page: category filter becomes the category_slug param
+    return {
+      ...baseQuery,
+      category_slug: apiQuery.value.category_slug || undefined,
+    }
+  }
+})
 
 // Build cache key for data fetching
 const cacheKey = computed(() => createCacheKey({
@@ -56,6 +77,16 @@ const cacheKey = computed(() => createCacheKey({
   identifier: categorySlug.value || 'all',
   params: query.value,
 }))
+
+// Determine which API endpoint to use
+const apiEndpoint = computed(() => {
+  if (isCategoryPage.value && categorySlug.value) {
+    // Category page: use category endpoint
+    return API_ROUTES.products.category(categorySlug.value)
+  }
+  // Shop page: use index endpoint
+  return API_ROUTES.products.index
+})
 
 // Fetch products with filters and pagination
 const { data: productsData, pending } = await useAsyncData<ProductListResponse | null>(
@@ -68,7 +99,7 @@ const { data: productsData, pending } = await useAsyncData<ProductListResponse |
 
     try {
       const response = await api<ProductListResponse>(
-        API_ROUTES.products.index,
+        apiEndpoint.value,
         {
           query: query.value,
         }
