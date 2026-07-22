@@ -4,23 +4,12 @@ import { request as httpsRequest } from 'node:https'
 import type { H3Event } from 'h3'
 import { STOREFRONT_RUNTIME_CONTRACT_VERSION } from '../../src/core/runtime/contracts/constants'
 
-const getNormalizedRequestHost = (event: H3Event) => {
+export const getNormalizedRequestHost = (event: H3Event) => {
   const hostHeader = String(getHeader(event, 'host') || getHeader(event, 'x-forwarded-host') || 'localhost')
   return hostHeader.split(',')[0]?.trim().split(':')[0] || 'localhost'
 }
 
-const collectSetCookieHeaders = (response: Response) => {
-  const responseHeaders = response.headers as Headers & { getSetCookie?: () => string[] }
-
-  if (typeof responseHeaders.getSetCookie === 'function') {
-    return responseHeaders.getSetCookie()
-  }
-
-  const singleHeader = response.headers.get('set-cookie')
-  return singleHeader ? [singleHeader] : []
-}
-
-const normalizeProxySetCookie = (setCookieHeader: string) => setCookieHeader
+export const normalizeProxySetCookie = (setCookieHeader: string) => setCookieHeader
   .split(/;\s*/)
   .filter(part => !/^domain=/i.test(part))
   .join('; ')
@@ -61,6 +50,95 @@ const readCookieValue = (cookieHeader: string, name: string) => {
 }
 
 const buildApiRoot = (apiBase: string) => apiBase.replace(/\/v1(?:\/users)?\/?$/, '')
+
+const parseProxyResponse = (raw: Buffer, contentType: string | undefined) => {
+  const responseText = raw.toString('utf-8')
+
+  if (!responseText.length) {
+    return null
+  }
+
+  if (contentType?.includes('application/json')) {
+    try {
+      return JSON.parse(responseText)
+    } catch {
+      return responseText
+    }
+  }
+
+  return responseText
+}
+
+export const requestWithForwardedHost = async (
+  target: string,
+  options: {
+    method: string
+    headers: Headers
+    body?: string | Buffer | Uint8Array
+  },
+) => {
+  const url = new URL(target)
+  const request = url.protocol === 'https:' ? httpsRequest : httpRequest
+  let payload: string | Buffer | undefined
+
+  if (typeof options.body === 'string' || Buffer.isBuffer(options.body)) {
+    payload = options.body
+  } else if (options.body instanceof Uint8Array) {
+    payload = Buffer.from(options.body)
+  }
+
+  if (payload !== undefined && !options.headers.has('Content-Length')) {
+    options.headers.set('Content-Length', String(Buffer.byteLength(payload)))
+  }
+
+  const response = await new Promise<{
+    statusCode: number
+    contentType?: string
+    body: Buffer
+    setCookie: string[]
+    location?: string
+  }>((resolve, reject) => {
+    const req = request(url, {
+      method: options.method,
+      headers: Object.fromEntries(options.headers.entries()),
+    }, (res) => {
+      const chunks: Buffer[] = []
+
+      res.on('data', chunk => chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk)))
+      res.on('end', () => {
+        const setCookieHeader = res.headers['set-cookie']
+
+        resolve({
+          statusCode: res.statusCode || 500,
+          contentType: typeof res.headers['content-type'] === 'string' ? res.headers['content-type'] : undefined,
+          body: Buffer.concat(chunks),
+          setCookie: Array.isArray(setCookieHeader)
+            ? setCookieHeader
+            : typeof setCookieHeader === 'string'
+              ? [setCookieHeader]
+              : [],
+          location: typeof res.headers.location === 'string' ? res.headers.location : undefined,
+        })
+      })
+    })
+
+    req.on('error', reject)
+
+    if (payload !== undefined) {
+      req.write(payload)
+    }
+
+    req.end()
+  })
+
+  return {
+    statusCode: response.statusCode,
+    contentType: response.contentType,
+    data: parseProxyResponse(response.body, response.contentType),
+    setCookie: response.setCookie,
+    location: response.location,
+  }
+}
 
 export const useServerApi = (event: H3Event) => {
   const config = useRuntimeConfig(event)
@@ -164,32 +242,25 @@ export const useServerApi = (event: H3Event) => {
 
     const url = appendQuery(`${apiBase}/${path.replace(/^\/+/, '')}`, options?.query as Record<string, unknown> | undefined)
 
-    const response = await fetch(url, {
+    // Use a low-level Node request so the tenant Host header reaches Laravel unchanged.
+    const response = await requestWithForwardedHost(url, {
       method,
       headers,
-      body: payload,
+      body: typeof payload === 'string' || Buffer.isBuffer(payload) || payload instanceof Uint8Array
+        ? payload
+        : undefined,
     })
+    const responseData = response.data
 
-    const responseText = await response.text()
-    const responseData = response.headers.get('content-type')?.includes('application/json')
-      ? (() => {
-          try {
-            return JSON.parse(responseText)
-          } catch {
-            return responseText
-          }
-        })()
-      : responseText
-
-    if (!response.ok) {
+    if (response.statusCode >= 400) {
       const message = typeof responseData === 'object' && responseData !== null
         ? String((responseData as { error?: { message?: string }, message?: string }).error?.message
-            || (responseData as { message?: string }).message
-            || `Server API request failed with status ${response.status}`)
-        : String(responseData || `Server API request failed with status ${response.status}`)
+          || (responseData as { message?: string }).message
+          || `Server API request failed with status ${response.statusCode}`)
+        : String(responseData || `Server API request failed with status ${response.statusCode}`)
 
       throw createError({
-        statusCode: response.status,
+        statusCode: response.statusCode,
         statusMessage: message,
         data: responseData,
       })
@@ -253,19 +324,19 @@ export const proxySessionAuthRequest = async (event: H3Event, path: string, opti
   const requiresCsrf = !['GET', 'HEAD', 'OPTIONS'].includes(method)
 
   if (requiresCsrf && !getCookie(event, 'XSRF-TOKEN')) {
-    const csrfResponse = await fetch(`${apiRoot}/sanctum/csrf-cookie`, {
+    const csrfResponse = await requestWithForwardedHost(`${apiRoot}/sanctum/csrf-cookie`, {
       method: 'GET',
-      headers,
+      headers: new Headers(headers),
     })
 
-    if (!csrfResponse.ok) {
+    if (csrfResponse.statusCode >= 400) {
       throw createError({
-        statusCode: csrfResponse.status,
+        statusCode: csrfResponse.statusCode,
         statusMessage: `Failed to bootstrap CSRF cookie for ${method} ${path}`,
       })
     }
 
-    const csrfSetCookies = collectSetCookieHeaders(csrfResponse)
+    const csrfSetCookies = csrfResponse.setCookie
     const bootstrapCookieHeader = csrfSetCookies
       .map(setCookieHeader => setCookieHeader.split(';', 1)[0] || '')
       .filter(Boolean)
@@ -295,36 +366,29 @@ export const proxySessionAuthRequest = async (event: H3Event, path: string, opti
     }
   }
 
-  const response = await fetch(`${apiBase}/${path.replace(/^\/+/, '')}`, {
+  const response = await requestWithForwardedHost(`${apiBase}/${path.replace(/^\/+/, '')}`, {
     method,
     headers,
-    body: payload,
+    body: typeof payload === 'string' || Buffer.isBuffer(payload) || payload instanceof Uint8Array
+      ? payload
+      : undefined,
   })
 
-  for (const setCookieHeader of collectSetCookieHeaders(response)) {
+  for (const setCookieHeader of response.setCookie) {
     appendResponseHeader(event, 'set-cookie', normalizeProxySetCookie(setCookieHeader))
   }
 
-  const responseText = await response.text()
-  const responseData = response.headers.get('content-type')?.includes('application/json')
-    ? (() => {
-        try {
-          return JSON.parse(responseText)
-        } catch {
-          return responseText
-        }
-      })()
-    : responseText
+  const responseData = response.data
 
-  if (!response.ok) {
+  if (response.statusCode >= 400) {
     const message = typeof responseData === 'object' && responseData !== null
       ? String((responseData as { error?: { message?: string }, message?: string }).error?.message
-          || (responseData as { message?: string }).message
-          || `Runtime request failed with status ${response.status}`)
-      : String(responseData || `Runtime request failed with status ${response.status}`)
+        || (responseData as { message?: string }).message
+        || `Runtime request failed with status ${response.statusCode}`)
+      : String(responseData || `Runtime request failed with status ${response.statusCode}`)
 
     throw createError({
-      statusCode: response.status,
+      statusCode: response.statusCode,
       statusMessage: message,
       data: responseData,
     })
