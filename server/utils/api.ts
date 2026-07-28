@@ -49,7 +49,7 @@ const readCookieValue = (cookieHeader: string, name: string) => {
   return cookieHeader.match(pattern)?.[1] || null
 }
 
-const buildApiRoot = (apiBase: string) => apiBase.replace(/\/v1(?:\/users)?\/?$/, '')
+const buildApiRoot = (apiBase: string) => apiBase.replace(/\/api\/?(v1|users)?\/?$/, '')
 
 const parseProxyResponse = (raw: Buffer, contentType: string | undefined) => {
   const responseText = raw.toString('utf-8')
@@ -282,14 +282,24 @@ export const proxySessionAuthRequest = async (event: H3Event, path: string, opti
   const tenantId = String(event.context.tenantId || '')
   const tenantSlug = String(event.context.tenantSlug || '')
   const normalizedHost = getNormalizedRequestHost(event)
-  let token: string | null = null
-  try {
-    const authCookie = getCookie(event, 'js_auth') || getCookie(event, 'auth')
-    if (authCookie) {
-      const parsed = JSON.parse(authCookie)
-      token = parsed?.token ?? null
-    }
-  } catch {}
+  
+  // DEBUG: Log authentication state
+  const incomingCookieHeader = String(getHeader(event, 'cookie') || '')
+  const hasEcommerceSession = incomingCookieHeader.includes('ecommerce_session')
+  const hasXsrfToken = incomingCookieHeader.includes('XSRF-TOKEN')
+  const ecommerceSessionValue = getCookie(event, 'ecommerce_session')
+  const xsrfTokenValue = getCookie(event, 'XSRF-TOKEN')
+  
+  console.log('[STOREFRONT AUTH DEBUG]', {
+    path,
+    method: options?.method,
+    hasEcommerceSession,
+    hasXsrfToken,
+    ecommerceSessionPreview: ecommerceSessionValue?.substring(0, 50),
+    xsrfTokenPreview: xsrfTokenValue?.substring(0, 20),
+    cookieHeaderLength: incomingCookieHeader.length,
+    cookiePreview: incomingCookieHeader.substring(0, 200)
+  })
 
   const method = String(options?.method || 'GET').toUpperCase()
   const headers = new Headers(options?.headers)
@@ -315,35 +325,74 @@ export const proxySessionAuthRequest = async (event: H3Event, path: string, opti
     headers.set('Accept-Language', locale)
   }
 
+  // For storefront routes, send the token if available (for authenticated users like merchants testing their store)
+  // Session-based auth (ecommerce_session) will work for guest users
+  // Sanctum will try token auth first, then fall back to session auth
+  let token: string | null = null
+  try {
+    const authCookie = getCookie(event, 'js_auth') || getCookie(event, 'auth')
+    if (authCookie) {
+      const parsed = JSON.parse(authCookie)
+      token = parsed?.token ?? null
+    }
+  } catch {}
+  
   if (token) {
     headers.set('Authorization', `Bearer ${token}`)
   }
 
-  const incomingCookieHeader = String(getHeader(event, 'cookie') || '')
+
+  // Start with incoming cookies, but we'll replace the session cookie if we bootstrap
   let forwardedCookieHeader = incomingCookieHeader
   const requiresCsrf = !['GET', 'HEAD', 'OPTIONS'].includes(method)
 
   if (requiresCsrf && !getCookie(event, 'XSRF-TOKEN')) {
-    const csrfResponse = await requestWithForwardedHost(`${apiRoot}/sanctum/csrf-cookie`, {
+    console.log('[STOREFRONT AUTH DEBUG] No XSRF-TOKEN found, bootstrapping...')
+    
+    // Build bootstrap request headers with the current session cookie
+    const bootstrapHeaders = new Headers(headers)
+    if (forwardedCookieHeader) {
+      bootstrapHeaders.set('Cookie', forwardedCookieHeader)
+    }
+    
+    const csrfUrl = `${apiRoot}/sanctum/csrf-cookie`
+    console.log('[STOREFRONT AUTH DEBUG] Making CSRF request to:', csrfUrl)
+    console.log('[STOREFRONT AUTH DEBUG] CSRF request headers:', Object.fromEntries(bootstrapHeaders.entries()))
+    
+    const csrfResponse = await requestWithForwardedHost(csrfUrl, {
       method: 'GET',
-      headers: new Headers(headers),
+      headers: bootstrapHeaders,
     })
 
+    console.log('[STOREFRONT AUTH DEBUG] CSRF response status:', csrfResponse.statusCode)
+    console.log('[STOREFRONT AUTH DEBUG] CSRF response set-cookies:', csrfResponse.setCookie)
+    
     if (csrfResponse.statusCode >= 400) {
       throw createError({
         statusCode: csrfResponse.statusCode,
-        statusMessage: `Failed to bootstrap CSRF cookie for ${method} ${path}`,
+        statusMessage: `Failed to bootstrap CSRF cookie for ${method} ${path} (URL: ${csrfUrl}, Status: ${csrfResponse.statusCode})`,
       })
     }
 
     const csrfSetCookies = csrfResponse.setCookie
+    console.log('[STOREFRONT AUTH DEBUG] CSRF bootstrap response:', {
+      statusCode: csrfResponse.statusCode,
+      setCookieCount: csrfSetCookies.length,
+      setCookies: csrfSetCookies
+    })
+    
     const bootstrapCookieHeader = csrfSetCookies
       .map(setCookieHeader => setCookieHeader.split(';', 1)[0] || '')
       .filter(Boolean)
       .join('; ')
 
+    console.log('[STOREFRONT AUTH DEBUG] Bootstrap cookie header:', bootstrapCookieHeader)
+
+    // CRITICAL: Use the NEW session cookie from bootstrap response for subsequent requests
+    // This ensures we use the same session that Laravel just created/updated
     forwardedCookieHeader = mergeCookieHeaders(forwardedCookieHeader, bootstrapCookieHeader)
 
+    // Send the new session cookie back to the browser
     for (const setCookieHeader of csrfSetCookies) {
       appendResponseHeader(event, 'set-cookie', normalizeProxySetCookie(setCookieHeader))
     }
@@ -354,9 +403,24 @@ export const proxySessionAuthRequest = async (event: H3Event, path: string, opti
   }
 
   const xsrfToken = getCookie(event, 'XSRF-TOKEN') || readCookieValue(forwardedCookieHeader, 'XSRF-TOKEN')
+  
+  console.log('[STOREFRONT AUTH DEBUG] XSRF token resolution:', {
+    fromRequestCookie: getCookie(event, 'XSRF-TOKEN'),
+    fromForwardedHeader: readCookieValue(forwardedCookieHeader, 'XSRF-TOKEN'),
+    finalToken: xsrfToken,
+    forwardedCookieHeaderPreview: forwardedCookieHeader.substring(0, 300)
+  })
+  
   if (requiresCsrf && xsrfToken) {
     headers.set('X-XSRF-TOKEN', decodeURIComponent(String(xsrfToken)))
   }
+  
+  console.log('[STOREFRONT AUTH DEBUG] Final headers:', {
+    hasAuthorizationHeader: headers.has('Authorization'),
+    hasCookieHeader: headers.has('Cookie'),
+    hasXsrfHeader: headers.has('X-XSRF-TOKEN'),
+    xsrfTokenPresent: !!xsrfToken
+  })
 
   let payload: BodyInit | undefined
   if (options?.body !== undefined && requiresCsrf) {
@@ -372,6 +436,12 @@ export const proxySessionAuthRequest = async (event: H3Event, path: string, opti
     body: typeof payload === 'string' || Buffer.isBuffer(payload) || payload instanceof Uint8Array
       ? payload
       : undefined,
+  })
+
+  console.log('[STOREFRONT AUTH DEBUG] API response:', {
+    statusCode: response.statusCode,
+    setCookieCount: response.setCookie.length,
+    setCookies: response.setCookie.map(sc => sc.substring(0, 100))
   })
 
   for (const setCookieHeader of response.setCookie) {
