@@ -50,6 +50,7 @@ export default defineNuxtConfig({
       apiBase: process.env.NUXT_PUBLIC_API_BASE,
       graphqlUrl: process.env.NUXT_PUBLIC_GRAPHQL_URL,
       dashboardUrl: process.env.NUXT_PUBLIC_DASHBOARD_URL || '/',
+      stripePublishableKey: process.env.NUXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '',
     },
   },
   modules: [

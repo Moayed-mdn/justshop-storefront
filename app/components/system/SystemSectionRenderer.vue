@@ -2,7 +2,7 @@
   <template v-for="sectionId in orderedWithFallbacks" :key="`${sectionId}-${locale}`">
     <StorefrontShellHeader v-if="sectionId === '__header__'" />
     <main v-else-if="sectionId === '__content__'" class="flex-1">
-      <slot />
+      <slot v-if="!hasCartSections" />
     </main>
     <StorefrontShellFooter v-else-if="sectionId === '__footer__'" />
     <SystemSectionAnnouncementBar
@@ -45,8 +45,7 @@
     <template v-else-if="sectionMap[sectionId]">
       <StorefrontShellHeader v-if="sectionMap[sectionId].type === 'header'" :header-section="sectionMap[sectionId]" />
       <main v-else-if="sectionMap[sectionId].type === 'content'" class="flex-1">
-        <SystemSectionContent :section="sectionMap[sectionId]" />
-        <slot />
+        <slot v-if="!hasCartSections" />
       </main>
       <StorefrontShellFooter v-else-if="sectionMap[sectionId].type === 'footer'" />
       <SystemSectionContent
@@ -70,10 +69,16 @@ const props = defineProps<{
 }>()
 
 const { locale } = useI18n()
+
 const hasCartGroup = computed(() => {
   const types = orderedWithoutFallbacks.value.map(id => props.sectionMap[id]?.type)
   const cartIdx = types.indexOf('cart_items')
   return cartIdx >= 0 && types[cartIdx + 1] === 'cart_summary'
+})
+
+const hasCartSections = computed(() => {
+  const types = orderedWithoutFallbacks.value.map(id => props.sectionMap[id]?.type)
+  return types.includes('cart_items') || types.includes('cart_summary') || types.includes('cart_empty')
 })
 
 const cartSummarySection = computed(() => {

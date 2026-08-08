@@ -78,7 +78,7 @@
     <button
       @click="handleCheckout"
       data-testid="cart-checkout-button"
-      :disabled="checkoutLoading || cart.isEmpty"
+      :disabled="checkoutLoading || isEmpty"
       :style="{ backgroundColor: primary, color: onPrimary }"
       class="w-full py-3 px-4 font-semibold rounded-md transition-colors text-sm sm:text-base cursor-pointer
              flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed
@@ -171,17 +171,18 @@ const getCSSVar = (varName: string, fallback: string): string => {
 const primary = computed(() => getCSSVar('--color-primary', '#3b82f6'))
 const onPrimary = computed(() => getCSSVar('--color-on-primary', '#ffffff'))
 
-defineProps<{
+const props = defineProps<{
   total: number
   itemsCount: number
 }>()
 
 const routes = useStorefrontRoutes()
 const { startCheckout, loading: checkoutLoading } = useCheckout()
-const cart = useCart()
 
 const showPromo = ref(false)
 const promoCode = ref('')
+
+const isEmpty = computed(() => props.itemsCount === 0)
 
 const handleCheckout = async () => {
   await startCheckout()

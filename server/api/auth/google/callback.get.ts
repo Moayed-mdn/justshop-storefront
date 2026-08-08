@@ -41,6 +41,48 @@ export default defineEventHandler(async (event) => {
   })
   // #endregion
   
+  // Get all cookies from the incoming request
+  const cookieHeader = getHeader(event, 'cookie') || ''
+  console.log('[GOOGLE CALLBACK DEBUG] Incoming cookie header:', cookieHeader)
+  
+  // Bootstrap CSRF cookie if we don't have the required session cookies
+  const hasXsrfToken = cookieHeader.includes('XSRF-TOKEN')
+  const hasEcommerceSession = cookieHeader.includes('ecommerce_session')
+  console.log('[GOOGLE CALLBACK DEBUG] Has XSRF-TOKEN:', hasXsrfToken, 'Has ecommerce_session:', hasEcommerceSession)
+  
+  if (!hasXsrfToken || !hasEcommerceSession) {
+    console.log('[GOOGLE CALLBACK DEBUG] Bootstrapping CSRF cookie before Google callback')
+    const apiBase = useRuntimeConfig().public.apiBase
+    const buildApiRoot = (apiBase: string) => apiBase.replace(/\/api\/?(v1|users)?\/?$/, '')
+    const apiRoot = buildApiRoot(apiBase)
+    const csrfUrl = `${apiRoot}/sanctum/csrf-cookie`
+    
+    try {
+      const csrfResponse = await requestWithForwardedHost(csrfUrl, {
+        method: 'GET',
+        headers: new Headers({
+          Accept: 'application/json',
+          Host: host,
+          'X-Tenant-Id': tenantId,
+          'X-Storefront-Locale': locale,
+          'X-Storefront-Version': STOREFRONT_RUNTIME_CONTRACT_VERSION,
+        }),
+      })
+      console.log('[GOOGLE CALLBACK DEBUG] CSRF bootstrap successful, status:', csrfResponse.statusCode)
+      // Forward the new cookies from the CSRF request
+      for (const setCookieHeader of csrfResponse.setCookie) {
+        appendResponseHeader(event, 'set-cookie', normalizeProxySetCookie(setCookieHeader))
+      }
+      // Update cookie header with new cookies
+      const newCookies = csrfResponse.setCookie.map(c => c.split(';')[0]).join('; ')
+      const updatedCookieHeader = cookieHeader ? `${cookieHeader}; ${newCookies}` : newCookies
+      console.log('[GOOGLE CALLBACK DEBUG] Updated cookie header:', updatedCookieHeader)
+    } catch (csrfErr) {
+      console.error('[GOOGLE CALLBACK DEBUG] CSRF bootstrap failed:', csrfErr)
+    }
+  }
+  
+  const finalCookieHeader = getHeader(event, 'cookie') || cookieHeader
   const response = await requestWithForwardedHost(`${targetBase}${requestUrl.search}`, {
     method: 'GET',
     headers: new Headers({
@@ -49,6 +91,7 @@ export default defineEventHandler(async (event) => {
       'X-Tenant-Id': tenantId,
       'X-Storefront-Locale': locale,
       'X-Storefront-Version': STOREFRONT_RUNTIME_CONTRACT_VERSION,
+      Cookie: finalCookieHeader,
     }),
   })
 
