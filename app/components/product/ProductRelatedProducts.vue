@@ -27,12 +27,12 @@ const props = defineProps<{
  *
  * Wave 1 fix: was incorrectly mapping to the legacy ProductCard type,
  * which caused a shape mismatch with ProductCard.vue (expects ProductDto).
- * variantId is 0 for related products that do not carry variant context.
+ * Now uses the variant_id from the API response (default/display variant).
  */
 const mappedProducts = computed<ProductDto[]>(() => {
   return props.products.map((related) => ({
     id: related.id,
-    variantId: 0,
+    variantId: related.variant_id,
     slug: related.slug,
     name: related.name,
     image: related.primary_image || '',
