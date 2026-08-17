@@ -93,20 +93,35 @@ export default defineNuxtConfig({
         'src/core/cache',
       ],
     },
-    // Disable all caching for development
+    // ⚠️ PERF FIX: This used to blanket-disable caching on '/**', which also
+    // stripped caching from hashed/immutable JS+CSS bundles and every proxied
+    // image, forcing a full re-download of the app and all product images on
+    // every navigation/reload. Only routes with per-user/session state need
+    // to stay uncacheable; everything else should be left to Nitro's sane
+    // defaults (and static/image assets should actually be cached).
     routeRules: {
-      '/**': { 
+      '/cart/**': {
         cache: false,
-        headers: {
-          'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
-          'Pragma': 'no-cache',
-          'Expires': '0',
-        }
+        headers: { 'Cache-Control': 'no-store, must-revalidate' },
+      },
+      '/checkout/**': {
+        cache: false,
+        headers: { 'Cache-Control': 'no-store, must-revalidate' },
+      },
+      '/orders/**': {
+        cache: false,
+        headers: { 'Cache-Control': 'no-store, must-revalidate' },
+      },
+      '/profile/**': {
+        cache: false,
+        headers: { 'Cache-Control': 'no-store, must-revalidate' },
       },
       '/storage/**': {
-        cache: false,
         // Serve storage paths from nitro server, not vue router
         prerender: false,
+        headers: {
+          'Cache-Control': 'public, max-age=86400, stale-while-revalidate=604800',
+        },
       },
     },
   },

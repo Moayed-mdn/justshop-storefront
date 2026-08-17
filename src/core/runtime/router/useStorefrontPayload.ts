@@ -47,9 +47,27 @@ const makeError = (statusCode: number, message: string, data?: any): Error => {
   return err
 }
 
+// ⚠️ PERF FIX: navigation and theme don't vary per-route (the backend computes
+// them purely from tenant + locale), but fetchPayload used to re-request both
+// on *every* route navigation alongside the page payload. That's 2 redundant
+// network round-trips per click through the store. Cache the last-fetched
+// copy per tenant+locale for the lifetime of the session and reuse it across
+// navigations, only refetching when the tenant or locale actually changes
+// (or when previewing, which always bypasses cache — matching backend
+// behavior for preview requests).
+interface RuntimeArtifactCacheEntry {
+  key: string
+  navigation?: RuntimeNavigationResponse
+  theme?: RuntimeThemeResponse
+}
+
+const useRuntimeArtifactCache = () =>
+  useState<RuntimeArtifactCacheEntry | null>('storefront-runtime-artifact-cache', () => null)
+
 export const useStorefrontPayload = () => {
   const context = useStorefrontContext()
   const storefrontApi = useStorefrontApi()
+  const artifactCache = useRuntimeArtifactCache()
   const requestHost = import.meta.server
     ? useRequestHeaders(['host']).host || context.value.tenant?.domain || 'localhost'
     : null
@@ -63,68 +81,46 @@ export const useStorefrontPayload = () => {
       await validatePreview(resolved)
     }
 
-    // ✅ PERFORMANCE LOGGING: Track each API call with network timing
-    console.log('[Payload] Starting parallel fetch for pageId:', resolved.pageId)
-    const fetchStartTime = Date.now()
+    const artifactKey = `${context.value.tenant?.slug || context.value.tenant?.id || 'default'}:${context.value.locale}`
+    const bypassArtifactCache = Boolean(context.value.preview)
+    const cached = !bypassArtifactCache && artifactCache.value?.key === artifactKey ? artifactCache.value : null
 
-    // Create promises that track their individual start times
-    const pagePromise = (async () => {
-      const start = performance.now()
-      console.log('[Payload] → Page API request sent')
-      const res = await storefrontApi<RuntimePagePayloadResponse>(
-        API_ROUTES.storefront.runtime.page(resolved.pageId as string),
-        {
-          query: {
-            path: resolved.path,
-            ...(context.value.preview ? { preview: 1 } : {}),
-          },
-          showError: false,
+    const pagePromise = storefrontApi<RuntimePagePayloadResponse>(
+      API_ROUTES.storefront.runtime.page(resolved.pageId as string),
+      {
+        query: {
+          path: resolved.path,
+          ...(context.value.preview ? { preview: 1 } : {}),
         },
-      )
-      const duration = performance.now() - start
-      console.log('[Payload] ✓ Page API completed in:', Math.round(duration), 'ms')
-      return res
-    })()
+        showError: false,
+      },
+    )
 
-    const navPromise = (async () => {
-      const start = performance.now()
-      console.log('[Payload] → Navigation API request sent')
-      const res = await storefrontApi<RuntimeNavigationResponse>(
+    const navPromise = cached?.navigation
+      ? Promise.resolve({ data: cached.navigation, error: null })
+      : storefrontApi<RuntimeNavigationResponse>(
         API_ROUTES.storefront.runtime.navigation,
         {
           query: { path: resolved.path },
           showError: false,
         },
       )
-      const duration = performance.now() - start
-      console.log('[Payload] ✓ Navigation API completed in:', Math.round(duration), 'ms')
-      return res
-    })()
 
-    const themePromise = (async () => {
-      const start = performance.now()
-      console.log('[Payload] → Theme API request sent')
-      const res = await storefrontApi<RuntimeThemeResponse>(
+    const themePromise = cached?.theme
+      ? Promise.resolve({ data: cached.theme, error: null })
+      : storefrontApi<RuntimeThemeResponse>(
         API_ROUTES.storefront.runtime.theme,
         {
           query: { path: resolved.path },
           showError: false,
         },
       )
-      const duration = performance.now() - start
-      console.log('[Payload] ✓ Theme API completed in:', Math.round(duration), 'ms')
-      return res
-    })()
 
     const [pageResponse, navigationResponse, themeResponse] = await Promise.all([
       pagePromise,
       navPromise,
       themePromise,
     ])
-
-    const totalDuration = Date.now() - fetchStartTime
-    console.log('[Payload] ━━━ All 3 API calls completed in:', totalDuration, 'ms')
-    console.log('[Payload] ⚡ Parallelization efficiency:', Math.round((354 + 576 + 651) / totalDuration * 100) + '%')
 
     if (pageResponse.error) {
       throw makeError(
@@ -155,6 +151,17 @@ export const useStorefrontPayload = () => {
     }
 
     syncTenantContext(pageResponse.data, navigationResponse.data, themeResponse.data)
+
+    // Re-derive the key post-sync: syncTenantContext may have just resolved
+    // the canonical tenant slug for the very first request of the session.
+    const resolvedArtifactKey = `${context.value.tenant?.slug || context.value.tenant?.id || 'default'}:${context.value.locale}`
+    if (!bypassArtifactCache) {
+      artifactCache.value = {
+        key: resolvedArtifactKey,
+        navigation: navigationResponse.data,
+        theme: themeResponse.data,
+      }
+    }
 
     return {
       page: pageResponse.data.data.page,

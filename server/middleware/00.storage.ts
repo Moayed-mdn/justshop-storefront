@@ -28,7 +28,11 @@ export default defineEventHandler(async (event) => {
         setHeader(event, 'content-type', contentType)
       }
 
-      setHeader(event, 'cache-control', 'no-store, no-cache, must-revalidate')
+      // ⚠️ PERF FIX: was 'no-store, no-cache, must-revalidate', which forced
+      // every product/theme image to be re-downloaded through this proxy on
+      // every single page view. Uploaded media is effectively immutable
+      // (a new upload gets a new path), so let browsers cache it.
+      setHeader(event, 'cache-control', 'public, max-age=86400, stale-while-revalidate=604800')
 
       event.node.res.end(Buffer.from(await response.arrayBuffer()))
       return

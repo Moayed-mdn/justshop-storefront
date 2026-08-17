@@ -19,6 +19,11 @@ import { useStorefrontContext } from '../tenant/composables'
 export interface CacheKeyOptions {
   locale: string
   tenantSlug?: string | null
+  // ⚠️ Several call sites pass `tenantId` (e.g. app.vue, categories.vue,
+  // ShopGridSection.vue) — accept it explicitly so tenant scoping doesn't
+  // silently get dropped from the cache key when only an id (not a slug)
+  // is available at the call site.
+  tenantId?: string | number | null
   resource: string
   identifier?: string | number
   variant?: string
@@ -53,6 +58,8 @@ export const createCacheKey = (options: CacheKeyOptions): string => {
   // 2. Tenant Slug (optional but recommended for multi-tenant data)
   if (options.tenantSlug) {
     parts.push(String(options.tenantSlug))
+  } else if (options.tenantId !== undefined && options.tenantId !== null) {
+    parts.push(String(options.tenantId))
   }
 
   // 3. Resource type (REQUIRED)

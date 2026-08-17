@@ -154,24 +154,15 @@ const toRuntimePageError = (error: unknown) => {
 const { data: runtimeData, pending, error } = await useAsyncData(
   () => runtimeDataKey.value,
   async () => {
-    // Performance tracking
-    const startTime = Date.now()
-    console.log('[Runtime] Starting data fetch for:', route.path, 'locale:', locale.value)
-    
     syncRuntimeContext()
 
-    const resolveStart = Date.now()
     const resolved = await resolveRoute(route.path)
-    console.log('[Runtime] Route resolved in:', Date.now() - resolveStart, 'ms')
 
     if (resolved.status === 'not_found' || resolved.legacyPassthrough) {
       throw new StorefrontPageError('Page not found', 404, true)
     }
 
-    const bundleStart = Date.now()
     const bundle = await fetchPayload(resolved)
-    console.log('[Runtime] Bundle fetched in:', Date.now() - bundleStart, 'ms')
-    console.log('[Runtime] Total time:', Date.now() - startTime, 'ms')
 
     if (!bundle) {
       throw new StorefrontPageError(
