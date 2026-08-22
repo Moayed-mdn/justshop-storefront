@@ -1,14 +1,6 @@
 <template>
   <StorefrontShell variant="full">
-    <SystemSectionRenderer
-      v-if="!isEmpty && contentSectionOrder.length > 0"
-      :section-order="contentSectionOrder"
-      :section-map="sectionMap"
-      no-shell-fallbacks
-    >
-      <slot />
-    </SystemSectionRenderer>
-    <slot v-else />
+    <slot />
   </StorefrontShell>
 </template>
 
