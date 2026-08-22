@@ -9,6 +9,23 @@ export const getNormalizedRequestHost = (event: H3Event) => {
   return hostHeader.split(',')[0]?.trim().split(':')[0] || 'localhost'
 }
 
+// Laravel Sanctum's cookie/session ("stateful") auth is gated on the request's
+// Origin/Referer matching SANCTUM_STATEFUL_DOMAINS. Browsers only attach Origin/Referer
+// to same-origin XHR/fetch calls — never to a plain top-level navigation (a fresh SSR
+// page load, a hard refresh, a typed URL). Forwarding the incoming Origin/Referer
+// "if present" therefore makes the backend's view of the SAME visitor differ depending on
+// how the request arrived: a client-side fetch looks stateful, an SSR-issued request does
+// not, and Sanctum silently falls back to token auth and returns 401 for a perfectly valid
+// session. This server is a first-party proxy for its own frontend, so it should always
+// assert its own origin rather than depend on what happened to be forwarded.
+export const getRequestOrigin = (event: H3Event) => {
+  const forwardedProto = getHeader(event, 'x-forwarded-proto')
+  const protocol = (forwardedProto ? forwardedProto.split(',')[0]?.trim() : getRequestProtocol(event)) || 'http'
+  const hostHeader = String(getHeader(event, 'host') || getHeader(event, 'x-forwarded-host') || 'localhost')
+  const host = hostHeader.split(',')[0]?.trim() || 'localhost'
+  return `${protocol}://${host}`
+}
+
 export const normalizeProxySetCookie = (setCookieHeader: string) => setCookieHeader
   .split(/;\s*/)
   .filter(part => !/^domain=/i.test(part))
@@ -202,15 +219,12 @@ export const useServerApi = (event: H3Event) => {
       headers.set('Accept-Language', locale)
     }
 
-    const origin = getHeader(event, 'origin')
-    if (origin) {
-      headers.set('Origin', origin)
-    }
-
-    const referer = getHeader(event, 'referer')
-    if (referer) {
-      headers.set('Referer', referer)
-    }
+    // Always assert our own origin (see getRequestOrigin() above) — do not conditionally
+    // forward the browser's Origin/Referer, since SSR-issued requests legitimately have
+    // none and that asymmetry is what broke Sanctum's stateful (cookie) auth on SSR.
+    const requestOrigin = getRequestOrigin(event)
+    headers.set('Origin', requestOrigin)
+    headers.set('Referer', `${requestOrigin}/`)
 
     if (token) {
       headers.set('Authorization', `Bearer ${token}`)
@@ -282,24 +296,7 @@ export const proxySessionAuthRequest = async (event: H3Event, path: string, opti
   const tenantId = String(event.context.tenantId || '')
   const tenantSlug = String(event.context.tenantSlug || '')
   const normalizedHost = getNormalizedRequestHost(event)
-  
-  // DEBUG: Log authentication state
   const incomingCookieHeader = String(getHeader(event, 'cookie') || '')
-  const hasEcommerceSession = incomingCookieHeader.includes('ecommerce_session')
-  const hasXsrfToken = incomingCookieHeader.includes('XSRF-TOKEN')
-  const ecommerceSessionValue = getCookie(event, 'ecommerce_session')
-  const xsrfTokenValue = getCookie(event, 'XSRF-TOKEN')
-  
-  console.log('[STOREFRONT AUTH DEBUG]', {
-    path,
-    method: options?.method,
-    hasEcommerceSession,
-    hasXsrfToken,
-    ecommerceSessionPreview: ecommerceSessionValue?.substring(0, 50),
-    xsrfTokenPreview: xsrfTokenValue?.substring(0, 20),
-    cookieHeaderLength: incomingCookieHeader.length,
-    cookiePreview: incomingCookieHeader.substring(0, 200)
-  })
 
   const method = String(options?.method || 'GET').toUpperCase()
   const headers = new Headers(options?.headers)
@@ -311,15 +308,12 @@ export const proxySessionAuthRequest = async (event: H3Event, path: string, opti
   headers.set('X-Storefront-Locale', locale)
   headers.set('X-Storefront-Version', STOREFRONT_RUNTIME_CONTRACT_VERSION)
 
-  const origin = getHeader(event, 'origin')
-  if (origin) {
-    headers.set('Origin', origin)
-  }
-
-  const referer = getHeader(event, 'referer')
-  if (referer) {
-    headers.set('Referer', referer)
-  }
+  // Always assert our own origin (see getRequestOrigin() above) — do not conditionally
+  // forward the browser's Origin/Referer, since SSR-issued requests legitimately have
+  // none and that asymmetry is what broke Sanctum's stateful (cookie) auth on SSR.
+  const requestOrigin = getRequestOrigin(event)
+  headers.set('Origin', requestOrigin)
+  headers.set('Referer', `${requestOrigin}/`)
 
   if (locale) {
     headers.set('Accept-Language', locale)
@@ -347,26 +341,18 @@ export const proxySessionAuthRequest = async (event: H3Event, path: string, opti
   const requiresCsrf = !['GET', 'HEAD', 'OPTIONS'].includes(method)
 
   if (requiresCsrf && !getCookie(event, 'XSRF-TOKEN')) {
-    console.log('[STOREFRONT AUTH DEBUG] No XSRF-TOKEN found, bootstrapping...')
-    
     // Build bootstrap request headers with the current session cookie
     const bootstrapHeaders = new Headers(headers)
     if (forwardedCookieHeader) {
       bootstrapHeaders.set('Cookie', forwardedCookieHeader)
     }
-    
+
     const csrfUrl = `${apiRoot}/sanctum/csrf-cookie`
-    console.log('[STOREFRONT AUTH DEBUG] Making CSRF request to:', csrfUrl)
-    console.log('[STOREFRONT AUTH DEBUG] CSRF request headers:', Object.fromEntries(bootstrapHeaders.entries()))
-    
     const csrfResponse = await requestWithForwardedHost(csrfUrl, {
       method: 'GET',
       headers: bootstrapHeaders,
     })
 
-    console.log('[STOREFRONT AUTH DEBUG] CSRF response status:', csrfResponse.statusCode)
-    console.log('[STOREFRONT AUTH DEBUG] CSRF response set-cookies:', csrfResponse.setCookie)
-    
     if (csrfResponse.statusCode >= 400) {
       throw createError({
         statusCode: csrfResponse.statusCode,
@@ -375,18 +361,10 @@ export const proxySessionAuthRequest = async (event: H3Event, path: string, opti
     }
 
     const csrfSetCookies = csrfResponse.setCookie
-    console.log('[STOREFRONT AUTH DEBUG] CSRF bootstrap response:', {
-      statusCode: csrfResponse.statusCode,
-      setCookieCount: csrfSetCookies.length,
-      setCookies: csrfSetCookies
-    })
-    
     const bootstrapCookieHeader = csrfSetCookies
       .map(setCookieHeader => setCookieHeader.split(';', 1)[0] || '')
       .filter(Boolean)
       .join('; ')
-
-    console.log('[STOREFRONT AUTH DEBUG] Bootstrap cookie header:', bootstrapCookieHeader)
 
     // CRITICAL: Use the NEW session cookie from bootstrap response for subsequent requests
     // This ensures we use the same session that Laravel just created/updated
@@ -403,24 +381,10 @@ export const proxySessionAuthRequest = async (event: H3Event, path: string, opti
   }
 
   const xsrfToken = getCookie(event, 'XSRF-TOKEN') || readCookieValue(forwardedCookieHeader, 'XSRF-TOKEN')
-  
-  console.log('[STOREFRONT AUTH DEBUG] XSRF token resolution:', {
-    fromRequestCookie: getCookie(event, 'XSRF-TOKEN'),
-    fromForwardedHeader: readCookieValue(forwardedCookieHeader, 'XSRF-TOKEN'),
-    finalToken: xsrfToken,
-    forwardedCookieHeaderPreview: forwardedCookieHeader.substring(0, 300)
-  })
-  
+
   if (requiresCsrf && xsrfToken) {
     headers.set('X-XSRF-TOKEN', decodeURIComponent(String(xsrfToken)))
   }
-  
-  console.log('[STOREFRONT AUTH DEBUG] Final headers:', {
-    hasAuthorizationHeader: headers.has('Authorization'),
-    hasCookieHeader: headers.has('Cookie'),
-    hasXsrfHeader: headers.has('X-XSRF-TOKEN'),
-    xsrfTokenPresent: !!xsrfToken
-  })
 
   let payload: BodyInit | undefined
   if (options?.body !== undefined && requiresCsrf) {
@@ -436,12 +400,6 @@ export const proxySessionAuthRequest = async (event: H3Event, path: string, opti
     body: typeof payload === 'string' || Buffer.isBuffer(payload) || payload instanceof Uint8Array
       ? payload
       : undefined,
-  })
-
-  console.log('[STOREFRONT AUTH DEBUG] API response:', {
-    statusCode: response.statusCode,
-    setCookieCount: response.setCookie.length,
-    setCookies: response.setCookie.map(sc => sc.substring(0, 100))
   })
 
   for (const setCookieHeader of response.setCookie) {

@@ -7,6 +7,7 @@ export default defineNuxtRouteMiddleware(async () => {
   const { isLoggedIn } = useAuth()
 
   if (!isLoggedIn.value) {
-    return navigateTo(useStorefrontRoutes().login())
+    const localePath = useLocalePath()
+    return navigateTo(localePath(useStorefrontRoutes().login()))
   }
 })
