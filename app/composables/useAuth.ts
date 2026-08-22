@@ -169,24 +169,8 @@ export const useAuth = () => {
   const handleGoogleCallback = async () => {
     loading.value = true;
     try {
-      // #region debug-point C:handle-google-callback-start
-      console.debug('[DEBUG C] handleGoogleCallback started', {
-        timestamp: new Date().toISOString(),
-        hasAuthToken: !!authStore.token,
-      })
-      // #endregion
-
       const currentUser = await fetchUser();
-      
-      // #region debug-point D:after-fetch-user
-      console.debug('[DEBUG D] After fetchUser in handleGoogleCallback', {
-        timestamp: new Date().toISOString(),
-        hasCurrentUser: !!currentUser,
-        currentUser: currentUser,
-        authStoreUser: authStore.user,
-      })
-      // #endregion
-      
+
       if (!currentUser) {
         throw new Error('Authenticated user was not returned after Google callback.');
       }
@@ -199,28 +183,8 @@ export const useAuth = () => {
         CacheResources.CART_ITEMS,
       ], { locale: getLocale(), tenantSlug: getTenantSlug() });
 
-      // #region debug-point E:handle-google-callback-success
-      console.debug('[DEBUG E] handleGoogleCallback completed successfully', {
-        timestamp: new Date().toISOString(),
-        willNavigateTo: storefrontRoutes.home(),
-      })
-      // #endregion
-
       return navigateTo(storefrontRoutes.home());
     } catch (err: any) {
-      // #region debug-point F:handle-google-callback-error
-      console.error('[DEBUG F] handleGoogleCallback failed', {
-        timestamp: new Date().toISOString(),
-        error: err,
-        message: err?.message,
-        stack: err?.stack,
-        authStoreState: {
-          hasToken: !!authStore.token,
-          hasUser: !!authStore.user,
-        },
-      })
-      // #endregion
-      
       authStore.clearAuth();
       throw err;
     } finally {

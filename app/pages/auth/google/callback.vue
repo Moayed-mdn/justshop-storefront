@@ -54,27 +54,9 @@ onMounted(async () => {
 
   // The backend callback establishes the session and then redirects here.
   try {
-    // #region debug-point A:google-callback-start
-    console.debug('[DEBUG A] Google callback page mounted', {
-      url: window.location.href,
-      query: route.query,
-      hasErrorParam: !!errorParam,
-      timestamp: new Date().toISOString(),
-    })
-    // #endregion
-
     await handleGoogleCallback()
     showSuccessToast('Signed in with Google successfully.')
   } catch (err) {
-    // #region debug-point B:google-callback-error
-    console.error('[DEBUG B] Google callback failed', {
-      error: err,
-      message: err?.message,
-      stack: err?.stack,
-      timestamp: new Date().toISOString(),
-    })
-    // #endregion
-    
     error.value = 'Failed to complete sign-in. Please try again.'
     showErrorToast('Could not complete Google sign-in.')
   }

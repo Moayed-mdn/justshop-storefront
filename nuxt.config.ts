@@ -18,6 +18,24 @@ export default defineNuxtConfig({
   // ✅ تقليل الـ logs المزعجة
   debug: false,
 
+  // ⚠️ PERF FIX: preconnect to the API/image backend origin so the browser
+  // starts DNS + TCP + TLS negotiation immediately instead of waiting for
+  // the first API/image request to discover the origin. Cheap, safe win on
+  // every page load.
+  app: {
+    head: {
+      link: (() => {
+        const apiBase = process.env.NUXT_PUBLIC_API_BASE || ''
+        const backendOrigin = apiBase.replace(/\/api\/v1.*$/, '')
+        if (!backendOrigin) return []
+        return [
+          { rel: 'preconnect', href: backendOrigin, crossorigin: '' },
+          { rel: 'dns-prefetch', href: backendOrigin },
+        ]
+      })(),
+    },
+  },
+
   css: ['@/assets/css/main.css'],
   vite: {
     plugins: [
